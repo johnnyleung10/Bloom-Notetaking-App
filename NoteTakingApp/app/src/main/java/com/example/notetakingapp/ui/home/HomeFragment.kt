@@ -1,5 +1,6 @@
 package com.example.notetakingapp.ui.home
 
+import FolderRecyclerViewAdapter
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,8 +9,11 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.notetakingapp.R
 import com.example.notetakingapp.databinding.FragmentHomeBinding
+import com.example.notetakingapp.models.FolderViewModel
 
 class HomeFragment : Fragment() {
 
@@ -31,10 +35,32 @@ class HomeFragment : Fragment() {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        val textView: TextView = binding.textHome
-        homeViewModel.text.observe(viewLifecycleOwner, Observer {
-            textView.text = it
-        })
+//        val textView: TextView = binding.textHome
+//        homeViewModel.text.observe(viewLifecycleOwner, Observer {
+//            textView.text = it
+//        })
+
+        // getting the recyclerview by its id
+        val folderContainer = root.findViewById<RecyclerView>(R.id.folderContainer)
+
+        // this creates a vertical layout Manager
+        folderContainer.layoutManager = LinearLayoutManager(activity)
+
+        // ArrayList of class ItemsViewModel
+        val data = ArrayList<FolderViewModel>()
+
+        // This loop will create 20 Views containing
+        // the image with the count of view
+        for (i in 1..20) {
+            data.add(FolderViewModel( "Folder " + i))
+        }
+
+        // This will pass the ArrayList to our Adapter
+        val adapter = FolderRecyclerViewAdapter(data)
+
+        // Setting the Adapter with the recyclerview
+        folderContainer.adapter = adapter
+
         return root
     }
 
