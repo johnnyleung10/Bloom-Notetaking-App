@@ -5,9 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -35,31 +33,20 @@ class HomeFragment : Fragment() {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-//        val textView: TextView = binding.textHome
-//        homeViewModel.text.observe(viewLifecycleOwner, Observer {
-//            textView.text = it
-//        })
+        val folderRecyclerView = root.findViewById<RecyclerView>(R.id.folderContainer)
 
-        // getting the recyclerview by its id
-        val folderContainer = root.findViewById<RecyclerView>(R.id.folderContainer)
+        folderRecyclerView.layoutManager = LinearLayoutManager(activity)
 
-        // this creates a vertical layout Manager
-        folderContainer.layoutManager = LinearLayoutManager(activity)
-
-        // ArrayList of class ItemsViewModel
         val data = ArrayList<FolderViewModel>()
 
-        // This loop will create 20 Views containing
-        // the image with the count of view
+        // TODO: get data from DB here
         for (i in 1..20) {
             data.add(FolderViewModel( "Folder " + i))
         }
 
-        // This will pass the ArrayList to our Adapter
-        val adapter = FolderRecyclerViewAdapter(data)
+        val adapter = FolderRecyclerViewAdapter(data, ::onFolderClick)
 
-        // Setting the Adapter with the recyclerview
-        folderContainer.adapter = adapter
+        folderRecyclerView.adapter = adapter
 
         return root
     }
@@ -67,5 +54,10 @@ class HomeFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    private fun onFolderClick(position: Int) {
+        // TODO: navigate to note explorer page for note at position
+        System.out.println("click on folder $position")
     }
 }
