@@ -40,6 +40,8 @@ class MainActivity : AppCompatActivity() {
         //val note = NoteFile("my title", null, "my folder")
 
         val newNote = NoteFile("New Note", SpannableStringBuilder("Test"), "DefaultFolder", this)
-        //Log.d("DATE TEST", newNote.dateToISO(newNote.lastModifiedDate))
+        Log.d("DATE TEST", newNote.getDateCreated())
+        newNote.initNoteSQL()
+        Log.d("TEST", newNote.noteID.toString())
     }
 }

@@ -15,7 +15,7 @@ abstract class NoteModel(
     var context: Context
 ) {
     var folderID : Int = -1
-    var noteID : Int = -1
+    var noteID : Long = -1
 
     val isoFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS")
     val dateCreated : LocalDateTime = LocalDateTime.now()
@@ -26,7 +26,9 @@ abstract class NoteModel(
      * On note creation, sync with SQLite
      */
     fun initNoteSQL() {
-        var dataHelper = DatabaseHelper(context)
+        val dataHelper = DatabaseHelper(context)
+        val db = dataHelper.writableDatabase
+        noteID = dataHelper.insertNote(db, this)
     }
 
     /**
