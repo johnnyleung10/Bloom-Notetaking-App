@@ -3,27 +3,27 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.notetakingapp.models.NoteViewModel
+import com.example.notetakingapp.models.FolderCellViewModel
 import com.example.notetakingapp.R
 
-class NoteRecyclerViewAdapter(private val noteList: List<NoteViewModel>, private val onNoteClicked: (position: Int) -> Unit) : RecyclerView.Adapter<NoteRecyclerViewAdapter.ViewHolder>() {
+class FoldersRecyclerViewAdapter(private val folderCellList: List<FolderCellViewModel>, private val onFolderClicked: (position: Int) -> Unit) : RecyclerView.Adapter<FoldersRecyclerViewAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.folder_cell, parent, false)
 
-        return ViewHolder(view, onNoteClicked)
+        return ViewHolder(view, onFolderClicked)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
-        val noteViewModel = noteList[position]
-        holder.noteTitle.text = noteViewModel.title
+        val folderViewModel = folderCellList[position]
+        holder.folderTitle.text = folderViewModel.title
 
     }
 
     override fun getItemCount(): Int {
-        return noteList.size
+        return folderCellList.size
     }
 
     class ViewHolder(
@@ -31,7 +31,7 @@ class NoteRecyclerViewAdapter(private val noteList: List<NoteViewModel>, private
         private val onItemClicked: (position: Int) -> Unit
     ) : RecyclerView.ViewHolder(ItemView), View.OnClickListener {
 
-        val noteTitle: TextView = itemView.findViewById(R.id.noteTitle)
+        val folderTitle: TextView = itemView.findViewById(R.id.folderTitle)
 
         init {
             itemView.setOnClickListener(this)

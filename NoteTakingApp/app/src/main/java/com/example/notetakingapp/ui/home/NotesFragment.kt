@@ -1,6 +1,6 @@
 package com.example.notetakingapp.ui.home
 
-import FolderRecyclerViewAdapter
+import FoldersRecyclerViewAdapter
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,11 +11,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.notetakingapp.R
 import com.example.notetakingapp.databinding.FragmentHomeBinding
-import com.example.notetakingapp.models.FolderViewModel
+import com.example.notetakingapp.models.FolderCellViewModel
 
-class HomeFragment : Fragment() {
+class NotesFragment : Fragment() {
 
-    private lateinit var homeViewModel: HomeViewModel
+    private lateinit var foldersViewModel: com.example.notetakingapp.ui.home.FoldersViewModel
     private var _binding: FragmentHomeBinding? = null
 
     // This property is only valid between onCreateView and
@@ -27,8 +27,8 @@ class HomeFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        homeViewModel =
-            ViewModelProvider(this).get(HomeViewModel::class.java)
+        foldersViewModel =
+            ViewModelProvider(this).get(FoldersViewModel::class.java)
 
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val root: View = binding.root
@@ -37,14 +37,14 @@ class HomeFragment : Fragment() {
 
         folderRecyclerView.layoutManager = LinearLayoutManager(activity)
 
-        val data = ArrayList<FolderViewModel>()
+        val data = ArrayList<FolderCellViewModel>()
 
         // TODO: get data from DB here
         for (i in 1..20) {
-            data.add(FolderViewModel( "Folder " + i))
+            data.add(FolderCellViewModel( "Folder " + i))
         }
 
-        val adapter = FolderRecyclerViewAdapter(data, ::onFolderClick)
+        val adapter = FoldersRecyclerViewAdapter(data, ::onFolderClick)
 
         folderRecyclerView.adapter = adapter
 
