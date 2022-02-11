@@ -2,6 +2,7 @@ package com.example.notetakingapp
 
 import android.os.Bundle
 import android.text.SpannableStringBuilder
+import android.util.Log
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
@@ -37,5 +38,8 @@ class MainActivity : AppCompatActivity() {
 
         //val dbHelper = DatabaseHelper(this)
         //val note = NoteFile("my title", null, "my folder")
+
+        val newNote = NoteFile("New Note", SpannableStringBuilder("Test"), "DefaultFolder")
+        Log.d("DATE TEST", newNote.dateToISO(newNote.lastModifiedDate))
     }
 }

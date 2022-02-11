@@ -2,9 +2,11 @@ package com.example.notetakingapp.models
 
 import android.content.Context
 import android.text.SpannableStringBuilder
+import android.text.format.DateFormat.format
 import androidx.core.text.toHtml
 import com.example.notetakingapp.models.sqlite.DatabaseHelper
 import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 abstract class NoteModel(
     var title : String,
@@ -31,6 +33,14 @@ abstract class NoteModel(
      */
     fun spannableStringToText(): String {
         return contents.toHtml()
+    }
+
+    fun dateToISO(date : LocalDateTime) : String {
+        //var final = date.year.toString() + "-" +date.month.toString() + "-" +
+        //        date.dayOfMonth.toString() +" " +
+        val isoFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS")
+        //date.format(isoFormat)
+        return date.format(isoFormat)
     }
 
     /**
