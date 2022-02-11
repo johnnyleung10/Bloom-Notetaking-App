@@ -33,7 +33,7 @@ class FoldersFragment : Fragment() {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        val folderRecyclerView = root.findViewById<RecyclerView>(R.id.folderContainer)
+        val folderRecyclerView = binding.folderContainer
 
         folderRecyclerView.layoutManager = LinearLayoutManager(activity)
 
@@ -58,6 +58,6 @@ class FoldersFragment : Fragment() {
 
     private fun onFolderClick(position: Int) {
         // TODO: navigate to note explorer page for note at position
-        System.out.println("click on folder $position")
+        System.out.println("clicked on folder $position")
     }
 }
