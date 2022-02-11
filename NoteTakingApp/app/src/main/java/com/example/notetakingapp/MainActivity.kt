@@ -1,6 +1,7 @@
 package com.example.notetakingapp
 
 import android.os.Bundle
+import android.text.SpannableStringBuilder
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
@@ -8,6 +9,8 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.notetakingapp.databinding.ActivityMainBinding
+import com.example.notetakingapp.models.NoteFile
+import com.example.notetakingapp.models.sqlite.DatabaseHelper
 
 class MainActivity : AppCompatActivity() {
 
@@ -31,5 +34,8 @@ class MainActivity : AppCompatActivity() {
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
+
+        val dbHelper = DatabaseHelper(this)
+        val note = NoteFile("my title", null, "my folder")
     }
 }
