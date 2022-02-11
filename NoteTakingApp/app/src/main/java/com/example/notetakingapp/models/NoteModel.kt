@@ -1,19 +1,37 @@
 package com.example.notetakingapp.models
 
+import android.content.Context
 import android.text.SpannableStringBuilder
+import androidx.core.text.toHtml
+import com.example.notetakingapp.models.sqlite.DatabaseHelper
 import java.time.LocalDateTime
 
 abstract class NoteModel(
     var title : String,
     var contents : SpannableStringBuilder,
-    var currFolder : String
+    var currFolder : String,
+    var context: Context
 ) {
-    var folderID : Int = 0
-    var noteID : Int = 0
+    var folderID : Int = -1
+    var noteID : Int = -1
 
     val dateCreated : LocalDateTime = LocalDateTime.now()
     var lastModifiedDate : LocalDateTime = dateCreated
     var deletionDate : LocalDateTime? = null
+
+    /**
+     * On note creation, sync with SQLite
+     */
+    fun initNoteSQL() {
+        var dataHelper = DatabaseHelper(context)
+    }
+
+    /**
+     * Converts spannableString to HTML for storage
+     */
+    fun spannableStringToText(): String {
+        return contents.toHtml()
+    }
 
     /**
      * Delete note, sends to recently deleted folder
