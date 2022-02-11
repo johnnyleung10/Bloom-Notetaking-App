@@ -17,6 +17,7 @@ abstract class NoteModel(
     var folderID : Int = -1
     var noteID : Int = -1
 
+    val isoFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS")
     val dateCreated : LocalDateTime = LocalDateTime.now()
     var lastModifiedDate : LocalDateTime = dateCreated
     var deletionDate : LocalDateTime? = null
@@ -35,13 +36,13 @@ abstract class NoteModel(
         return contents.toHtml()
     }
 
-    fun dateToISO(date : LocalDateTime) : String {
-        //var final = date.year.toString() + "-" +date.month.toString() + "-" +
-        //        date.dayOfMonth.toString() +" " +
-        val isoFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS")
-        //date.format(isoFormat)
+    private fun dateToISO(date : LocalDateTime?) : String {
+        if (date == null) return("")
         return date.format(isoFormat)
     }
+    fun getDateCreated() : String {return dateToISO(dateCreated)}
+    fun getLastModifiedDate() : String {return dateToISO(lastModifiedDate)}
+    fun getDeletionDate() : String {return dateToISO(deletionDate)}
 
     /**
      * Delete note, sends to recently deleted folder
