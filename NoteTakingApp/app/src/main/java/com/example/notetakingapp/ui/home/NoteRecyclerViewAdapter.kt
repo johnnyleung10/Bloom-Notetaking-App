@@ -6,9 +6,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.notetakingapp.models.FolderViewModel
 import com.example.notetakingapp.R
 
-class FolderRecyclerViewAdapter(private val mList: List<FolderViewModel>) : RecyclerView.Adapter<FolderRecyclerViewAdapter.ViewHolder>() {
+class NoteRecyclerViewAdapter(private val mList: List<FolderViewModel>) : RecyclerView.Adapter<NoteRecyclerViewAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.folder_cell, parent, false)
 
@@ -18,6 +19,7 @@ class FolderRecyclerViewAdapter(private val mList: List<FolderViewModel>) : Recy
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
         val folderViewModel = mList[position]
+
         holder.folderTitle.text = folderViewModel.title
 
     }
