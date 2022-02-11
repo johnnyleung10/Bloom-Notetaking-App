@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteDatabase
 import android.content.Context
 import android.provider.BaseColumns
 import com.example.notetakingapp.models.NoteFile
+import com.example.notetakingapp.models.NoteModel
 
 private const val SQL_CREATE_NOTE_ENTRIES =
     "CREATE TABLE ${DatabaseHelper.DatabaseContract.NoteEntry.TABLE_NAME} (" +
@@ -28,7 +29,7 @@ private const val SQL_CREATE_FOLDER_ENTRIES =
 class DatabaseHelper(context: Context) :
     SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 
-    public fun insertNote(db: SQLiteDatabase, note: NoteFile): Long {
+    public fun insertNote(db: SQLiteDatabase, note: NoteModel): Long {
         val values = ContentValues().apply {
             put(NoteEntry.COLUMN_NAME_TITLE, note.title)
             put(NoteEntry.COLUMN_NAME_CONTENTS, note.spannableStringToText())
