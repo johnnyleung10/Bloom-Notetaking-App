@@ -39,7 +39,7 @@ class MainActivity : AppCompatActivity() {
         //val dbHelper = DatabaseHelper(this)
         //val note = NoteFile("my title", null, "my folder")
 
-        val newNote = NoteFile("New Note", SpannableStringBuilder("Test"), "DefaultFolder")
+        val newNote = NoteFile("New Note", SpannableStringBuilder("Test"), "DefaultFolder", this)
         Log.d("DATE TEST", newNote.dateToISO(newNote.lastModifiedDate))
     }
 }
