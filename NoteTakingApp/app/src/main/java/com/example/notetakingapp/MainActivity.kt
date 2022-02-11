@@ -1,6 +1,5 @@
 package com.example.notetakingapp
 
-import android.app.Application
 import android.os.Bundle
 import android.text.SpannableStringBuilder
 import android.util.Log
@@ -17,6 +16,7 @@ import com.example.notetakingapp.models.sqlite.DatabaseHelper
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
+    private lateinit var db : DatabaseHelper
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,14 +37,17 @@ class MainActivity : AppCompatActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
 
+        db = DatabaseHelper(this)
+
 
         //DatabaseHelper.setApplication(Application())
-//        val db = DatabaseHelper(this)
+//
         val newNote = NoteFile("My test Note", SpannableStringBuilder("Test"), "DefaultFolder", this)
 //        Log.d("DATE TEST", newNote.getDateCreated())
-//        db.insertNote(newNote)
+        db.insertNote(newNote)
 //        Log.d("TEST", newNote.noteID.toString())
 
 
     }
+
 }

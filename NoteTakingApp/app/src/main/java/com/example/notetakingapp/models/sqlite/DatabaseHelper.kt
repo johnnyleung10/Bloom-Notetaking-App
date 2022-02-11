@@ -29,7 +29,8 @@ private const val SQL_CREATE_FOLDER_ENTRIES =
 class DatabaseHelper(context: Context) :
     SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 
-    private val con = context
+    private val dbWrite = this.writableDatabase
+    private val dbRead = this.readableDatabase
 
     fun insertNote(note: NoteModel): Long {
         val values = ContentValues().apply {
@@ -39,9 +40,7 @@ class DatabaseHelper(context: Context) :
             put(NoteEntry.COLUMN_NAME_DATE_MODIFIED, note.getLastModifiedDate())
             put(NoteEntry.COLUMN_NAME_DATE_DELETED, note.getDeletionDate())
         }
-        val dataHelper = DatabaseHelper(con)
-        val db = dataHelper.writableDatabase
-        return db.insert(NoteEntry.TABLE_NAME, null, values)
+        return dbWrite.insert(NoteEntry.TABLE_NAME, null, values)
     }
 
     override fun onCreate(db: SQLiteDatabase?) {
