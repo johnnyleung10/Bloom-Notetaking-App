@@ -1,5 +1,6 @@
 package com.example.notetakingapp
 
+import android.app.Application
 import android.os.Bundle
 import android.text.SpannableStringBuilder
 import android.util.Log
@@ -36,12 +37,14 @@ class MainActivity : AppCompatActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
 
-        //val dbHelper = DatabaseHelper(this)
-        //val note = NoteFile("my title", null, "my folder")
 
-        val newNote = NoteFile("New Note", SpannableStringBuilder("Test"), "DefaultFolder", this)
-        Log.d("DATE TEST", newNote.getDateCreated())
-        newNote.initNoteSQL()
-        Log.d("TEST", newNote.noteID.toString())
+        //DatabaseHelper.setApplication(Application())
+//        val db = DatabaseHelper(this)
+        val newNote = NoteFile("My test Note", SpannableStringBuilder("Test"), "DefaultFolder", this)
+//        Log.d("DATE TEST", newNote.getDateCreated())
+//        db.insertNote(newNote)
+//        Log.d("TEST", newNote.noteID.toString())
+
+
     }
 }
