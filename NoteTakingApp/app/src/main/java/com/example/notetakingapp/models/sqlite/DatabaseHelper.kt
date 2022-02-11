@@ -1,5 +1,6 @@
 package com.example.notetakingapp.models.sqlite
 
+import android.content.ContentValues
 import android.database.sqlite.SQLiteOpenHelper
 import android.database.sqlite.SQLiteDatabase
 import android.content.Context
@@ -12,7 +13,7 @@ private const val SQL_CREATE_NOTE_ENTRIES =
             "${DatabaseHelper.DatabaseContract.NoteEntry.COLUMN_NAME_TITLE} TEXT," +
             "${DatabaseHelper.DatabaseContract.NoteEntry.COLUMN_NAME_CONTENTS} TEXT," +
             "${DatabaseHelper.DatabaseContract.NoteEntry.COLUMN_NAME_CURR_FOLDER} TEXT," +
-            "${DatabaseHelper.DatabaseContract.NoteEntry.COLUMN_NAME_DATE_CREATED} TEXT," +
+            "${DatabaseHelper.DatabaseContract.NoteEntry.COLUMN_NAME_DATE_CREATED} DATE," +
             "${DatabaseHelper.DatabaseContract.NoteEntry.COLUMN_NAME_DATE_MODIFIED} TEXT," +
             "${DatabaseHelper.DatabaseContract.NoteEntry.COLUMN_NAME_DATE_DELETED} TEXT)"
 
@@ -27,8 +28,15 @@ private const val SQL_CREATE_FOLDER_ENTRIES =
 class DatabaseHelper(context: Context) :
     SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 
-    public fun insertNote(db: SQLiteDatabase, note: NoteFile) {
-        //db.in
+    public fun insertNote(db: SQLiteDatabase, note: NoteFile): Long {
+        val values = ContentValues().apply {
+            put(NoteEntry.COLUMN_NAME_TITLE, note.title)
+            put(NoteEntry.COLUMN_NAME_CONTENTS, note.spannableStringToText())
+            put(NoteEntry.COLUMN_NAME_DATE_CREATED, note.getDateCreated())
+            put(NoteEntry.COLUMN_NAME_DATE_MODIFIED, note.getLastModifiedDate())
+            put(NoteEntry.COLUMN_NAME_DATE_DELETED, note.getDeletionDate())
+        }
+        return db.insert(NoteEntry.TABLE_NAME, null, values)
     }
 
     override fun onCreate(db: SQLiteDatabase?) {
