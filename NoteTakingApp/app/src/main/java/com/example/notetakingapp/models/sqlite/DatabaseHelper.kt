@@ -28,7 +28,7 @@ class DatabaseHelper(context: Context) :
     SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 
     public fun insertNote(db: SQLiteDatabase, note: NoteFile) {
-        db.in
+        //db.in
     }
 
     override fun onCreate(db: SQLiteDatabase?) {

@@ -35,7 +35,7 @@ class MainActivity : AppCompatActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
 
-        val dbHelper = DatabaseHelper(this)
-        val note = NoteFile("my title", null, "my folder")
+        //val dbHelper = DatabaseHelper(this)
+        //val note = NoteFile("my title", null, "my folder")
     }
 }
