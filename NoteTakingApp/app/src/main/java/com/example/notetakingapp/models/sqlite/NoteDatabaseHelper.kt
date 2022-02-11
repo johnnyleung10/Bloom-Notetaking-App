@@ -5,15 +5,15 @@ import android.database.sqlite.SQLiteDatabase
 import android.content.Context
 import android.provider.BaseColumns
 
+private const val SQL_CREATE_NOTE_ENTRIES =
+    "CREATE TABLE ${NoteDatabaseHelper.DatabaseContract.NoteEntry.TABLE_NAME} (" +
+            "${BaseColumns._ID} INTEGER PRIMARY KEY," +
+            "${NoteDatabaseHelper.DatabaseContract.NoteEntry.COLUMN_NAME_TITLE} TEXT," +
+            "${NoteDatabaseHelper.DatabaseContract.NoteEntry.COLUMN_NAME_CONTENTS} TEXT," +
+            "${NoteDatabaseHelper.DatabaseContract.NoteEntry.COLUMN_NAME_CURR_FOLDER} TEXT)"
+
 class NoteDatabaseHelper(context: Context) :
     SQLiteOpenHelper(context, DatabaseContract.DATABASE_NAME, null, DatabaseContract.DATABASE_VERSION) {
-
-    private val SQL_CREATE_NOTE_ENTRIES =
-        "CREATE TABLE ${DatabaseContract.NoteEntry.TABLE_NAME} (" +
-                "${BaseColumns._ID} INTEGER PRIMARY KEY," +
-                "${DatabaseContract.NoteEntry.COLUMN_NAME_TITLE} TEXT," +
-                "${DatabaseContract.NoteEntry.COLUMN_NAME_CONTENTS} TEXT," +
-                "${DatabaseContract.NoteEntry.COLUMN_NAME_CURR_FOLDER} TEXT)"
 
     override fun onCreate(db: SQLiteDatabase?) {
         db?.execSQL(SQL_CREATE_NOTE_ENTRIES)
