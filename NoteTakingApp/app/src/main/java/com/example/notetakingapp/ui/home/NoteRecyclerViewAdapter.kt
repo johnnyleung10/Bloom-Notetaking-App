@@ -3,32 +3,43 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.notetakingapp.models.FolderViewModel
+import com.example.notetakingapp.models.NoteViewModel
 import com.example.notetakingapp.R
 
-class NoteRecyclerViewAdapter(private val mList: List<FolderViewModel>) : RecyclerView.Adapter<NoteRecyclerViewAdapter.ViewHolder>() {
+class NoteRecyclerViewAdapter(private val noteList: List<NoteViewModel>, private val onNoteClicked: (position: Int) -> Unit) : RecyclerView.Adapter<NoteRecyclerViewAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.folder_cell, parent, false)
 
-        return ViewHolder(view)
+        return ViewHolder(view, onNoteClicked)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
-        val folderViewModel = mList[position]
-
-        holder.folderTitle.text = folderViewModel.title
+        val noteViewModel = noteList[position]
+        holder.noteTitle.text = noteViewModel.title
 
     }
 
     override fun getItemCount(): Int {
-        return mList.size
+        return noteList.size
     }
 
-    class ViewHolder(ItemView: View) : RecyclerView.ViewHolder(ItemView) {
-        val folderTitle: TextView = itemView.findViewById(R.id.folderTitle)
+    class ViewHolder(
+        ItemView: View,
+        private val onItemClicked: (position: Int) -> Unit
+    ) : RecyclerView.ViewHolder(ItemView), View.OnClickListener {
+
+        val noteTitle: TextView = itemView.findViewById(R.id.noteTitle)
+
+        init {
+            itemView.setOnClickListener(this)
+        }
+
+        override fun onClick(v: View) {
+            val position = adapterPosition
+            onItemClicked(position)
+        }
     }
 }
