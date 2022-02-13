@@ -17,8 +17,8 @@ class FoldersRecyclerViewAdapter(private val folderCellList: List<FolderCellView
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
-        val folderViewModel = folderCellList[position]
-        holder.folderTitle.text = folderViewModel.title
+        val folderCellViewModel = folderCellList[position]
+        holder.folderTitle.text = folderCellViewModel.title
 
     }
 

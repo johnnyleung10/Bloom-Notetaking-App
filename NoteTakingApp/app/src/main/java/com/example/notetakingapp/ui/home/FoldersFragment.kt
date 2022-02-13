@@ -7,16 +7,15 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.NavHostFragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.example.notetakingapp.R
-import com.example.notetakingapp.databinding.FragmentHomeBinding
+import com.example.notetakingapp.databinding.FragmentFoldersBinding
 import com.example.notetakingapp.models.FolderCellViewModel
 
 class FoldersFragment : Fragment() {
 
     private lateinit var foldersViewModel: com.example.notetakingapp.ui.home.FoldersViewModel
-    private var _binding: FragmentHomeBinding? = null
+    private var _binding: FragmentFoldersBinding? = null
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -30,7 +29,7 @@ class FoldersFragment : Fragment() {
         foldersViewModel =
             ViewModelProvider(this).get(FoldersViewModel::class.java)
 
-        _binding = FragmentHomeBinding.inflate(inflater, container, false)
+        _binding = FragmentFoldersBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
         val folderRecyclerView = binding.folderContainer
@@ -58,6 +57,8 @@ class FoldersFragment : Fragment() {
 
     private fun onFolderClick(position: Int) {
         // TODO: navigate to note explorer page for note at position
+        val action = FoldersFragmentDirections.actionNavigationFoldersToNavigationNotes("Note ID: $position")
+        NavHostFragment.findNavController(this).navigate(action)
         System.out.println("clicked on folder $position")
     }
 }
