@@ -10,8 +10,6 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.notetakingapp.databinding.ActivityMainBinding
-import com.example.notetakingapp.models.NoteFile
-import com.example.notetakingapp.models.sqlite.DatabaseHelper
 
 class MainActivity : AppCompatActivity() {
 
@@ -39,9 +37,9 @@ class MainActivity : AppCompatActivity() {
         //val dbHelper = DatabaseHelper(this)
         //val note = NoteFile("my title", null, "my folder")
 
-        val newNote = NoteFile("New Note", SpannableStringBuilder("Test"), "DefaultFolder", this)
-        Log.d("DATE TEST", newNote.getDateCreated())
-        newNote.initNoteSQL()
-        Log.d("TEST", newNote.noteID.toString())
+        //val newNote = NoteFile("New Note", SpannableStringBuilder("Test"), "DefaultFolder", this)
+        //Log.d("DATE TEST", newNote.getDateCreated())
+        //newNote.initNoteSQL()
+        //Log.d("TEST", newNote.noteID.toString())
     }
 }

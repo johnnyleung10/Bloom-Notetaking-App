@@ -5,7 +5,6 @@ import android.database.sqlite.SQLiteOpenHelper
 import android.database.sqlite.SQLiteDatabase
 import android.content.Context
 import android.provider.BaseColumns
-import com.example.notetakingapp.models.NoteFile
 import com.example.notetakingapp.models.NoteModel
 
 private const val SQL_CREATE_NOTE_ENTRIES =
