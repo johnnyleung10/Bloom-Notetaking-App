@@ -13,7 +13,7 @@ abstract class FileModel(
 
     // Dates
     private val isoFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS")
-    protected val dateCreated : LocalDateTime = LocalDateTime.now()
+    protected var dateCreated : LocalDateTime = LocalDateTime.now()
     protected var lastModifiedDate : LocalDateTime = dateCreated
     protected var deletionDate : LocalDateTime? = null
 
