@@ -35,7 +35,8 @@ class MainActivity : AppCompatActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
 
-        //db = DatabaseHelper(this)
+        db = DatabaseHelper(this)
+        db.getNumberOfFolders()
 
 
         //DatabaseHelper.setApplication(Application())

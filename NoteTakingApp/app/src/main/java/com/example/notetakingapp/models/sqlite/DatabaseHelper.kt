@@ -14,10 +14,12 @@ private const val SQL_CREATE_NOTE_ENTRIES =
             "${BaseColumns._ID} INTEGER PRIMARY KEY," +
             "${DatabaseHelper.DatabaseContract.NoteEntry.COLUMN_NAME_TITLE} TEXT," +
             "${DatabaseHelper.DatabaseContract.NoteEntry.COLUMN_NAME_CONTENTS} TEXT," +
-            "${DatabaseHelper.DatabaseContract.NoteEntry.COLUMN_NAME_FOLDER_ID} TEXT," +
             "${DatabaseHelper.DatabaseContract.NoteEntry.COLUMN_NAME_DATE_CREATED} DATE," +
             "${DatabaseHelper.DatabaseContract.NoteEntry.COLUMN_NAME_DATE_MODIFIED} TEXT," +
-            "${DatabaseHelper.DatabaseContract.NoteEntry.COLUMN_NAME_DATE_DELETED} TEXT)"
+            "${DatabaseHelper.DatabaseContract.NoteEntry.COLUMN_NAME_DATE_DELETED} TEXT," +
+            "${DatabaseHelper.DatabaseContract.NoteEntry.COLUMN_NAME_FOLDER_ID} INTEGER," +
+            "FOREIGN KEY ("+DatabaseHelper.DatabaseContract.NoteEntry.COLUMN_NAME_FOLDER_ID+") REFERENCES "+DatabaseHelper.DatabaseContract.FolderEntry.TABLE_NAME+"("+BaseColumns._ID+"))"
+
 
 private const val SQL_CREATE_FOLDER_ENTRIES =
     "CREATE TABLE ${DatabaseHelper.DatabaseContract.FolderEntry.TABLE_NAME} (" +
@@ -27,12 +29,12 @@ private const val SQL_CREATE_FOLDER_ENTRIES =
             "${DatabaseHelper.DatabaseContract.FolderEntry.COLUMN_NAME_DATE_MODIFIED} TEXT," +
             "${DatabaseHelper.DatabaseContract.FolderEntry.COLUMN_NAME_DATE_DELETED} TEXT)"
 
+private const val SQL_DELETE_NOTE_ENTRIES = "DROP TABLE IF EXISTS ${DatabaseHelper.DatabaseContract.NoteEntry.TABLE_NAME}"
+private const val SQL_DELETE_FOLDER_ENTRIES = "DROP TABLE IF EXISTS ${DatabaseHelper.DatabaseContract.FolderEntry.TABLE_NAME}"
 
-class DatabaseHelper(context: Context) :
+
+class DatabaseHelper(private val context: Context) :
     SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
-
-    //private val dbWrite = this.writableDatabase
-    //private val dbRead = this.readableDatabase
 
     fun insertNote(note: NoteModel): Long {
         val values = ContentValues().apply {
@@ -41,6 +43,7 @@ class DatabaseHelper(context: Context) :
             put(NoteEntry.COLUMN_NAME_DATE_CREATED, note.getDateCreated())
             put(NoteEntry.COLUMN_NAME_DATE_MODIFIED, note.getLastModifiedDate())
             put(NoteEntry.COLUMN_NAME_DATE_DELETED, note.getDeletionDate())
+            put(NoteEntry.COLUMN_NAME_FOLDER_ID, note.folderID)
         }
         val dbWrite = this.writableDatabase
         val id = dbWrite.insert(NoteEntry.TABLE_NAME, null, values)
@@ -78,7 +81,7 @@ class DatabaseHelper(context: Context) :
     }
 
     fun getAllFolders(): List<FolderModel> {
-        val retList : List<FolderModel> = listOf()
+        val retList : ArrayList<FolderModel> = arrayListOf()
         val queryString = "SELECT * FROM" + FolderEntry.TABLE_NAME
         val dbRead = this.readableDatabase
 
@@ -86,13 +89,14 @@ class DatabaseHelper(context: Context) :
 
         if (cursor.moveToFirst()) {
             do {
-                val id = cursor.getInt(0)
+                val id = cursor.getLong(0)
                 val title = cursor.getString(1)
                 val dateCreated = cursor.getString(2)
                 val dateModified = cursor.getString(3)
                 val dateDeleted = cursor.getString(4)
 
-                //val folder = FolderModel()
+                val folder = FolderModel(title, context, id, dateCreated, dateModified, dateDeleted)
+                retList.add(folder)
             } while (cursor.moveToFirst())
         }
         dbRead.close()
@@ -101,7 +105,7 @@ class DatabaseHelper(context: Context) :
     }
 
     fun getAllNotes(): List<NoteModel> {
-        val retList : List<NoteModel> = listOf()
+        val retList : ArrayList<NoteModel> = arrayListOf()
         val queryString = "SELECT * FROM" + NoteEntry.TABLE_NAME
         val dbRead = this.readableDatabase
 
@@ -109,15 +113,17 @@ class DatabaseHelper(context: Context) :
 
         if (cursor.moveToFirst()) {
             do {
-                val id = cursor.getInt(0)
+                val id = cursor.getLong(0)
                 val title = cursor.getString(1)
                 val content = cursor.getString(2)
-                val folderID = cursor.getLong(3)
-                val dateCreated = cursor.getString(4)
-                val dateModified = cursor.getString(5)
-                val dateDeleted = cursor.getString(6)
+                val dateCreated = cursor.getString(3)
+                val dateModified = cursor.getString(4)
+                val dateDeleted = cursor.getString(5)
+                val folderID = cursor.getLong(6)
 
-                //val folder = FolderModel()
+                val note = NoteModel(title, context, id, folderID, content, dateCreated,
+                    dateModified, dateDeleted)
+                retList.add(note)
             } while (cursor.moveToFirst())
         }
 
@@ -132,12 +138,14 @@ class DatabaseHelper(context: Context) :
     }
 
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
-        TODO("Not yet implemented")
+        db?.execSQL(SQL_DELETE_NOTE_ENTRIES)
+        db?.execSQL(SQL_DELETE_FOLDER_ENTRIES)
+        onCreate(db)
     }
 
     companion object DatabaseContract {
         const val DATABASE_NAME = "app.db"
-        const val DATABASE_VERSION = 1
+        const val DATABASE_VERSION = 3
         private lateinit var application: Application
 
         object NoteEntry : BaseColumns {
