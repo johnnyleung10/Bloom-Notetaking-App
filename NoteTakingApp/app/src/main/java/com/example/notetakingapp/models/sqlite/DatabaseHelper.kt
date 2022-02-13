@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteOpenHelper
 import android.database.sqlite.SQLiteDatabase
 import android.content.Context
 import android.provider.BaseColumns
+import com.example.notetakingapp.models.FolderModel
 import com.example.notetakingapp.models.NoteModel
 
 private const val SQL_CREATE_NOTE_ENTRIES =
@@ -42,6 +43,18 @@ class DatabaseHelper(context: Context) :
         }
         val id = dbWrite.insert(NoteEntry.TABLE_NAME, null, values)
         note.id = id
+        return id
+    }
+
+    fun insertFolder(folder: FolderModel): Long {
+        val values = ContentValues().apply {
+            put(FolderEntry.COLUMN_NAME_TITLE, folder.title)
+            put(FolderEntry.COLUMN_NAME_DATE_CREATED, folder.getDateCreated())
+            put(FolderEntry.COLUMN_NAME_DATE_MODIFIED, folder.getLastModifiedDate())
+            put(FolderEntry.COLUMN_NAME_DATE_DELETED, folder.getDeletionDate())
+        }
+        val id = dbWrite.insert(FolderEntry.TABLE_NAME, null, values)
+        folder.id = id
         return id
     }
 
