@@ -14,6 +14,7 @@ import com.example.notetakingapp.databinding.ActivityMainBinding
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
+    private lateinit var db : DatabaseHelper
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,12 +35,17 @@ class MainActivity : AppCompatActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
 
-        //val dbHelper = DatabaseHelper(this)
-        //val note = NoteFile("my title", null, "my folder")
+        db = DatabaseHelper(this)
 
-        //val newNote = NoteFile("New Note", SpannableStringBuilder("Test"), "DefaultFolder", this)
-        //Log.d("DATE TEST", newNote.getDateCreated())
-        //newNote.initNoteSQL()
-        //Log.d("TEST", newNote.noteID.toString())
+
+        //DatabaseHelper.setApplication(Application())
+//
+        val newNote = NoteFile("My test Note", SpannableStringBuilder("Test"), "DefaultFolder", this)
+//        Log.d("DATE TEST", newNote.getDateCreated())
+        db.insertNote(newNote)
+//        Log.d("TEST", newNote.noteID.toString())
+
+
     }
+
 }

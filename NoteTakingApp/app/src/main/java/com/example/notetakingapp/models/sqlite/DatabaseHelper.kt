@@ -1,5 +1,6 @@
 package com.example.notetakingapp.models.sqlite
 
+import android.app.Application
 import android.content.ContentValues
 import android.database.sqlite.SQLiteOpenHelper
 import android.database.sqlite.SQLiteDatabase
@@ -28,7 +29,10 @@ private const val SQL_CREATE_FOLDER_ENTRIES =
 class DatabaseHelper(context: Context) :
     SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 
-    public fun insertNote(db: SQLiteDatabase, note: NoteModel): Long {
+    private val dbWrite = this.writableDatabase
+    private val dbRead = this.readableDatabase
+
+    fun insertNote(note: NoteModel): Long {
         val values = ContentValues().apply {
             put(NoteEntry.COLUMN_NAME_TITLE, note.title)
             put(NoteEntry.COLUMN_NAME_CONTENTS, note.spannableStringToText())
@@ -36,7 +40,7 @@ class DatabaseHelper(context: Context) :
             put(NoteEntry.COLUMN_NAME_DATE_MODIFIED, note.getLastModifiedDate())
             put(NoteEntry.COLUMN_NAME_DATE_DELETED, note.getDeletionDate())
         }
-        return db.insert(NoteEntry.TABLE_NAME, null, values)
+        return dbWrite.insert(NoteEntry.TABLE_NAME, null, values)
     }
 
     override fun onCreate(db: SQLiteDatabase?) {
@@ -50,6 +54,11 @@ class DatabaseHelper(context: Context) :
     companion object DatabaseContract {
         const val DATABASE_NAME = "app.db"
         const val DATABASE_VERSION = 1
+        private lateinit var application: Application
+
+        fun setApplication(app: Application) {
+            application = app
+        }
         object NoteEntry : BaseColumns {
             const val TABLE_NAME = "note_table"
             const val COLUMN_NAME_TITLE = "title"

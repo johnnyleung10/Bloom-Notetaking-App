@@ -16,11 +16,6 @@ class NoteModel(
     /**
      * On note creation, sync with SQLite
      */
-    fun initNoteSQL() {
-        val dataHelper = DatabaseHelper(context)
-        val db = dataHelper.writableDatabase
-        id = dataHelper.insertNote(db, this)
-    }
 
     /**
      * Converts spannableString to HTML for storage
