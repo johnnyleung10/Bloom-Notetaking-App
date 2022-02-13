@@ -1,8 +1,6 @@
 package com.example.notetakingapp
 
 import android.os.Bundle
-import android.text.SpannableStringBuilder
-import android.util.Log
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
@@ -10,7 +8,6 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.notetakingapp.databinding.ActivityMainBinding
-import com.example.notetakingapp.models.NoteFile
 import com.example.notetakingapp.models.sqlite.DatabaseHelper
 
 class MainActivity : AppCompatActivity() {
@@ -41,11 +38,10 @@ class MainActivity : AppCompatActivity() {
 
 
         //DatabaseHelper.setApplication(Application())
-//
-        val newNote = NoteFile("My test Note", SpannableStringBuilder("Test"), "DefaultFolder", this)
-//        Log.d("DATE TEST", newNote.getDateCreated())
-        db.insertNote(newNote)
-//        Log.d("TEST", newNote.noteID.toString())
+        //val newNote = NoteFile("My test Note", SpannableStringBuilder("Test"), "DefaultFolder", this)
+        //Log.d("DATE TEST", newNote.getDateCreated())
+        //db.insertNote(newNote)
+        //Log.d("TEST", newNote.noteID.toString())
 
 
     }
