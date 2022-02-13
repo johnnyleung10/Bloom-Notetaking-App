@@ -1,15 +1,11 @@
 package com.example.notetakingapp.models
 
-import java.time.LocalDateTime
+import android.content.Context
 
 class FolderModel(
-    var title: String,
-) {
-    // var files : ArrayList<NoteModel> = ArrayList<NoteModel>()
+    title: String,
+    context: Context
+) : FileModel(title, context) {
 
-    var id : Int = 0
-
-    val dateCreated : LocalDateTime = LocalDateTime.now()
-    var lastModifiedDate : LocalDateTime = dateCreated
-    var deletionDate : LocalDateTime? = null
+    var contains = ArrayList<NoteModel>()
 }
