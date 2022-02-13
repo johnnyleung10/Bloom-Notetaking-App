@@ -9,7 +9,7 @@ abstract class FileModel(
     val context: Context,
 ) {
     var id : Long = -1
-        protected set
+        internal set
 
     // Dates
     private val isoFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS")

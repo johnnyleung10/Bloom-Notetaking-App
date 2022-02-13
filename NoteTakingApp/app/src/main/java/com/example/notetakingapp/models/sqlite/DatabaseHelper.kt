@@ -40,7 +40,9 @@ class DatabaseHelper(context: Context) :
             put(NoteEntry.COLUMN_NAME_DATE_MODIFIED, note.getLastModifiedDate())
             put(NoteEntry.COLUMN_NAME_DATE_DELETED, note.getDeletionDate())
         }
-        return dbWrite.insert(NoteEntry.TABLE_NAME, null, values)
+        val id = dbWrite.insert(NoteEntry.TABLE_NAME, null, values)
+        note.id = id
+        return id
     }
 
     override fun onCreate(db: SQLiteDatabase?) {

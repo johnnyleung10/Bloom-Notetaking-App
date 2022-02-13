@@ -12,6 +12,7 @@ class NoteModel(
 
     var contents : SpannableStringBuilder = SpannableStringBuilder("")
     var currFolder : String = ""
+    var folderID = -1
 
     /**
      * Converts spannableString to HTML for storage
