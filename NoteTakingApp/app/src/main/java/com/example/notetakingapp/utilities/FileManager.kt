@@ -1,6 +1,7 @@
 package com.example.notetakingapp.utilities
 
 import android.content.Context
+import android.util.Log
 import com.example.notetakingapp.models.FolderModel
 import com.example.notetakingapp.models.NoteModel
 import com.example.notetakingapp.models.sqlite.DatabaseHelper
@@ -59,6 +60,11 @@ class FileManager(val context: Context) {
      * Edits folder and updates the database
      */
     fun editFolder(folderID: Long, title: String? = null) {
+        if (folderID == UNCATEGORIZED_FOLDER || folderID == RECENTLY_DELETED_FOLDER) {
+            Log.d("FileManager", "You can't edit default folders")
+            return
+        }
+
         title?.let { folderList[folderID]?.title = title }
         folderList[folderID]?.updateModifiedDate()
 
