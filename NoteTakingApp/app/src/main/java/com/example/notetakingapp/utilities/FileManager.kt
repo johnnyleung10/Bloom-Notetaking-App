@@ -55,6 +55,8 @@ class FileManager(val context: Context) {
     fun createNewNote(name : String) : NoteModel {
         val newNote = NoteModel(name, context)
         databaseHelper.insertNote(newNote)
+        folderList[0].contains.add(newNote)
+
         return newNote
     }
 
