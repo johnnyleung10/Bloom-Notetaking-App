@@ -9,9 +9,11 @@ class FileManager(val context: Context) {
     private val databaseHelper = DatabaseHelper(context)
 
     val folderList = ArrayList<FolderModel>()
+    val noteList = ArrayList<NoteModel>()
 
     fun initFiles() {
         initFolders()
+        initNotes()
     }
 
     private fun initFolders() {
@@ -25,7 +27,7 @@ class FileManager(val context: Context) {
     }
 
     private fun initNotes() {
-
+        noteList.addAll(databaseHelper.getAllNotes())
 
     }
 

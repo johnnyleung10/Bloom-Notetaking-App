@@ -27,8 +27,10 @@ class NoteModel(
         this.dateCreated = dateCreatedLCT
         val dateModifiedLCT = LocalDateTime.parse(dateModified, isoFormat)
         this.lastModifiedDate = dateModifiedLCT
-        val dateDeletedLCT = LocalDateTime.parse(dateDeleted, isoFormat)
-        this.deletionDate = dateDeletedLCT
+        if (dateDeleted != "") {
+            val dateDeletedLCT = LocalDateTime.parse(dateDeleted, isoFormat)
+            this.deletionDate = dateDeletedLCT
+        }
 
         this.contents = SpannableStringBuilder(contents)
     }

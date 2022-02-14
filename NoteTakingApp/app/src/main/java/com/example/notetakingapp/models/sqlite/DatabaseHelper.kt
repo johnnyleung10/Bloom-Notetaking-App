@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteOpenHelper
 import android.database.sqlite.SQLiteDatabase
 import android.content.Context
 import android.provider.BaseColumns
+import android.util.Log
 import com.example.notetakingapp.models.FolderModel
 import com.example.notetakingapp.models.NoteModel
 
@@ -14,7 +15,7 @@ private const val SQL_CREATE_NOTE_ENTRIES =
             "${BaseColumns._ID} INTEGER PRIMARY KEY," +
             "${DatabaseHelper.DatabaseContract.NoteEntry.COLUMN_NAME_TITLE} TEXT," +
             "${DatabaseHelper.DatabaseContract.NoteEntry.COLUMN_NAME_CONTENTS} TEXT," +
-            "${DatabaseHelper.DatabaseContract.NoteEntry.COLUMN_NAME_DATE_CREATED} DATE," +
+            "${DatabaseHelper.DatabaseContract.NoteEntry.COLUMN_NAME_DATE_CREATED} TEXT," +
             "${DatabaseHelper.DatabaseContract.NoteEntry.COLUMN_NAME_DATE_MODIFIED} TEXT," +
             "${DatabaseHelper.DatabaseContract.NoteEntry.COLUMN_NAME_DATE_DELETED} TEXT," +
             "${DatabaseHelper.DatabaseContract.NoteEntry.COLUMN_NAME_FOLDER_ID} INTEGER," +
@@ -25,7 +26,7 @@ private const val SQL_CREATE_FOLDER_ENTRIES =
     "CREATE TABLE ${DatabaseHelper.DatabaseContract.FolderEntry.TABLE_NAME} (" +
             "${BaseColumns._ID} INTEGER PRIMARY KEY," +
             "${DatabaseHelper.DatabaseContract.FolderEntry.COLUMN_NAME_TITLE} TEXT," +
-            "${DatabaseHelper.DatabaseContract.FolderEntry.COLUMN_NAME_DATE_CREATED} DATE," +
+            "${DatabaseHelper.DatabaseContract.FolderEntry.COLUMN_NAME_DATE_CREATED} TEXT," +
             "${DatabaseHelper.DatabaseContract.FolderEntry.COLUMN_NAME_DATE_MODIFIED} TEXT," +
             "${DatabaseHelper.DatabaseContract.FolderEntry.COLUMN_NAME_DATE_DELETED} TEXT)"
 
@@ -82,38 +83,38 @@ class DatabaseHelper(private val context: Context) :
 
     fun getAllFolders(): List<FolderModel> {
         val retList : ArrayList<FolderModel> = arrayListOf()
-        val queryString = "SELECT * FROM" + FolderEntry.TABLE_NAME +" ORDER BY " +BaseColumns._ID
+        val queryString = "SELECT * FROM " + FolderEntry.TABLE_NAME
         val dbRead = this.readableDatabase
 
-        val cursor = dbRead.rawQuery(queryString, null)
+       val cursor = dbRead.rawQuery(queryString, null)
 
-        if (cursor.moveToFirst()) {
+       if (cursor.moveToFirst()) {
             do {
-                val id = cursor.getLong(0)
+                val id = cursor.getInt(0)
                 val title = cursor.getString(1)
                 val dateCreated = cursor.getString(2)
                 val dateModified = cursor.getString(3)
                 val dateDeleted = cursor.getString(4)
 
-                val folder = FolderModel(title, context, id, dateCreated, dateModified, dateDeleted)
+                val folder = FolderModel(title, context, id.toLong(), dateCreated, dateModified, dateDeleted)
                 retList.add(folder)
-            } while (cursor.moveToFirst())
-        }
-        dbRead.close()
+            } while (cursor.moveToNext())
+       }
         cursor.close()
+        dbRead.close()
         return retList
     }
 
     fun getAllNotes(): List<NoteModel> {
         val retList : ArrayList<NoteModel> = arrayListOf()
-        val queryString = "SELECT * FROM" + NoteEntry.TABLE_NAME +" ORDER BY " +BaseColumns._ID
+        val queryString = "SELECT * FROM " + NoteEntry.TABLE_NAME + " ORDER BY " + BaseColumns._ID
         val dbRead = this.readableDatabase
 
         val cursor = dbRead.rawQuery(queryString, null)
 
         if (cursor.moveToFirst()) {
             do {
-                val id = cursor.getLong(0)
+                val id = cursor.getInt(0)
                 val title = cursor.getString(1)
                 val content = cursor.getString(2)
                 val dateCreated = cursor.getString(3)
@@ -121,10 +122,10 @@ class DatabaseHelper(private val context: Context) :
                 val dateDeleted = cursor.getString(5)
                 val folderID = cursor.getLong(6)
 
-                val note = NoteModel(title, context, id, folderID, content, dateCreated,
+                val note = NoteModel(title, context, id.toLong(), folderID, content, dateCreated,
                     dateModified, dateDeleted)
                 retList.add(note)
-            } while (cursor.moveToFirst())
+            } while (cursor.moveToNext())
         }
 
         dbRead.close()
