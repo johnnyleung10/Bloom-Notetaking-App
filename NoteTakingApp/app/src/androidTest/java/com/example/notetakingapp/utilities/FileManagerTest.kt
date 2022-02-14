@@ -6,6 +6,7 @@ import org.junit.Assert
 import org.junit.Test
 
 internal class FileManagerTest {
+    val appContext = InstrumentationRegistry.getInstrumentation().targetContext
 
     @Test
     fun getFolderList() {
@@ -18,11 +19,16 @@ internal class FileManagerTest {
     fun initFiles() {
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
         val manager = FileManager(appContext)
+        manager.initFiles()
         Assert.assertEquals(2, manager.folderList.size)
     }
 
     @Test
     fun createNewFolder() {
+        val appContext = InstrumentationRegistry.getInstrumentation().targetContext
+        val manager = FileManager(appContext)
+        manager.createNewFolder()
+        Assert.assertEquals(2, manager.folderList.size)
     }
 
     @Test
