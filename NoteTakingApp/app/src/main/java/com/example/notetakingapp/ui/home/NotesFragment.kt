@@ -5,11 +5,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.example.notetakingapp.R
 import com.example.notetakingapp.databinding.FragmentNotesBinding
 import com.example.notetakingapp.models.NoteCellViewModel
 
@@ -42,10 +42,14 @@ class NotesFragment : Fragment() {
         _binding = FragmentNotesBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        // Set the folder title
-        val homeNotesTitle = binding.folderTitle
+        val folderTitle: TextView = binding.folderTitle
+        // Observer pattern
+        notesViewModel.folderTitle.observe(viewLifecycleOwner, Observer {
+            folderTitle.text = it
+        })
+
         // TODO: get the folder name here
-        homeNotesTitle.text = folderId
+        notesViewModel.setFolderTitle(folderId)
 
         val notesRecyclerView = binding.noteContainer
 

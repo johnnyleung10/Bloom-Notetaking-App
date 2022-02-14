@@ -6,8 +6,12 @@ import androidx.lifecycle.ViewModel
 
 class NotesViewModel : ViewModel() {
 
-    private val _text = MutableLiveData<String>().apply {
-        value = "This is home Fragment"
+    private val _folderTitle = MutableLiveData<String>().apply {
+        value = "Notes"
     }
-    val text: LiveData<String> = _text
+    val folderTitle: LiveData<String> = _folderTitle
+
+    fun setFolderTitle(folderTitle: String){
+        _folderTitle.value = folderTitle
+    }
 }
