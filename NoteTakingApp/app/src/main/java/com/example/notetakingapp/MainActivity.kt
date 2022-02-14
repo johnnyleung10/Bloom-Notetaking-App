@@ -13,7 +13,6 @@ import com.example.notetakingapp.models.sqlite.DatabaseHelper
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
-    private lateinit var db : DatabaseHelper
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
