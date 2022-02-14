@@ -70,4 +70,11 @@ class FileManager(val context: Context) {
         databaseHelper.insertNote(newNote)
         return newNote
     }
+
+    fun moveNote(note : NoteModel, folderID : Long) {
+        val currFolderIndex = note.folderID.toInt() - 1
+        folderList[currFolderIndex].contains.remove(note)
+        folderList[folderID.toInt() - 1].contains.add(note)
+        databaseHelper.updateNote(note.id, folderId = folderID.toInt())
+    }
 }
