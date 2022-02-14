@@ -50,6 +50,10 @@ class FileManager(val context: Context) {
         return newFolder
     }
 
+    fun deleteFolder(folderID : Long) {
+        TODO("Delete all files inside?")
+    }
+
     /**
      * Creates a new note in an empty folder
      */
@@ -74,10 +78,19 @@ class FileManager(val context: Context) {
         return newNote
     }
 
+    fun deleteNote(note : NoteModel) {
+        moveNote(note, 2) // move to recently deleted
+        note.deleteFile()
+    }
+
+    /**
+     * Moves a note to the specified folder
+     */
     fun moveNote(note : NoteModel, folderID : Long) {
         val currFolderIndex = note.folderID.toInt()
         folderList[currFolderIndex].contains.remove(note)
         folderList[folderID.toInt()].contains.add(note)
+        note.currFolder = folderList[folderID.toInt()].title
         databaseHelper.updateNote(note.id, folderId = folderID.toInt())
     }
 }

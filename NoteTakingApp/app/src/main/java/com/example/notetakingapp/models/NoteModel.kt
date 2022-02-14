@@ -43,15 +43,6 @@ class NoteModel(
     }
 
     /**
-     * Delete note, sends to recently deleted folder
-     */
-    fun deleteNote() {
-        currFolder = "Recently Deleted"
-        folderID = 2
-        deleteFile()
-    }
-
-    /**
      * Restore note from recently deleted
      */
     fun restoreNote() {
