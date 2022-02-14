@@ -6,7 +6,6 @@ import android.database.sqlite.SQLiteOpenHelper
 import android.database.sqlite.SQLiteDatabase
 import android.content.Context
 import android.provider.BaseColumns
-import android.util.Log
 import com.example.notetakingapp.models.FolderModel
 import com.example.notetakingapp.models.NoteModel
 
