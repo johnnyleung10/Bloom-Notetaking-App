@@ -132,6 +132,74 @@ class DatabaseHelper(private val context: Context) :
         return retList
     }
 
+    fun deleteOneNote(id: Long) : Boolean {
+        val queryString = "DELETE FROM " + NoteEntry.TABLE_NAME + " WHERE " + BaseColumns._ID + " = " + id
+        val dbRead = this.readableDatabase
+
+        val cursor = dbRead.rawQuery(queryString, null)
+
+        if (cursor.moveToFirst()) {
+            dbRead.close()
+            cursor.close()
+            return true
+        }
+        dbRead.close()
+        cursor.close()
+        return false
+    }
+
+    fun deleteOneFolder(id: Long) : Boolean {
+        val queryString = "DELETE FROM " + FolderEntry.TABLE_NAME + " WHERE " + BaseColumns._ID + " = " + id
+        val dbRead = this.readableDatabase
+
+        val cursor = dbRead.rawQuery(queryString, null)
+
+        if (cursor.moveToFirst()) {
+            dbRead.close()
+            cursor.close()
+            return true
+        }
+        dbRead.close()
+        cursor.close()
+        return false
+    }
+
+    fun updateNote(id: Long, title: String? = null, content: String? = null, dateModified: String? = null, dateDeleted: String? = null, folderId: Int? = null) {
+        val dbWrite = this.writableDatabase
+        val values = ContentValues().apply {
+            title?.let { put(NoteEntry.COLUMN_NAME_TITLE, title) }
+            content?.let { put(NoteEntry.COLUMN_NAME_CONTENTS, content) }
+            dateModified?.let {
+                put(
+                    NoteEntry.COLUMN_NAME_DATE_MODIFIED,
+                    dateModified
+                )
+            }
+            dateDeleted?.let { put(NoteEntry.COLUMN_NAME_DATE_DELETED, dateDeleted) }
+            folderId?.let { put(NoteEntry.COLUMN_NAME_FOLDER_ID, folderId) }
+        }
+        dbWrite.update(NoteEntry.TABLE_NAME, values, BaseColumns._ID + " = ?",
+            arrayOf(id.toString()))
+        dbWrite.close()
+    }
+
+    fun updateFolder(id: Long, title: String? = null, dateModified: String? = null, dateDeleted: String? = null) {
+        val dbWrite = this.writableDatabase
+        val values = ContentValues().apply {
+            title?.let { put(FolderEntry.COLUMN_NAME_TITLE, title) }
+            dateModified?.let {
+                put(
+                    FolderEntry.COLUMN_NAME_DATE_MODIFIED,
+                    dateModified
+                )
+            }
+            dateDeleted?.let { put(FolderEntry.COLUMN_NAME_DATE_DELETED, dateDeleted) }
+        }
+        dbWrite.update(FolderEntry.TABLE_NAME, values, BaseColumns._ID + " = ?",
+            arrayOf(id.toString()))
+        dbWrite.close()
+    }
+
     override fun onCreate(db: SQLiteDatabase?) {
         db?.execSQL(SQL_CREATE_NOTE_ENTRIES)
         db?.execSQL(SQL_CREATE_FOLDER_ENTRIES)

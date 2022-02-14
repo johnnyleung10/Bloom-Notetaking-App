@@ -9,6 +9,8 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.notetakingapp.databinding.ActivityMainBinding
+import com.example.notetakingapp.models.FolderModel
+import com.example.notetakingapp.models.NoteModel
 import com.example.notetakingapp.models.sqlite.DatabaseHelper
 
 class MainActivity : AppCompatActivity() {
@@ -36,7 +38,13 @@ class MainActivity : AppCompatActivity() {
         navView.setupWithNavController(navController)
 
         db = DatabaseHelper(this)
-        db.getNumberOfFolders()
+        //val newNoteModel = NoteModel("My new Note", this)
+        //db.updateFolder(title = "NEWWWW FOLDER", id = 1)
+        //db.insertNote(newNoteModel)
+        //val newFolderModel = FolderModel("All Notes", this)
+        //db.insertFolder(newFolderModel)
+        //db.deleteOneFolder(1)
+        //db.close()
 
 
         //DatabaseHelper.setApplication(Application())
