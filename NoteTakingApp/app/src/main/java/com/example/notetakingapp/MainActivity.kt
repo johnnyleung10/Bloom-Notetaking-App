@@ -59,12 +59,15 @@ class MainActivity : AppCompatActivity() {
         //db.insertNote(newNote)
         //Log.d("TEST", newNote.noteID.toString())
 
-//        var manager = FileManager(this)
-//        manager.initFiles()
-//
-//        for (note in manager.noteList) {
-//            Log.d("NOTE TEST", note.title + " " +note.id)
-//        }
+        var manager = FileManager(this)
+        manager.initFiles()
+
+        for (folder in manager.folderList) {
+            Log.d("FOLDER LOG", folder.id.toString() + " " +folder.title)
+            for (note in folder.contains) {
+                Log.d("FOLDER LOG", note.id.toString() + " " +note.title)
+            }
+        }
     }
 
 }
