@@ -11,7 +11,7 @@ class FolderModel(
 
     // ID = 1 for uncategorized, ID = 2 for recently deleted
 
-    var contains = ArrayList<NoteModel>()
+    var noteList = ArrayList<NoteModel>()
 
     constructor(title: String, context: Context, id: Long, dateCreated : String,
                 dateModified : String, dateDeleted : String) : this(title, context) {

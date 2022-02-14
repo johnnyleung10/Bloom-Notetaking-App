@@ -25,11 +25,14 @@ abstract class FileModel(
     fun getLastModifiedDate() : String {return dateToISO(lastModifiedDate)}
     fun getDeletionDate() : String {return dateToISO(deletionDate)}
 
+    fun updateModifiedDate() {
+        lastModifiedDate = LocalDateTime.now()
+    }
+
     /**
      * Delete note, sends to recently deleted folder
      */
-    fun deleteFile() {
-        lastModifiedDate = LocalDateTime.now()
+    fun updateDeletionDate() {
         deletionDate = lastModifiedDate
     }
 
