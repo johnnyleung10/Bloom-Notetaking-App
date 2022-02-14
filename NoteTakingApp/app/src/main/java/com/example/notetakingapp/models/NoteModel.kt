@@ -1,37 +1,53 @@
 package com.example.notetakingapp.models
 
+import android.content.Context
 import android.text.SpannableStringBuilder
+import androidx.core.text.toHtml
+import com.example.notetakingapp.models.sqlite.DatabaseHelper
 import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
-abstract class NoteModel(
-    var title : String,
-    var contents : SpannableStringBuilder,
-    var currFolder : String
-) {
-    var folderID : Int = 0
-    var noteID : Int = 0
+class NoteModel(
+    title : String,
+    context: Context
+) : FileModel(title, context) {
 
-    val dateCreated : LocalDateTime = LocalDateTime.now()
-    var lastModifiedDate : LocalDateTime = dateCreated
-    var deletionDate : LocalDateTime? = null
+    var contents : SpannableStringBuilder = SpannableStringBuilder("")
+    var currFolder : String = ""
+    var folderID : Long = 1
+
+    constructor(title: String, context: Context, id: Long, folderID : Long, contents : String, dateCreated : String,
+                dateModified : String, dateDeleted : String) : this(title, context) {
+        this.id = id
+        this.folderID = folderID
+
+        // Handle dates
+        val isoFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS")
+        val dateCreatedLCT = LocalDateTime.parse(dateCreated, isoFormat)
+        this.dateCreated = dateCreatedLCT
+        val dateModifiedLCT = LocalDateTime.parse(dateModified, isoFormat)
+        this.lastModifiedDate = dateModifiedLCT
+        if (dateDeleted != "") {
+            val dateDeletedLCT = LocalDateTime.parse(dateDeleted, isoFormat)
+            this.deletionDate = dateDeletedLCT
+        }
+
+        this.contents = SpannableStringBuilder(contents)
+    }
 
     /**
-     * Delete note, sends to recently deleted folder
+     * Converts spannableString to HTML for storage
      */
-    fun deleteNote() {
-        lastModifiedDate = LocalDateTime.now()
-        deletionDate = lastModifiedDate
-        currFolder = "Recently Deleted"
-        folderID = -1
+    fun spannableStringToText(): String {
+        return contents.toHtml()
     }
 
     /**
      * Restore note from recently deleted
      */
     fun restoreNote() {
-        lastModifiedDate = LocalDateTime.now()
-        deletionDate = null
-        currFolder = "Recently Deleted"  // Bring back to original folder
-        folderID = -1                    // Bring back to original folder
+        TODO("Implement later")
+//        currFolder = "Recently Deleted"  // Bring back to original folder
+//        deleteFile()
     }
 }
