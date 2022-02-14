@@ -12,6 +12,7 @@ import com.example.notetakingapp.databinding.ActivityMainBinding
 import com.example.notetakingapp.models.FolderModel
 import com.example.notetakingapp.models.NoteModel
 import com.example.notetakingapp.models.sqlite.DatabaseHelper
+import com.example.notetakingapp.utilities.FileManager
 
 class MainActivity : AppCompatActivity() {
 
@@ -53,7 +54,12 @@ class MainActivity : AppCompatActivity() {
         //db.insertNote(newNote)
         //Log.d("TEST", newNote.noteID.toString())
 
+        var manager = FileManager(this)
+        manager.initFiles()
 
+        for (folders in manager.folderList) {
+            Log.d("FOLDERTEST", folders.title + " " +folders.id)
+        }
     }
 
 }

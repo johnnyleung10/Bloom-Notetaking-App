@@ -14,7 +14,7 @@ class NoteModel(
 
     var contents : SpannableStringBuilder = SpannableStringBuilder("")
     var currFolder : String = ""
-    var folderID : Long = -1
+    var folderID : Long = 1
 
     constructor(title: String, context: Context, id: Long, folderID : Long, contents : String, dateCreated : String,
                 dateModified : String, dateDeleted : String) : this(title, context) {
@@ -45,6 +45,7 @@ class NoteModel(
      */
     fun deleteNote() {
         currFolder = "Recently Deleted"
+        folderID = 2
         deleteFile()
     }
 
@@ -52,7 +53,8 @@ class NoteModel(
      * Restore note from recently deleted
      */
     fun restoreNote() {
-        currFolder = "Recently Deleted"  // Bring back to original folder
-        deleteFile()
+        TODO("Implement later")
+//        currFolder = "Recently Deleted"  // Bring back to original folder
+//        deleteFile()
     }
 }

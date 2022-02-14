@@ -82,7 +82,7 @@ class DatabaseHelper(private val context: Context) :
 
     fun getAllFolders(): List<FolderModel> {
         val retList : ArrayList<FolderModel> = arrayListOf()
-        val queryString = "SELECT * FROM" + FolderEntry.TABLE_NAME
+        val queryString = "SELECT * FROM" + FolderEntry.TABLE_NAME +" ORDER BY " +BaseColumns._ID
         val dbRead = this.readableDatabase
 
         val cursor = dbRead.rawQuery(queryString, null)
@@ -106,7 +106,7 @@ class DatabaseHelper(private val context: Context) :
 
     fun getAllNotes(): List<NoteModel> {
         val retList : ArrayList<NoteModel> = arrayListOf()
-        val queryString = "SELECT * FROM" + NoteEntry.TABLE_NAME
+        val queryString = "SELECT * FROM" + NoteEntry.TABLE_NAME +" ORDER BY " +BaseColumns._ID
         val dbRead = this.readableDatabase
 
         val cursor = dbRead.rawQuery(queryString, null)
