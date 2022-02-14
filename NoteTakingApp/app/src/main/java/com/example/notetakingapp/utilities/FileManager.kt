@@ -11,6 +11,7 @@ class FileManager(val context: Context) {
     val folderList = ArrayList<FolderModel>()
 
     fun initFiles() {
+        folderList.add(FolderModel("SpareFolder", context))
         initFolders()
         initNotes()
     }
@@ -34,8 +35,8 @@ class FileManager(val context: Context) {
     private fun initNotes() {
         for (note in databaseHelper.getAllNotes()) {
             val i = note.folderID
-            note.currFolder = folderList[i.toInt() - 1].title
-            folderList[i.toInt() - 1].contains.add(note)
+            note.currFolder = folderList[i.toInt()].title
+            folderList[i.toInt()].contains.add(note)
         }
     }
 
@@ -55,7 +56,7 @@ class FileManager(val context: Context) {
     fun createNewNote(name : String) : NoteModel {
         val newNote = NoteModel(name, context)
         databaseHelper.insertNote(newNote)
-        folderList[0].contains.add(newNote)
+        folderList[1].contains.add(newNote)
 
         return newNote
     }
@@ -66,17 +67,17 @@ class FileManager(val context: Context) {
     fun createNewNote(name : String, folderID : Long) : NoteModel {
         val newNote = NoteModel(name, context)
         newNote.folderID = folderID
-        newNote.currFolder = folderList[folderID.toInt() - 1].title
-        folderList[folderID.toInt() - 1].contains.add(newNote)
+        newNote.currFolder = folderList[folderID.toInt()].title
+        folderList[folderID.toInt()].contains.add(newNote)
 
         databaseHelper.insertNote(newNote)
         return newNote
     }
 
     fun moveNote(note : NoteModel, folderID : Long) {
-        val currFolderIndex = note.folderID.toInt() - 1
+        val currFolderIndex = note.folderID.toInt()
         folderList[currFolderIndex].contains.remove(note)
-        folderList[folderID.toInt() - 1].contains.add(note)
+        folderList[folderID.toInt()].contains.add(note)
         databaseHelper.updateNote(note.id, folderId = folderID.toInt())
     }
 }
