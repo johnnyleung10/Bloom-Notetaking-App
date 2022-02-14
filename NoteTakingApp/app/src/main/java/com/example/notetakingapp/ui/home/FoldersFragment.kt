@@ -1,16 +1,20 @@
 package com.example.notetakingapp.ui.home
 
 import FoldersRecyclerViewAdapter
+import android.R
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.NavHostFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.notetakingapp.databinding.FragmentFoldersBinding
 import com.example.notetakingapp.models.FolderCellViewModel
+
 
 class FoldersFragment : Fragment() {
 
@@ -31,6 +35,12 @@ class FoldersFragment : Fragment() {
 
         _binding = FragmentFoldersBinding.inflate(inflater, container, false)
         val root: View = binding.root
+
+        val createFolderButton = binding.createFolder
+
+        createFolderButton.setOnClickListener { _ ->
+            createNewFolder()
+        }
 
         val folderRecyclerView = binding.folderContainer
 
@@ -60,5 +70,10 @@ class FoldersFragment : Fragment() {
         val action = FoldersFragmentDirections.actionNavigationFoldersToNavigationNotes("Folder #${position+1}")
         NavHostFragment.findNavController(this).navigate(action)
         System.out.println("clicked on folder $position")
+    }
+
+    private fun createNewFolder() {
+        val dialogFragment = CreateFolderDialogFragment()
+        dialogFragment.show(childFragmentManager, "create_folder")
     }
 }
