@@ -39,12 +39,10 @@ class MainActivity : AppCompatActivity() {
         navView.setupWithNavController(navController)
 
         db = DatabaseHelper(this)
-        val noteOne = NoteModel("Note One", this)
-        val noteTwo = NoteModel("Note Two", this)
-        val noteThree = NoteModel("Note Three", this)
-        db.insertNote(noteOne)
-        db.insertNote(noteTwo)
-        db.insertNote(noteThree)
+//        val noteTwo = NoteModel("Note Two", this)
+//        val noteThree = NoteModel("Note Three", this)
+//        db.insertNote(noteTwo)
+//        db.insertNote(noteThree)
         //db.updateFolder(title = "NEWWWW FOLDER", id = 1)
         //db.insertNote(newNoteModel)
         //val newFolderModel = FolderModel("All Notes", this)
@@ -59,8 +57,18 @@ class MainActivity : AppCompatActivity() {
         //db.insertNote(newNote)
         //Log.d("TEST", newNote.noteID.toString())
 
-        var manager = FileManager(this)
+        val manager = FileManager(this)
+
         manager.initFiles()
+        //val moveNote = manager.createNewNote("move Note")
+
+            for (folder in manager.folderList) {
+            Log.d("FOLDER LOG", folder.id.toString() + " " +folder.title)
+            for (note in folder.contains) {
+                Log.d("FOLDER LOG", note.id.toString() + " " +note.title)
+            }
+        }
+        //manager.moveNote(moveNote, 2)
 
         for (folder in manager.folderList) {
             Log.d("FOLDER LOG", folder.id.toString() + " " +folder.title)
