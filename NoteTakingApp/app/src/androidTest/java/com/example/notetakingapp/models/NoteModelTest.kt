@@ -1,7 +1,6 @@
 package com.example.notetakingapp.models
 
 import android.text.SpannableStringBuilder
-import androidx.core.text.toHtml
 import androidx.test.platform.app.InstrumentationRegistry
 import org.junit.Assert
 import org.junit.Test
@@ -64,7 +63,7 @@ internal class NoteModelTest {
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
 
         val newNote = NoteModel("New Note", appContext)
-        newNote.deleteFile()
+        newNote.updateDeletionDate()
         val timeNow = LocalDateTime.now()
         val dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
         Assert.assertEquals(timeNow.format(dateFormat), newNote.getDeletionDate().substring(0, 19))
