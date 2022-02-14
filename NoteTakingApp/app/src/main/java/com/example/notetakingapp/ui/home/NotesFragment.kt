@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.notetakingapp.R
 import com.example.notetakingapp.databinding.FragmentNotesBinding
-import com.example.notetakingapp.models.FolderCellViewModel
 import com.example.notetakingapp.models.NoteCellViewModel
 
 class NotesFragment : Fragment() {
@@ -43,7 +42,12 @@ class NotesFragment : Fragment() {
         _binding = FragmentNotesBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        val notesRecyclerView = root.findViewById<RecyclerView>(R.id.noteContainer)
+        // Set the folder title
+        val homeNotesTitle = binding.folderTitle
+        // TODO: get the folder name here
+        homeNotesTitle.text = folderId
+
+        val notesRecyclerView = binding.noteContainer
 
         notesRecyclerView.layoutManager = LinearLayoutManager(activity)
 

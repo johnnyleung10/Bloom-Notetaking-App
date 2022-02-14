@@ -10,7 +10,7 @@ class NotesRecyclerViewAdapter(private val noteList: List<NoteCellViewModel>, pr
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.folder_cell, parent, false)
+            .inflate(R.layout.note_cell, parent, false)
 
         return ViewHolder(view, onNoteClicked)
     }

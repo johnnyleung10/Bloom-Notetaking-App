@@ -57,7 +57,7 @@ class FoldersFragment : Fragment() {
 
     private fun onFolderClick(position: Int) {
         // TODO: navigate to note explorer page for note at position
-        val action = FoldersFragmentDirections.actionNavigationFoldersToNavigationNotes("Note ID: $position")
+        val action = FoldersFragmentDirections.actionNavigationFoldersToNavigationNotes("Folder #${position+1}")
         NavHostFragment.findNavController(this).navigate(action)
         System.out.println("clicked on folder $position")
     }
