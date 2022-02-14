@@ -187,6 +187,7 @@ class DatabaseHelper(private val context: Context) :
         val dbWrite = this.writableDatabase
         val values = ContentValues().apply {
             title?.let { put(FolderEntry.COLUMN_NAME_TITLE, title) }
+            title?.let { put(FolderEntry.COLUMN_NAME_TITLE, title) }
             dateModified?.let {
                 put(
                     FolderEntry.COLUMN_NAME_DATE_MODIFIED,
@@ -214,7 +215,6 @@ class DatabaseHelper(private val context: Context) :
     companion object DatabaseContract {
         const val DATABASE_NAME = "app.db"
         const val DATABASE_VERSION = 3
-        private lateinit var application: Application
 
         object NoteEntry : BaseColumns {
             const val TABLE_NAME = "note_table"
