@@ -2,11 +2,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.example.notetakingapp.models.FolderCellViewModel
 import com.example.notetakingapp.R
 
 class FoldersRecyclerViewAdapter(private val folderCellList: List<FolderCellViewModel>, private val onFolderClicked: (position: Int) -> Unit) : RecyclerView.Adapter<FoldersRecyclerViewAdapter.ViewHolder>() {
+
+    private var select: Boolean = false
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -19,11 +22,18 @@ class FoldersRecyclerViewAdapter(private val folderCellList: List<FolderCellView
 
         val folderCellViewModel = folderCellList[position]
         holder.folderTitle.text = folderCellViewModel.title
+        holder.checkbox.isVisible = select
+        holder.folderCount.isVisible = !select
 
     }
 
     override fun getItemCount(): Int {
         return folderCellList.size
+    }
+
+    fun editMode(){
+        select = !select
+        this.notifyDataSetChanged()
     }
 
     class ViewHolder(
@@ -32,6 +42,8 @@ class FoldersRecyclerViewAdapter(private val folderCellList: List<FolderCellView
     ) : RecyclerView.ViewHolder(ItemView), View.OnClickListener {
 
         val folderTitle: TextView = itemView.findViewById(R.id.folderTitle)
+        val folderCount: TextView = itemView.findViewById(R.id.folderCount)
+        val checkbox: TextView = itemView.findViewById(R.id.checkbox)
 
         init {
             itemView.setOnClickListener(this)

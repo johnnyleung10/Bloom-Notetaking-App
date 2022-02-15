@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.NavHostFragment
@@ -14,7 +15,7 @@ import com.example.notetakingapp.models.FolderCellViewModel
 
 class FoldersFragment : Fragment() {
 
-    private lateinit var foldersViewModel: com.example.notetakingapp.ui.home.FoldersViewModel
+    private lateinit var foldersViewModel: FoldersViewModel
     private var _binding: FragmentFoldersBinding? = null
 
     // This property is only valid between onCreateView and
@@ -25,7 +26,7 @@ class FoldersFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         foldersViewModel =
             ViewModelProvider(this).get(FoldersViewModel::class.java)
 
@@ -33,19 +34,21 @@ class FoldersFragment : Fragment() {
         val root: View = binding.root
 
         val folderRecyclerView = binding.folderContainer
-
         folderRecyclerView.layoutManager = LinearLayoutManager(activity)
 
         val data = ArrayList<FolderCellViewModel>()
-
         // TODO: get data from DB here
         for (i in 1..20) {
-            data.add(FolderCellViewModel( "Folder " + i))
+            data.add(FolderCellViewModel("Folder " + i))
         }
 
         val adapter = FoldersRecyclerViewAdapter(data, ::onFolderClick)
-
         folderRecyclerView.adapter = adapter
+
+        val editButton: ImageButton = binding.editFolder
+        editButton.setOnClickListener{
+            adapter.editMode()
+        }
 
         return root
     }

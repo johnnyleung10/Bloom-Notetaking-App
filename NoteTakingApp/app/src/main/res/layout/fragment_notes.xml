@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.home.NotesFragment">
+    tools:context=".ui.home.NotesFragment"
+    >
 
     <TextView
         android:id="@+id/folderTitle"
@@ -13,12 +14,54 @@
         android:text="Notes"
         android:textSize="45sp"
         android:textStyle="normal"
-        android:gravity="center_vertical|left"
-        android:layout_marginLeft="10dp"
+        android:gravity="center_vertical|start"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="30dp"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/noteContainer"
+        app:layout_constraintBottom_toTopOf="@+id/homeNotesCount"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        />
+
+    <TextView
+        android:id="@+id/homeNotesCount"
+        android:layout_width="200dp"
+        android:layout_height="25dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginBottom="30dp"
+        android:gravity="center_vertical|start"
+        android:text="(00)"
+        android:textSize="18sp"
+        android:textStyle="normal"
+        app:layout_constraintBottom_toTopOf="@+id/noteContainer"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/folderTitle"
+        />
+
+    <ImageButton
+        android:id="@+id/editNotes"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_marginEnd="10dp"
+        android:drawable="@drawable/edit"
+        android:clickable="true"
+        android:background="#ffffff"
+        android:contentDescription="Edit Notes"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/folderTitle"
+        />
+
+    <ImageButton
+        android:id="@+id/newNote"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:background="#ffffff"
+        android:clickable="true"
+        android:drawable="@drawable/create"
+        android:layout_marginEnd="20dp"
+        android:contentDescription="New Note"
+        app:layout_constraintTop_toBottomOf="@+id/folderTitle"
+        app:layout_constraintEnd_toStartOf="@+id/editNotes"
         />
 
     <androidx.recyclerview.widget.RecyclerView
@@ -32,5 +75,5 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/folderTitle" />
+        app:layout_constraintTop_toBottomOf="@+id/homeNotesCount" />
 </androidx.constraintlayout.widget.ConstraintLayout>

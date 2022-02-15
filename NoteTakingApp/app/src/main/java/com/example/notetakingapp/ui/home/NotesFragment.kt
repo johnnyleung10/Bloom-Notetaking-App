@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -15,7 +16,7 @@ import com.example.notetakingapp.models.NoteCellViewModel
 
 class NotesFragment : Fragment() {
 
-    private lateinit var notesViewModel: com.example.notetakingapp.ui.home.NotesViewModel
+    private lateinit var notesViewModel: NotesViewModel
     private var _binding: FragmentNotesBinding? = null
     private lateinit var folderId: String
 
@@ -35,7 +36,7 @@ class NotesFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         notesViewModel =
             ViewModelProvider(this).get(NotesViewModel::class.java)
 
@@ -44,7 +45,7 @@ class NotesFragment : Fragment() {
 
         val folderTitle: TextView = binding.folderTitle
         // Observer pattern
-        notesViewModel.folderTitle.observe(viewLifecycleOwner, Observer {
+        notesViewModel.folderTitle.observe(viewLifecycleOwner, {
             folderTitle.text = it
         })
 
@@ -52,19 +53,21 @@ class NotesFragment : Fragment() {
         notesViewModel.setFolderTitle(folderId)
 
         val notesRecyclerView = binding.noteContainer
-
         notesRecyclerView.layoutManager = LinearLayoutManager(activity)
 
         val data = ArrayList<NoteCellViewModel>()
-
         // TODO: get data from DB here
         for (i in 1..20) {
             data.add(NoteCellViewModel( "Note " + i))
         }
 
         val adapter = NotesRecyclerViewAdapter(data, ::onNoteClick)
-
         notesRecyclerView.adapter = adapter
+
+        val editButton: ImageButton = binding.editNotes
+        editButton.setOnClickListener{
+            adapter.editMode()
+        }
 
         return root
     }
