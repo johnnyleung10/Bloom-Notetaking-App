@@ -201,6 +201,13 @@ class DatabaseHelper(private val context: Context) :
         dbWrite.close()
     }
 
+    fun clearDatabase() {
+        val dbWrite = this.writableDatabase
+        dbWrite.execSQL(SQL_DELETE_NOTE_ENTRIES)
+        dbWrite.execSQL(SQL_DELETE_FOLDER_ENTRIES)
+        dbWrite.close()
+    }
+
     override fun onCreate(db: SQLiteDatabase?) {
         db?.execSQL(SQL_CREATE_NOTE_ENTRIES)
         db?.execSQL(SQL_CREATE_FOLDER_ENTRIES)
