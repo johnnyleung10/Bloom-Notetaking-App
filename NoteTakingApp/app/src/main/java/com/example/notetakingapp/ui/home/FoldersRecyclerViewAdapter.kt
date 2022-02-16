@@ -6,8 +6,9 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.example.notetakingapp.models.FolderCellViewModel
 import com.example.notetakingapp.R
+import com.example.notetakingapp.models.NoteCellViewModel
 
-class FoldersRecyclerViewAdapter(private val folderCellList: List<FolderCellViewModel>, private val onFolderClicked: (position: Int) -> Unit) : RecyclerView.Adapter<FoldersRecyclerViewAdapter.ViewHolder>() {
+class FoldersRecyclerViewAdapter(private var folderCellList: List<FolderCellViewModel>, private val onFolderClicked: (position: Int) -> Unit) : RecyclerView.Adapter<FoldersRecyclerViewAdapter.ViewHolder>() {
 
     private var select: Boolean = false
 
@@ -34,6 +35,10 @@ class FoldersRecyclerViewAdapter(private val folderCellList: List<FolderCellView
     fun editMode(){
         select = !select
         this.notifyDataSetChanged()
+    }
+
+    fun setFolders(folderCells: List<FolderCellViewModel>){
+        folderCellList = folderCells
     }
 
     class ViewHolder(

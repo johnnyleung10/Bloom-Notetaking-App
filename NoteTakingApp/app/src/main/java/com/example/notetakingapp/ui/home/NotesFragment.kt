@@ -23,8 +23,8 @@ class NotesFragment : Fragment() {
     private var _binding: FragmentNotesBinding? = null
     private var fm = FileManager.instance
     private var folderId: Long = 0
+    private lateinit var folder: FolderModel
     private lateinit var folders: HashMap<Long, FolderModel>
-//    private var noteCellViewModels = ArrayList<NoteCellViewModel>()
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -43,6 +43,10 @@ class NotesFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+
+        folders = fm!!.folderList
+        folder = folders[folderId]!!
+
         notesViewModel =
             ViewModelProvider(this).get(NotesViewModel::class.java)
 
@@ -55,26 +59,21 @@ class NotesFragment : Fragment() {
             folderTitle.text = it
         })
 
-        // TODO: get the folder name here
-        // Create ViewModels for folder data
-        folders = fm!!.folderList
-//        for((folderId, folder) in folders){
-//            noteCellViewModels.add(NoteCellViewModel(folderId, folder.title))
-//        }
+        // Add notes to ViewModel for note data
+        notesViewModel.setNotes(folder.noteList)
 
         notesViewModel.setFolderTitle(folders[folderId]!!.title)
 
         val notesRecyclerView = binding.noteContainer
         notesRecyclerView.layoutManager = LinearLayoutManager(activity)
 
-        val data = ArrayList<NoteCellViewModel>()
-        // TODO: get data from DB here
-        for (i in 1..20) {
-            data.add(NoteCellViewModel( "Note " + i))
-        }
-
-        val adapter = NotesRecyclerViewAdapter(data, ::onNoteClick)
+        val adapter = NotesRecyclerViewAdapter(notesViewModel.noteCells.value!!.toList(), ::onNoteClick)
         notesRecyclerView.adapter = adapter
+
+        // Observer pattern
+        notesViewModel.noteCells.observe(viewLifecycleOwner, {
+            adapter.setNotes(it.toList())
+        })
 
         val editButton: ImageButton = binding.editNotes
         editButton.setOnClickListener{

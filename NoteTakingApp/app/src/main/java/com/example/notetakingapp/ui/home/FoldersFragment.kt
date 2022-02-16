@@ -35,8 +35,12 @@ class FoldersFragment : Fragment(),
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        folders = fm!!.folderList
+
         foldersViewModel =
             ViewModelProvider(this).get(FoldersViewModel::class.java)
+
+        foldersViewModel.setFolders(ArrayList(folders.values))
 
         _binding = FragmentFoldersBinding.inflate(inflater, container, false)
         val root: View = binding.root
@@ -50,14 +54,17 @@ class FoldersFragment : Fragment(),
         val folderRecyclerView = binding.folderContainer
         folderRecyclerView.layoutManager = LinearLayoutManager(activity)
 
-        // Create ViewModels for folder data
-        folders = fm!!.folderList
         for((folderId, folder) in folders){
             folderCellViewModels.add(FolderCellViewModel(folderId, folder.title))
         }
 
         val adapter = FoldersRecyclerViewAdapter(folderCellViewModels, ::onFolderClick)
         folderRecyclerView.adapter = adapter
+
+        // Observer pattern
+        foldersViewModel.folderCells.observe(viewLifecycleOwner, {
+            adapter.setFolders(it.toList())
+        })
 
         val editButton: ImageButton = binding.editFolder
         editButton.setOnClickListener{

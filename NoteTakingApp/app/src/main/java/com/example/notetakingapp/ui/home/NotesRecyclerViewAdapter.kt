@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.notetakingapp.R
 import com.example.notetakingapp.models.NoteCellViewModel
 
-class NotesRecyclerViewAdapter(private val noteList: List<NoteCellViewModel>, private val onNoteClicked: (position: Int) -> Unit) : RecyclerView.Adapter<NotesRecyclerViewAdapter.ViewHolder>() {
+class NotesRecyclerViewAdapter(private var noteList: List<NoteCellViewModel>, private val onNoteClicked: (position: Int) -> Unit) : RecyclerView.Adapter<NotesRecyclerViewAdapter.ViewHolder>() {
 
     private var select: Boolean = false
 
@@ -33,6 +33,10 @@ class NotesRecyclerViewAdapter(private val noteList: List<NoteCellViewModel>, pr
     fun editMode(){
         select = !select
         this.notifyDataSetChanged()
+    }
+
+    fun setNotes(notes: List<NoteCellViewModel>){
+        noteList = notes
     }
 
     class ViewHolder(
