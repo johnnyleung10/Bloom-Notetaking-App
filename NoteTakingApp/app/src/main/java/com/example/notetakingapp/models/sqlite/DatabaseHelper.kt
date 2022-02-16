@@ -35,6 +35,9 @@ private const val SQL_DELETE_FOLDER_ENTRIES = "DROP TABLE IF EXISTS ${DatabaseHe
 class DatabaseHelper(private val context: Context) :
     SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 
+    /**
+     * INSERTING
+     */
     fun insertNote(note: NoteModel): Long {
         val values = ContentValues().apply {
             put(NoteEntry.COLUMN_NAME_TITLE, note.title)
@@ -65,6 +68,9 @@ class DatabaseHelper(private val context: Context) :
         return id
     }
 
+    /**
+     * GET NUMBER OF ROWS
+     */
     fun getNumberOfFolders(): Int {
         val dbRead = this.readableDatabase
         val queryString = "SELECT COUNT(*) FROM " + FolderEntry.TABLE_NAME
@@ -79,6 +85,9 @@ class DatabaseHelper(private val context: Context) :
         return retVal
     }
 
+    /**
+     * QUERYING
+     */
     fun getAllFolders(): List<FolderModel> {
         val retList : ArrayList<FolderModel> = arrayListOf()
         val queryString = "SELECT * FROM " + FolderEntry.TABLE_NAME
@@ -131,6 +140,9 @@ class DatabaseHelper(private val context: Context) :
         return retList
     }
 
+    /**
+     * DELETING
+     */
     fun deleteOneNote(id: Long) : Boolean {
         val queryString = "DELETE FROM " + NoteEntry.TABLE_NAME + " WHERE " + BaseColumns._ID + " = " + id
         val dbRead = this.readableDatabase
@@ -163,6 +175,9 @@ class DatabaseHelper(private val context: Context) :
         return false
     }
 
+    /**
+     * UPDATING
+     */
     fun updateNote(id: Long, title: String? = null, content: String? = null, dateModified: String? = null, dateDeleted: String? = null, folderId: Int? = null) {
         val dbWrite = this.writableDatabase
         val values = ContentValues().apply {
@@ -200,6 +215,9 @@ class DatabaseHelper(private val context: Context) :
         dbWrite.close()
     }
 
+    /**
+     * CLEAR DATABASE
+     */
     fun clearDatabase() {
         val dbWrite = this.writableDatabase
         dbWrite.execSQL(SQL_DELETE_NOTE_ENTRIES)
@@ -213,8 +231,7 @@ class DatabaseHelper(private val context: Context) :
     }
 
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {
-        db?.execSQL(SQL_DELETE_NOTE_ENTRIES)
-        db?.execSQL(SQL_DELETE_FOLDER_ENTRIES)
+        clearDatabase()
         onCreate(db)
     }
 
