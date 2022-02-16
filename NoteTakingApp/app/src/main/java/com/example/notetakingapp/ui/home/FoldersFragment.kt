@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.NavHostFragment
@@ -13,7 +14,8 @@ import com.example.notetakingapp.databinding.FragmentFoldersBinding
 import com.example.notetakingapp.models.FolderCellViewModel
 
 
-class FoldersFragment : Fragment() {
+class FoldersFragment : Fragment(),
+    NewFolderDialogFragment.NewFolderDialogListener{
 
     private lateinit var foldersViewModel: com.example.notetakingapp.ui.home.FoldersViewModel
     private var _binding: FragmentFoldersBinding? = null
@@ -71,6 +73,21 @@ class FoldersFragment : Fragment() {
 
     private fun createNewFolder() {
         val dialogFragment = NewFolderDialogFragment()
-        dialogFragment.show(childFragmentManager, "create_folder")
+        dialogFragment.show(requireFragmentManager().beginTransaction(), "create_folder")
+        dialogFragment.setTargetFragment(this, 1);
+    }
+
+    // NewFolderDialogListener
+    // The dialog fragment receives a reference to this Activity through the
+    // Fragment.onAttach() callback, which it uses to call the following methods
+
+    override fun onDialogPositiveClick(dialog: DialogFragment) {
+        // User touched the dialog's positive button
+        System.out.println("Got a positive click!")
+    }
+
+    override fun onDialogNegativeClick(dialog: DialogFragment) {
+        // User touched the dialog's negative button
+        System.out.println("Got a negative click!")
     }
 }
