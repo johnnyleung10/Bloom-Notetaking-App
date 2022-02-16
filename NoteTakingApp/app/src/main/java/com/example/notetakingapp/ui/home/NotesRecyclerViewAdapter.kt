@@ -2,11 +2,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.example.notetakingapp.R
 import com.example.notetakingapp.models.NoteCellViewModel
 
 class NotesRecyclerViewAdapter(private val noteList: List<NoteCellViewModel>, private val onNoteClicked: (position: Int) -> Unit) : RecyclerView.Adapter<NotesRecyclerViewAdapter.ViewHolder>() {
+
+    private var select: Boolean = false
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -19,11 +22,17 @@ class NotesRecyclerViewAdapter(private val noteList: List<NoteCellViewModel>, pr
 
         val noteCellViewModel = noteList[position]
         holder.noteTitle.text = noteCellViewModel.title
+        holder.checkbox.isVisible = select
 
     }
 
     override fun getItemCount(): Int {
         return noteList.size
+    }
+
+    fun editMode(){
+        select = !select
+        this.notifyDataSetChanged()
     }
 
     class ViewHolder(
@@ -32,6 +41,7 @@ class NotesRecyclerViewAdapter(private val noteList: List<NoteCellViewModel>, pr
     ) : RecyclerView.ViewHolder(ItemView), View.OnClickListener {
 
         val noteTitle: TextView = itemView.findViewById(R.id.noteTitle)
+        val checkbox: TextView = itemView.findViewById(R.id.checkbox)
 
         init {
             itemView.setOnClickListener(this)
