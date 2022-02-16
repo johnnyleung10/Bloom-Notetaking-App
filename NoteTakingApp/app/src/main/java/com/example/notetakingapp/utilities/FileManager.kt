@@ -1,5 +1,6 @@
 package com.example.notetakingapp.utilities
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
 import com.example.notetakingapp.models.FolderModel
@@ -10,14 +11,20 @@ private const val UNCATEGORIZED_FOLDER : Long = 1
 private const val RECENTLY_DELETED_FOLDER : Long = 2
 private const val UNIDENTIFIED_FOLDER : String = "Unidentified Folder"
 
-class FileManager(val context: Context) {
-    private val databaseHelper = DatabaseHelper(context)
+class FileManager() {
+    private lateinit var context : Context
+    private var databaseHelper : DatabaseHelper = DatabaseHelper(context)
 
     val folderList = HashMap<Long, FolderModel>()
 
     fun initFiles() {
         initFolders()
         initNotes()
+    }
+
+    fun setContext(context: Context) {
+        this.context = context
+        databaseHelper = DatabaseHelper(context)
     }
 
     /**
@@ -86,7 +93,7 @@ class FileManager(val context: Context) {
         }
 
         // Remove from database
-        databaseHelper.deleteOneFolder(id = folderID)
+        databaseHelper?.deleteOneFolder(id = folderID)
         folderList.remove(folderID)
 
         return true
@@ -95,14 +102,14 @@ class FileManager(val context: Context) {
     /**
      * Creates a new note in uncategorized folder
      */
-    fun createNewNote(name : String) : NoteModel {
+    fun createNewNote(name : String) : NoteModel? {
         return createNewNote(name, UNCATEGORIZED_FOLDER)
     }
 
     /**
      * Creates a new note inside the specified folder
      */
-    fun createNewNote(name : String, folderID : Long) : NoteModel {
+    fun createNewNote(name : String, folderID : Long) : NoteModel? {
         // Create note and assign it to folder
         val newNote = NoteModel(name, context)
         newNote.folderID = folderID
@@ -148,7 +155,19 @@ class FileManager(val context: Context) {
         note.updateModifiedDate()
 
         // Update in database
-        databaseHelper.updateNote(note.id, folderId = folderID.toInt(),
+        databaseHelper?.updateNote(note.id, folderId = folderID.toInt(),
             dateModified = note.getLastModifiedDate(), dateDeleted = note.getDeletionDate())
+    }
+
+    companion object {
+        @SuppressLint("StaticFieldLeak")
+        private var ourInstance: FileManager? = null
+        val instance: FileManager?
+            get() {
+                if (ourInstance == null) {
+                    ourInstance = FileManager()
+                }
+                return ourInstance
+            }
     }
 }

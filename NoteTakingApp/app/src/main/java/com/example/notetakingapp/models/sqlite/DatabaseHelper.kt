@@ -1,6 +1,5 @@
 package com.example.notetakingapp.models.sqlite
 
-import android.app.Application
 import android.content.ContentValues
 import android.database.sqlite.SQLiteOpenHelper
 import android.database.sqlite.SQLiteDatabase
@@ -198,6 +197,13 @@ class DatabaseHelper(private val context: Context) :
         }
         dbWrite.update(FolderEntry.TABLE_NAME, values, BaseColumns._ID + " = ?",
             arrayOf(id.toString()))
+        dbWrite.close()
+    }
+
+    fun clearDatabase() {
+        val dbWrite = this.writableDatabase
+        dbWrite.execSQL(SQL_DELETE_NOTE_ENTRIES)
+        dbWrite.execSQL(SQL_DELETE_FOLDER_ENTRIES)
         dbWrite.close()
     }
 
