@@ -1,6 +1,5 @@
 package com.example.notetakingapp.models.sqlite
 
-import android.app.Application
 import android.content.ContentValues
 import android.database.sqlite.SQLiteOpenHelper
 import android.database.sqlite.SQLiteDatabase
