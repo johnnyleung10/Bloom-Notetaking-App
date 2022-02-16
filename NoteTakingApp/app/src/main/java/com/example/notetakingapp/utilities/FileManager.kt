@@ -155,7 +155,7 @@ class FileManager() {
         note.updateModifiedDate()
 
         // Update in database
-        databaseHelper?.updateNote(note.id, folderId = folderID.toInt(),
+        databaseHelper.updateNote(note.id, folderId = folderID.toInt(),
             dateModified = note.getLastModifiedDate(), dateDeleted = note.getDeletionDate())
     }
 
