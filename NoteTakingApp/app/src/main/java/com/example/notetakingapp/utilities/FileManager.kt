@@ -13,18 +13,18 @@ private const val UNIDENTIFIED_FOLDER : String = "Unidentified Folder"
 
 class FileManager() {
     private lateinit var context : Context
-    private var databaseHelper : DatabaseHelper = DatabaseHelper(context)
+    private lateinit var databaseHelper : DatabaseHelper
 
     val folderList = HashMap<Long, FolderModel>()
+
+    fun initManager(context: Context) {
+        this.context = context
+        databaseHelper = DatabaseHelper(context)
+    }
 
     fun initFiles() {
         initFolders()
         initNotes()
-    }
-
-    fun setContext(context: Context) {
-        this.context = context
-        databaseHelper = DatabaseHelper(context)
     }
 
     /**
