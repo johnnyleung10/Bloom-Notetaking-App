@@ -59,6 +59,8 @@ class NotesFragment : Fragment() {
             folderTitle.text = it
         })
 
+        val noteCount = binding.noteCount
+
         // Add notes to ViewModel for note data
         notesViewModel.setNotes(folder.noteList)
 
@@ -72,6 +74,7 @@ class NotesFragment : Fragment() {
 
         // Observer pattern
         notesViewModel.noteCells.observe(viewLifecycleOwner, {
+            noteCount.text = "(${it.size})"
             adapter.setNotes(it.toList())
         })
 
