@@ -13,6 +13,7 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.notetakingapp.databinding.FragmentFoldersBinding
 import com.example.notetakingapp.models.FolderCellViewModel
+import com.example.notetakingapp.models.FolderModel
 import com.example.notetakingapp.utilities.FileManager
 
 class FoldersFragment : Fragment(),
@@ -21,6 +22,9 @@ class FoldersFragment : Fragment(),
     private lateinit var foldersViewModel: FoldersViewModel
     private var _binding: FragmentFoldersBinding? = null
     private var fm = FileManager.instance
+    private lateinit var folders: HashMap<Long, FolderModel>
+    private var folderCellViewModels = ArrayList<FolderCellViewModel>()
+
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -48,13 +52,12 @@ class FoldersFragment : Fragment(),
 
 
         // Create ViewModels for folder data
-        val folders = fm!!.folderList
-        val data = ArrayList<FolderCellViewModel>()
-        for((_, folder) in folders){
-            data.add(FolderCellViewModel(folder.title))
+        folders = fm!!.folderList
+        for((folderId, folder) in folders){
+            folderCellViewModels.add(FolderCellViewModel(folderId, folder.title))
         }
 
-        val adapter = FoldersRecyclerViewAdapter(data, ::onFolderClick)
+        val adapter = FoldersRecyclerViewAdapter(folderCellViewModels, ::onFolderClick)
         folderRecyclerView.adapter = adapter
 
         val editButton: ImageButton = binding.editFolder
@@ -71,8 +74,8 @@ class FoldersFragment : Fragment(),
     }
 
     private fun onFolderClick(position: Int) {
-        // TODO: navigate to note explorer page for note at position
-        val action = FoldersFragmentDirections.actionNavigationFoldersToNavigationNotes("Folder #${position+1}")
+        val folderCellViewModel = folderCellViewModels[position]
+        val action = FoldersFragmentDirections.actionNavigationFoldersToNavigationNotes(folderCellViewModel.folderId)
         NavHostFragment.findNavController(this).navigate(action)
     }
 

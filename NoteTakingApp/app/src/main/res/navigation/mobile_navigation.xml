@@ -33,6 +33,6 @@
         tools:layout="@layout/fragment_notes" >
         <argument
             android:name="folder_id"
-            app:argType="string" />
+            app:argType="long" />
     </fragment>
 </navigation>
