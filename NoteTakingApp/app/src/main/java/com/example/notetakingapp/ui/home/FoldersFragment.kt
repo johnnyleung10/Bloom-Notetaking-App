@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageButton
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -48,6 +49,49 @@ class FoldersFragment : Fragment() {
         val editButton: ImageButton = binding.editFolder
         editButton.setOnClickListener{
             adapter.editMode()
+            val visible = binding.actionButtons.visibility
+            if (visible == View.VISIBLE)
+                binding.actionButtons.visibility = View.GONE
+            else
+                binding.actionButtons.visibility = View.VISIBLE
+            adapter.checked.value = ArrayList()
+        }
+
+        val selectAll: Button = binding.selectAllFolders
+        val deselectAll: Button = binding.deselectAllFolders
+        // TODO: add onclicklistensers
+        val delete: Button = binding.deleteFolder
+        val newFolder: Button = binding.newFolder
+        val rename: Button = binding.renameFolder
+
+        adapter.checked.observe(viewLifecycleOwner, {
+            val size = adapter.checked.value?.size ?: 0
+            // TODO: check if size = folder count
+            // TODO: discuss whether to implement move folders
+            // TODO: discuss whether to keep both select and deselect
+
+            deselectAll.isEnabled = false
+            delete.isEnabled = false
+            rename.isEnabled = false
+            selectAll.isEnabled = false
+
+            if (size >= 1){
+                deselectAll.isEnabled = true
+                delete.isEnabled = true
+            }
+            if (size == 1)
+                rename.isEnabled = true
+            if (size != 20)
+                selectAll.isEnabled = true
+
+        })
+
+        selectAll.setOnClickListener{
+            adapter.selectAll(true)
+        }
+
+        deselectAll.setOnClickListener{
+            adapter.selectAll(false)
         }
 
         return root

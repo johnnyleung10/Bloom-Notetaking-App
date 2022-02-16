@@ -39,41 +39,134 @@
         />
 
     <ImageButton
-        android:id="@+id/editFolder"
-        android:layout_width="25dp"
-        android:layout_height="25dp"
-        android:layout_marginEnd="10dp"
-        android:background="#ffffff"
-        android:src="@drawable/edit"
-        android:clickable="true"
-        android:contentDescription="Edit Folders"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/homeFolders"
-        />
-
-    <ImageButton
-        android:id="@+id/newFolder"
+        android:id="@+id/newNote"
         android:layout_width="25dp"
         android:layout_height="25dp"
         android:src="@drawable/create"
         android:background="#ffffff"
-        android:clickable="true"
-        android:layout_marginEnd="20dp"
-        android:contentDescription="New Folder"
+        android:layout_marginEnd="10dp"
+        android:contentDescription="New Note"
         app:layout_constraintTop_toBottomOf="@+id/homeFolders"
         app:layout_constraintEnd_toStartOf="@+id/editFolder"
+        />
+
+    <ImageButton
+        android:id="@+id/editFolder"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_marginEnd="-5dp"
+        android:src="@drawable/edit"
+        android:background="#ffffff"
+        android:contentDescription="More Actions"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/homeFolders"
         />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/folderContainer"
         android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_height="497dp"
         android:layout_marginStart="1dp"
-        android:layout_marginTop="1dp"
+        android:layout_marginTop="30dp"
         android:layout_marginEnd="1dp"
-        android:layout_marginBottom="1dp"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/homeFoldersCount" />
+        app:layout_constraintTop_toBottomOf="@+id/homeFoldersCount"
+        />
+
+    <LinearLayout
+        android:id="@+id/actionButtons"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@+id/folderContainer"
+        >
+
+        <Button
+            android:id="@+id/deleteFolder"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:drawableTop="@drawable/delete"
+            android:drawableTint="@drawable/action_buttons"
+            android:enabled="false"
+            android:layout_weight="0.2"
+            android:paddingTop="7dp"
+            android:background="#ffffff"
+            android:text="Delete"
+            android:textSize="11sp"
+            android:textStyle="normal"
+            android:gravity="bottom|center_horizontal"
+            android:contentDescription="Delete Folder"
+            />
+
+        <Button
+            android:id="@+id/renameFolder"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:drawableTop="@drawable/rename"
+            android:drawableTint="@drawable/action_buttons"
+            android:layout_marginBottom="20dp"
+            android:enabled="false"
+            android:layout_weight="0.2"
+            android:paddingTop="7dp"
+            android:gravity="bottom|center_horizontal"
+            android:background="#ffffff"
+            android:text="Rename"
+            android:textSize="11sp"
+            android:textStyle="normal"
+            android:contentDescription="Rename Folder"
+            />
+
+        <Button
+            android:id="@+id/newFolder"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:drawableTop="@drawable/folder"
+            android:drawableTint="@drawable/action_buttons"
+            android:enabled="true"
+            android:layout_weight="0.2"
+            android:gravity="bottom|center_horizontal"
+            android:paddingTop="7dp"
+            android:background="#ffffff"
+            android:text="New"
+            android:textSize="11sp"
+            android:textStyle="normal"
+            android:contentDescription="New Folder"
+            />
+
+        <Button
+            android:id="@+id/deselectAllFolders"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:drawableTop="@drawable/deselect"
+            android:drawableTint="@drawable/action_buttons"
+            android:enabled="false"
+            android:layout_weight="0.2"
+            android:gravity="bottom|center_horizontal"
+            android:paddingTop="7dp"
+            android:background="#ffffff"
+            android:text="Deselect All"
+            android:textSize="11sp"
+            android:textStyle="normal"
+            android:contentDescription="Deselect All Folders"
+            />
+
+        <Button
+            android:id="@+id/selectAllFolders"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:drawableTop="@drawable/select"
+            android:drawableTint="@drawable/action_buttons"
+            android:enabled="true"
+            android:layout_weight="0.2"
+            android:gravity="bottom|center_horizontal"
+            android:paddingTop="7dp"
+            android:background="#ffffff"
+            android:text="Select All"
+            android:textSize="11sp"
+            android:textStyle="normal"
+            android:contentDescription="Select All Folders"
+            />
+    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
