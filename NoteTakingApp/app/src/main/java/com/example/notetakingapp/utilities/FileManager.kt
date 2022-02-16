@@ -1,5 +1,6 @@
 package com.example.notetakingapp.utilities
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
 import com.example.notetakingapp.models.FolderModel
@@ -11,8 +12,8 @@ private const val RECENTLY_DELETED_FOLDER : Long = 2
 private const val UNIDENTIFIED_FOLDER : String = "Unidentified Folder"
 
 class FileManager() {
-    var context : Context? = null
-    private var databaseHelper : DatabaseHelper? = context?.let { DatabaseHelper(it) }
+    private lateinit var context : Context
+    private var databaseHelper : DatabaseHelper = DatabaseHelper(context)
 
     val folderList = HashMap<Long, FolderModel>()
 
@@ -21,22 +22,21 @@ class FileManager() {
         initNotes()
     }
 
-    @JvmName("setContext1")
-    fun setContext(contextNew: Context) {
-        this.context = contextNew
-        databaseHelper = DatabaseHelper(contextNew)
+    fun setContext(context: Context) {
+        this.context = context
+        databaseHelper = DatabaseHelper(context)
     }
 
     /**
      * Initializes existing folders from database, or creates the default folders if none exist
      */
     private fun initFolders() {
-        if (databaseHelper?.getNumberOfFolders() == 0) {
+        if (databaseHelper.getNumberOfFolders() == 0) {
             // Create default folders
             createNewFolder("Uncategorized")
             createNewFolder("Recently Deleted")
         } else {
-            for (folder in databaseHelper?.getAllFolders()!!) {
+            for (folder in databaseHelper.getAllFolders()) {
                 folderList[folder.id] = folder
             }
         }
@@ -46,7 +46,7 @@ class FileManager() {
      * Initializes existing notes from database, and assigns it to respective folders
      */
     private fun initNotes() {
-        for (note in databaseHelper?.getAllNotes()!!) {
+        for (note in databaseHelper.getAllNotes()) {
             val i = note.folderID
             note.currFolder = folderList[i]?.title ?: UNIDENTIFIED_FOLDER
             folderList[UNCATEGORIZED_FOLDER]?.noteList?.add(note)
@@ -56,14 +56,10 @@ class FileManager() {
     /**
      * Creates a new folder and adds it to folderList
      */
-    fun createNewFolder(name : String) : FolderModel? {
-        val newFolder = context?.let { FolderModel(name, it) }
-        if (newFolder != null) {
-            databaseHelper?.insertFolder(newFolder)
-        }
-        if (newFolder != null) {
-            folderList[newFolder.id] = newFolder
-        }
+    fun createNewFolder(name : String) : FolderModel {
+        val newFolder = FolderModel(name, context)
+        databaseHelper.insertFolder(newFolder)
+        folderList[newFolder.id] = newFolder
         return newFolder
     }
 
@@ -80,7 +76,7 @@ class FileManager() {
         folderList[folderID]?.updateModifiedDate()
 
         // Update the database
-        databaseHelper?.updateFolder(folderID, title = title,
+        databaseHelper.updateFolder(folderID, title = title,
             dateModified = folderList[folderID]?.getLastModifiedDate())
     }
 
@@ -115,21 +111,13 @@ class FileManager() {
      */
     fun createNewNote(name : String, folderID : Long) : NoteModel? {
         // Create note and assign it to folder
-        val newNote = context?.let { NoteModel(name, it) }
-        if (newNote != null) {
-            newNote.folderID = folderID
-        }
-        if (newNote != null) {
-            newNote.currFolder = folderList[folderID]?.title ?: UNIDENTIFIED_FOLDER
-        }
-        if (newNote != null) {
-            folderList[folderID]?.noteList?.add(newNote)
-        }
+        val newNote = NoteModel(name, context)
+        newNote.folderID = folderID
+        newNote.currFolder = folderList[folderID]?.title ?: UNIDENTIFIED_FOLDER
+        folderList[folderID]?.noteList?.add(newNote)
 
         // Update in database
-        if (newNote != null) {
-            databaseHelper?.insertNote(newNote)
-        }
+        databaseHelper.insertNote(newNote)
         return newNote
     }
 
@@ -147,7 +135,7 @@ class FileManager() {
     fun permanentlyDeleteNote(note : NoteModel) : Boolean {
         if (note.folderID != RECENTLY_DELETED_FOLDER) return false
         folderList[RECENTLY_DELETED_FOLDER]?.noteList?.remove(note)
-        databaseHelper?.deleteOneNote(note.id)
+        databaseHelper.deleteOneNote(note.id)
 
         return true
     }
@@ -172,6 +160,7 @@ class FileManager() {
     }
 
     companion object {
+        @SuppressLint("StaticFieldLeak")
         private var ourInstance: FileManager? = null
         val instance: FileManager?
             get() {
