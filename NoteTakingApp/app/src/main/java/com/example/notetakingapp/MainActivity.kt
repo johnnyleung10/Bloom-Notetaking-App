@@ -10,6 +10,7 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.notetakingapp.databinding.ActivityMainBinding
+import com.example.notetakingapp.utilities.FileManager
 
 class MainActivity : AppCompatActivity() {
 
@@ -18,6 +19,11 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // Instantiate file manager
+        val fm = FileManager.instance
+        fm?.initManager(this)
+        fm?.initFiles()
 
         // Hide Action Bar
         window.requestFeature(Window.FEATURE_ACTION_BAR);

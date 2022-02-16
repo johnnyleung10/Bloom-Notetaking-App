@@ -13,13 +13,14 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.notetakingapp.databinding.FragmentFoldersBinding
 import com.example.notetakingapp.models.FolderCellViewModel
-
+import com.example.notetakingapp.utilities.FileManager
 
 class FoldersFragment : Fragment(),
     NewFolderDialogFragment.NewFolderDialogListener{
 
     private lateinit var foldersViewModel: FoldersViewModel
     private var _binding: FragmentFoldersBinding? = null
+    private var fm = FileManager.instance
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -45,10 +46,12 @@ class FoldersFragment : Fragment(),
         val folderRecyclerView = binding.folderContainer
         folderRecyclerView.layoutManager = LinearLayoutManager(activity)
 
+
+        // Create ViewModels for folder data
+        val folders = fm!!.folderList
         val data = ArrayList<FolderCellViewModel>()
-        // TODO: get data from DB here
-        for (i in 1..20) {
-            data.add(FolderCellViewModel("Folder " + i))
+        for((_, folder) in folders){
+            data.add(FolderCellViewModel(folder.title))
         }
 
         val adapter = FoldersRecyclerViewAdapter(data, ::onFolderClick)
@@ -71,7 +74,6 @@ class FoldersFragment : Fragment(),
         // TODO: navigate to note explorer page for note at position
         val action = FoldersFragmentDirections.actionNavigationFoldersToNavigationNotes("Folder #${position+1}")
         NavHostFragment.findNavController(this).navigate(action)
-        System.out.println("clicked on folder $position")
     }
 
     private fun createNewFolder() {
@@ -81,11 +83,8 @@ class FoldersFragment : Fragment(),
     }
 
     // NewFolderDialogListener
-    // The dialog fragment receives a reference to this Activity through the
-    // Fragment.onAttach() callback, which it uses to call the following methods
 
     override fun onCreateNewFolder(dialog: DialogFragment, newFolderName: String) {
-        // User touched the dialog's positive button
-        System.out.println("New folder name: $newFolderName")
+        fm?.createNewFolder(newFolderName)
     }
 }
