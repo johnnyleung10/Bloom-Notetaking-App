@@ -40,7 +40,7 @@ class FoldersFragment : Fragment(),
         foldersViewModel =
             ViewModelProvider(this).get(FoldersViewModel::class.java)
 
-        foldersViewModel.setFolders(ArrayList(folders.values))
+        foldersViewModel.setFolders(folders)
 
         _binding = FragmentFoldersBinding.inflate(inflater, container, false)
         val root: View = binding.root
@@ -95,5 +95,7 @@ class FoldersFragment : Fragment(),
 
     override fun onCreateNewFolder(dialog: DialogFragment, newFolderName: String) {
         fm?.createNewFolder(newFolderName)
+        // Update the view model!
+        foldersViewModel.setFolders(fm!!.folderList)
     }
 }
