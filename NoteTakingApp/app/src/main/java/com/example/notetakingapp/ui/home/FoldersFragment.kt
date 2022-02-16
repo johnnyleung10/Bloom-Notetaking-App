@@ -51,6 +51,12 @@ class FoldersFragment : Fragment(),
             createNewFolder()
         }
 
+        val folderCount = binding.foldersCount
+
+        createFolderButton.setOnClickListener { _ ->
+            createNewFolder()
+        }
+
         val folderRecyclerView = binding.folderContainer
         folderRecyclerView.layoutManager = LinearLayoutManager(activity)
 
@@ -63,6 +69,7 @@ class FoldersFragment : Fragment(),
 
         // Observer pattern
         foldersViewModel.folderCells.observe(viewLifecycleOwner, {
+            folderCount.text = "(${it.size})"
             adapter.setFolders(it.toList())
         })
 

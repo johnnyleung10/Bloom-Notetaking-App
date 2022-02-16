@@ -17,14 +17,14 @@
         android:gravity="center_vertical|start"
         android:layout_marginStart="10dp"
         android:layout_marginTop="30dp"
-        app:layout_constraintBottom_toTopOf="@+id/homeFoldersCount"
+        app:layout_constraintBottom_toTopOf="@+id/foldersCount"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         />
 
     <TextView
-        android:id="@+id/homeFoldersCount"
+        android:id="@+id/foldersCount"
         android:layout_width="200dp"
         android:layout_height="25dp"
         android:layout_marginStart="10dp"
@@ -75,5 +75,5 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/homeFoldersCount" />
+        app:layout_constraintTop_toBottomOf="@+id/foldersCount" />
 </androidx.constraintlayout.widget.ConstraintLayout>
