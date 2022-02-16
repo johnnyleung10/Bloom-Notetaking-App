@@ -2,6 +2,7 @@ package com.example.notetakingapp.utilities
 
 import androidx.test.platform.app.InstrumentationRegistry
 import com.example.notetakingapp.models.FolderModel
+import com.example.notetakingapp.models.sqlite.DatabaseHelper
 import org.junit.Assert
 import org.junit.Test
 
@@ -58,16 +59,24 @@ internal class FileManagerTest {
     @Test
     fun fileManagerTesting() {
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        val manager = FileManager()
-        manager.setContext(appContext)
-        Assert.assertEquals(HashMap<Long, FolderModel>(), manager.folderList)
-        manager.initFiles()
-        Assert.assertEquals(2, manager.folderList.size)
-        Assert.assertEquals("Uncategorized", manager.folderList[1]?.title!!)
-        Assert.assertEquals("Recently Deleted", manager.folderList[2]?.title!!)
-        manager.createNewFolder("New Folder 1")
-        Assert.assertEquals(3, manager.folderList.size)
-        Assert.assertEquals("New Folder 1", manager.folderList[3]?.title!!)
+        //val db = DatabaseHelper(appContext)
+        //db.clearDatabase()
+        val manager : FileManager? = FileManager.instance
+        manager?.initManager(appContext)
+        if (manager != null) {
+            Assert.assertEquals(HashMap<Long, FolderModel>(), manager.folderList)
+        }
+        manager?.initFiles()
+        Assert.assertEquals(2, manager?.folderList?.size)
+        if (manager != null) {
+            Assert.assertEquals("Uncategorized", manager.folderList[1]?.title!!)
+            Assert.assertEquals("Recently Deleted", manager.folderList[2]?.title!!)
+        }
+        manager?.createNewFolder("New Folder 1")
+        if (manager != null) {
+            Assert.assertEquals(3, manager.folderList.size)
+            Assert.assertEquals("New Folder 1", manager.folderList[3]?.title!!)
+        }
     }
 
     @Test
