@@ -12,13 +12,19 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.notetakingapp.databinding.FragmentNotesBinding
+import com.example.notetakingapp.models.FolderCellViewModel
+import com.example.notetakingapp.models.FolderModel
 import com.example.notetakingapp.models.NoteCellViewModel
+import com.example.notetakingapp.utilities.FileManager
 
 class NotesFragment : Fragment() {
 
     private lateinit var notesViewModel: NotesViewModel
     private var _binding: FragmentNotesBinding? = null
-    private lateinit var folderId: String
+    private var fm = FileManager.instance
+    private var folderId: Long = 0
+    private lateinit var folders: HashMap<Long, FolderModel>
+//    private var noteCellViewModels = ArrayList<NoteCellViewModel>()
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -28,7 +34,7 @@ class NotesFragment : Fragment() {
         super.onCreate(savedInstanceState)
 
         arguments?.let {
-            folderId = it.getString("folder_id").toString()
+            folderId = it.getLong("folder_id")
         }
     }
 
@@ -50,7 +56,13 @@ class NotesFragment : Fragment() {
         })
 
         // TODO: get the folder name here
-        notesViewModel.setFolderTitle(folderId)
+        // Create ViewModels for folder data
+        folders = fm!!.folderList
+//        for((folderId, folder) in folders){
+//            noteCellViewModels.add(NoteCellViewModel(folderId, folder.title))
+//        }
+
+        notesViewModel.setFolderTitle(folders[folderId]!!.title)
 
         val notesRecyclerView = binding.noteContainer
         notesRecyclerView.layoutManager = LinearLayoutManager(activity)

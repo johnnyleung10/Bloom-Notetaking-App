@@ -50,7 +50,6 @@ class FoldersFragment : Fragment(),
         val folderRecyclerView = binding.folderContainer
         folderRecyclerView.layoutManager = LinearLayoutManager(activity)
 
-
         // Create ViewModels for folder data
         folders = fm!!.folderList
         for((folderId, folder) in folders){
