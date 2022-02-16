@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.DialogFragment
 import android.widget.Button
 import android.widget.ImageButton
 import androidx.fragment.app.Fragment
@@ -13,11 +14,18 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.notetakingapp.databinding.FragmentFoldersBinding
 import com.example.notetakingapp.models.FolderCellViewModel
+import com.example.notetakingapp.models.FolderModel
+import com.example.notetakingapp.utilities.FileManager
 
-class FoldersFragment : Fragment() {
+class FoldersFragment : Fragment(),
+    NewFolderDialogFragment.NewFolderDialogListener{
 
     private lateinit var foldersViewModel: FoldersViewModel
     private var _binding: FragmentFoldersBinding? = null
+    private var fm = FileManager.instance
+    private lateinit var folders: HashMap<Long, FolderModel>
+    private var folderCellViewModels = ArrayList<FolderCellViewModel>()
+
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -28,23 +36,39 @@ class FoldersFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        folders = fm!!.folderList
+
         foldersViewModel =
             ViewModelProvider(this).get(FoldersViewModel::class.java)
+
+        foldersViewModel.setFolders(folders)
 
         _binding = FragmentFoldersBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
+//        val createFolderButton = binding.createFolder
+//
+//        createFolderButton.setOnClickListener { _ ->
+//            createNewFolder()
+//        }
+
+        val folderCount = binding.foldersCount
+
         val folderRecyclerView = binding.folderContainer
         folderRecyclerView.layoutManager = LinearLayoutManager(activity)
 
-        val data = ArrayList<FolderCellViewModel>()
-        // TODO: get data from DB here
-        for (i in 1..20) {
-            data.add(FolderCellViewModel("Folder " + i))
+        for((folderId, folder) in folders){
+            folderCellViewModels.add(FolderCellViewModel(folderId, folder.title))
         }
 
-        val adapter = FoldersRecyclerViewAdapter(data, ::onFolderClick)
+        val adapter = FoldersRecyclerViewAdapter(folderCellViewModels, ::onFolderClick)
         folderRecyclerView.adapter = adapter
+
+        // Observer pattern
+        foldersViewModel.folderCells.observe(viewLifecycleOwner, {
+            folderCount.text = "(${it.size})"
+            adapter.setFolders(it.toList())
+        })
 
         val editButton: ImageButton = binding.editFolder
         editButton.setOnClickListener{
@@ -103,9 +127,22 @@ class FoldersFragment : Fragment() {
     }
 
     private fun onFolderClick(position: Int) {
-        // TODO: navigate to note explorer page for note at position
-        val action = FoldersFragmentDirections.actionNavigationFoldersToNavigationNotes("Folder #${position+1}")
+        val folderCellViewModel = folderCellViewModels[position]
+        val action = FoldersFragmentDirections.actionNavigationFoldersToNavigationNotes(folderCellViewModel.folderId)
         NavHostFragment.findNavController(this).navigate(action)
-        System.out.println("clicked on folder $position")
+    }
+
+    private fun createNewFolder() {
+        val dialogFragment = NewFolderDialogFragment()
+        dialogFragment.show(requireFragmentManager().beginTransaction(), "create_folder")
+        dialogFragment.setTargetFragment(this, 1);
+    }
+
+    // NewFolderDialogListener
+
+    override fun onCreateNewFolder(dialog: DialogFragment, newFolderName: String) {
+        fm?.createNewFolder(newFolderName)
+        // Update the view model!
+        foldersViewModel.setFolders(fm!!.folderList)
     }
 }

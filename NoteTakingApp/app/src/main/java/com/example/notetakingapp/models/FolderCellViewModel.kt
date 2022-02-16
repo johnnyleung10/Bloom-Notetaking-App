@@ -1,4 +1,4 @@
 package com.example.notetakingapp.models
 
-data class FolderCellViewModel(val title: String) {
+data class FolderCellViewModel(val folderId: Long, val title: String) {
 }

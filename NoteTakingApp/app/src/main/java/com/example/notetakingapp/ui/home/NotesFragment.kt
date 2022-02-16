@@ -13,13 +13,19 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.notetakingapp.databinding.FragmentNotesBinding
+import com.example.notetakingapp.models.FolderCellViewModel
+import com.example.notetakingapp.models.FolderModel
 import com.example.notetakingapp.models.NoteCellViewModel
+import com.example.notetakingapp.utilities.FileManager
 
 class NotesFragment : Fragment() {
 
     private lateinit var notesViewModel: NotesViewModel
     private var _binding: FragmentNotesBinding? = null
-    private lateinit var folderId: String
+    private var fm = FileManager.instance
+    private var folderId: Long = 0
+    private lateinit var folder: FolderModel
+    private lateinit var folders: HashMap<Long, FolderModel>
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -29,7 +35,7 @@ class NotesFragment : Fragment() {
         super.onCreate(savedInstanceState)
 
         arguments?.let {
-            folderId = it.getString("folder_id").toString()
+            folderId = it.getLong("folder_id")
         }
     }
 
@@ -38,6 +44,10 @@ class NotesFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+
+        folders = fm!!.folderList
+        folder = folders[folderId]!!
+
         notesViewModel =
             ViewModelProvider(this).get(NotesViewModel::class.java)
 
@@ -50,20 +60,24 @@ class NotesFragment : Fragment() {
             folderTitle.text = it
         })
 
-        // TODO: get the folder name here
-        notesViewModel.setFolderTitle(folderId)
+        val noteCount = binding.noteCount
+
+        // Add notes to ViewModel for note data
+        notesViewModel.setNotes(folder.noteList)
+
+        notesViewModel.setFolderTitle(folders[folderId]!!.title)
 
         val notesRecyclerView = binding.noteContainer
         notesRecyclerView.layoutManager = LinearLayoutManager(activity)
 
-        val data = ArrayList<NoteCellViewModel>()
-        // TODO: get data from DB here
-        for (i in 1..20) {
-            data.add(NoteCellViewModel( "Note " + i))
-        }
-
-        val adapter = NotesRecyclerViewAdapter(data, ::onNoteClick)
+        val adapter = NotesRecyclerViewAdapter(notesViewModel.noteCells.value!!.toList(), ::onNoteClick)
         notesRecyclerView.adapter = adapter
+
+        // Observer pattern
+        notesViewModel.noteCells.observe(viewLifecycleOwner, {
+            noteCount.text = "(${it.size})"
+            adapter.setNotes(it.toList())
+        })
 
         val editButton: ImageButton = binding.editNotes
         editButton.setOnClickListener{

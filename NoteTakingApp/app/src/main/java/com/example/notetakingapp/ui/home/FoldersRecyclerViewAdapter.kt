@@ -9,7 +9,9 @@ import com.example.notetakingapp.R
 import android.widget.CheckBox
 import androidx.lifecycle.MutableLiveData
 
-class FoldersRecyclerViewAdapter(private val folderCellList: List<FolderCellViewModel>, private val onFolderClicked: (position: Int) -> Unit) : RecyclerView.Adapter<FoldersRecyclerViewAdapter.ViewHolder>() {
+class FoldersRecyclerViewAdapter(private var folderCellList: List<FolderCellViewModel>, private val onFolderClicked: (position: Int) -> Unit) : RecyclerView.Adapter<FoldersRecyclerViewAdapter.ViewHolder>() {
+
+    private var select: Boolean = false
 
     private var editMode: Boolean = false
     private var selectAll: Boolean = false
@@ -32,6 +34,8 @@ class FoldersRecyclerViewAdapter(private val folderCellList: List<FolderCellView
 
         val folderCellViewModel = folderCellList[position]
         holder.folderTitle.text = folderCellViewModel.title
+        holder.checkbox.isVisible = select
+        holder.folderCount.isVisible = !select
 
         if (!editMode) {
             holder.checkbox.isChecked = false
@@ -66,6 +70,10 @@ class FoldersRecyclerViewAdapter(private val folderCellList: List<FolderCellView
         checked.value = newChecked
         customCheck = false
         this.notifyDataSetChanged()
+    }
+
+    fun setFolders(folderCells: List<FolderCellViewModel>){
+        folderCellList = folderCells
     }
 
     inner class ViewHolder(
