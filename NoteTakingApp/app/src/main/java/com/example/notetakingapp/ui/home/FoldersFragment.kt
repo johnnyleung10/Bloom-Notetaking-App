@@ -81,13 +81,8 @@ class FoldersFragment : Fragment(),
     // The dialog fragment receives a reference to this Activity through the
     // Fragment.onAttach() callback, which it uses to call the following methods
 
-    override fun onDialogPositiveClick(dialog: DialogFragment) {
+    override fun onCreateNewFolder(dialog: DialogFragment, newFolderName: String) {
         // User touched the dialog's positive button
-        System.out.println("Got a positive click!")
-    }
-
-    override fun onDialogNegativeClick(dialog: DialogFragment) {
-        // User touched the dialog's negative button
-        System.out.println("Got a negative click!")
+        System.out.println("New folder name: $newFolderName")
     }
 }
