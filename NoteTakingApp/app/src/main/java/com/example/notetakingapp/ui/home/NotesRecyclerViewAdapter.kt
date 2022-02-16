@@ -11,8 +11,6 @@ import com.example.notetakingapp.models.NoteCellViewModel
 
 class NotesRecyclerViewAdapter(private var noteList: List<NoteCellViewModel>, private val onNoteClicked: (position: Int) -> Unit) : RecyclerView.Adapter<NotesRecyclerViewAdapter.ViewHolder>() {
 
-    private var select: Boolean = false
-
     private var editMode: Boolean = false
     private var selectAll: Boolean = false
     private var customCheck: Boolean = true
@@ -33,7 +31,6 @@ class NotesRecyclerViewAdapter(private var noteList: List<NoteCellViewModel>, pr
 
         val noteCellViewModel = noteList[position]
         holder.noteTitle.text = noteCellViewModel.title
-        holder.checkbox.isVisible = select
 
         if (!editMode) {
             holder.checkbox.isChecked = false

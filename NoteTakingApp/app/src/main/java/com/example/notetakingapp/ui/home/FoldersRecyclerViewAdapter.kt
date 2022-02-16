@@ -11,8 +11,6 @@ import androidx.lifecycle.MutableLiveData
 
 class FoldersRecyclerViewAdapter(private var folderCellList: List<FolderCellViewModel>, private val onFolderClicked: (position: Int) -> Unit) : RecyclerView.Adapter<FoldersRecyclerViewAdapter.ViewHolder>() {
 
-    private var select: Boolean = false
-
     private var editMode: Boolean = false
     private var selectAll: Boolean = false
     private var customCheck: Boolean = true
@@ -34,8 +32,6 @@ class FoldersRecyclerViewAdapter(private var folderCellList: List<FolderCellView
 
         val folderCellViewModel = folderCellList[position]
         holder.folderTitle.text = folderCellViewModel.title
-        holder.checkbox.isVisible = select
-        holder.folderCount.isVisible = !select
 
         if (!editMode) {
             holder.checkbox.isChecked = false
