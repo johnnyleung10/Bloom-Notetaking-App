@@ -222,6 +222,7 @@ class DatabaseHelper(private val context: Context) :
         val dbWrite = this.writableDatabase
         dbWrite.execSQL(SQL_DELETE_NOTE_ENTRIES)
         dbWrite.execSQL(SQL_DELETE_FOLDER_ENTRIES)
+        onCreate(dbWrite)
         dbWrite.close()
     }
 
