@@ -99,8 +99,6 @@ class NotesFragment : Fragment() {
 
         adapter.checked.observe(viewLifecycleOwner, {
             val size = adapter.checked.value?.size ?: 0
-            // TODO: check if size = Note count
-            // TODO: discuss whether to keep both select and deselect
 
             deselectAll.isEnabled = false
             delete.isEnabled = false
@@ -115,10 +113,20 @@ class NotesFragment : Fragment() {
             }
             if (size == 1)
                 rename.isEnabled = true
-            if (size != 20)
+            if (size != adapter.itemCount)
                 selectAll.isEnabled = true
-
         })
+
+        delete.setOnClickListener{
+            val sorted = adapter.checked.value!!
+            sorted.sortDescending()
+            for (i in sorted) {
+                fm!!.deleteNote(folder.noteList[i])
+                folder.noteList.removeAt(i)
+            }
+            adapter.selectAll(false)
+            notesViewModel.setNotes(folder.noteList)
+        }
 
         selectAll.setOnClickListener{
             adapter.selectAll(true)

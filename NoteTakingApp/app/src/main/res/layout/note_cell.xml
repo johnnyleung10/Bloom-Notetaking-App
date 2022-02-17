@@ -32,6 +32,8 @@
             android:layout_marginStart="10dp"
             />
 
+        <!-- TODO: add note preview -->
+
         <CheckBox
             android:id="@+id/checkbox"
             android:layout_width="wrap_content"
