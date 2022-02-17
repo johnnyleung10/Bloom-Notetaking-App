@@ -13,7 +13,6 @@ import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import com.example.notetakingapp.R
 import com.example.notetakingapp.databinding.FragmentEditNoteBinding
-import com.example.notetakingapp.databinding.FragmentFoldersBinding
 import com.google.android.material.textfield.TextInputEditText
 
 class EditNoteFragment : Fragment() {
