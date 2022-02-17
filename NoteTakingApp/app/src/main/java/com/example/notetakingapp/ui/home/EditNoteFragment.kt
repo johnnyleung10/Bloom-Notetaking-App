@@ -10,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import android.widget.EditText
 import com.example.notetakingapp.R
 import com.example.notetakingapp.databinding.FragmentEditNoteBinding
 import com.example.notetakingapp.databinding.FragmentFoldersBinding
@@ -44,10 +45,10 @@ class EditNoteFragment : Fragment() {
         _binding = FragmentEditNoteBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        val editNoteTitle = binding.editNoteTitle
+        val editNoteTitle = root.findViewById(R.id.editNoteTitle) as EditText
         val editNoteContents = binding.editNoteContents
 
-        Log.d("EditText", editNoteTitle.text.toString())
+        if (editNoteTitle == null) Log.d("EditText", "EditText is null")
 
         editNoteTitle.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
