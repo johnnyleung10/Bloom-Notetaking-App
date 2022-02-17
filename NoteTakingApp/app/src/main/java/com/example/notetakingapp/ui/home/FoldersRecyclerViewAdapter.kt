@@ -9,7 +9,7 @@ import com.example.notetakingapp.R
 import android.widget.CheckBox
 import androidx.lifecycle.MutableLiveData
 
-class FoldersRecyclerViewAdapter(private var folderCellList: List<FolderCellViewModel>, private val onFolderClicked: (position: Int) -> Unit) : RecyclerView.Adapter<FoldersRecyclerViewAdapter.ViewHolder>() {
+class FoldersRecyclerViewAdapter(private var folderCellList: ArrayList<FolderCellViewModel>, private val onFolderClicked: (position: Int) -> Unit) : RecyclerView.Adapter<FoldersRecyclerViewAdapter.ViewHolder>() {
 
     private var editMode: Boolean = false
     private var selectAll: Boolean = false
@@ -32,6 +32,7 @@ class FoldersRecyclerViewAdapter(private var folderCellList: List<FolderCellView
 
         val folderCellViewModel = folderCellList[position]
         holder.folderTitle.text = folderCellViewModel.title
+        holder.notesInFolderCount.text = "(${folderCellViewModel.noteCount})"
 
         if (!editMode) {
             holder.checkbox.isChecked = false
@@ -39,7 +40,7 @@ class FoldersRecyclerViewAdapter(private var folderCellList: List<FolderCellView
         }
 
         holder.checkbox.isVisible = editMode
-        holder.folderCount.isVisible = !editMode
+        holder.notesInFolderCount.isVisible = !editMode
 
         if (!customCheck && editMode)
             holder.checkbox.isChecked = selectAll
@@ -60,7 +61,7 @@ class FoldersRecyclerViewAdapter(private var folderCellList: List<FolderCellView
 
         val newChecked = ArrayList<Int>()
         if (selectAll){
-            for(i in 1..20)
+            for(i in 0 until folderCellList.size)
                 newChecked.add(i)
         }
         checked.value = newChecked
@@ -68,8 +69,10 @@ class FoldersRecyclerViewAdapter(private var folderCellList: List<FolderCellView
         this.notifyDataSetChanged()
     }
 
-    fun setFolders(folderCells: List<FolderCellViewModel>){
-        folderCellList = folderCells
+    fun setFolders(folderCells: ArrayList<FolderCellViewModel>){
+        folderCellList.clear()
+        folderCellList.addAll(folderCells)
+        this.notifyDataSetChanged()
     }
 
     inner class ViewHolder(
@@ -78,7 +81,7 @@ class FoldersRecyclerViewAdapter(private var folderCellList: List<FolderCellView
     ) : RecyclerView.ViewHolder(ItemView), View.OnClickListener {
 
         val folderTitle: TextView = itemView.findViewById(R.id.folderTitle)
-        val folderCount: TextView = itemView.findViewById(R.id.folderCount)
+        val notesInFolderCount: TextView = itemView.findViewById(R.id.notesInFolderCount)
         val checkbox: CheckBox = itemView.findViewById(R.id.checkbox)
 
         init {
