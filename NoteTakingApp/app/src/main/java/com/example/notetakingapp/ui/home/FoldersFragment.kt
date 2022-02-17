@@ -46,12 +46,6 @@ class FoldersFragment : Fragment(),
         _binding = FragmentFoldersBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-//        val createFolderButton = binding.createFolder
-//
-//        createFolderButton.setOnClickListener { _ ->
-//            createNewFolder()
-//        }
-
         val folderCount = binding.foldersCount
 
         val folderRecyclerView = binding.folderContainer
@@ -67,7 +61,7 @@ class FoldersFragment : Fragment(),
         // Observer pattern
         foldersViewModel.folderCells.observe(viewLifecycleOwner, {
             folderCount.text = "(${it.size})"
-            adapter.setFolders(it.toList())
+            adapter.setFolders(it)
         })
 
         val editButton: ImageButton = binding.editFolder
@@ -85,8 +79,12 @@ class FoldersFragment : Fragment(),
         val deselectAll: Button = binding.deselectAllFolders
         // TODO: add onclicklistensers
         val delete: Button = binding.deleteFolder
-        val newFolder: Button = binding.newFolder
+        val createFolderButton: Button = binding.createFolder
         val rename: Button = binding.renameFolder
+
+        createFolderButton.setOnClickListener { _ ->
+            createNewFolder()
+        }
 
         adapter.checked.observe(viewLifecycleOwner, {
             val size = adapter.checked.value?.size ?: 0

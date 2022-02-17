@@ -17,12 +17,12 @@ class FoldersViewModel : ViewModel() {
     val folderCells: LiveData<ArrayList<FolderCellViewModel>> = _folderCells
 
     fun setFolders(folders: HashMap<Long, FolderModel>){
-        val folderCells = ArrayList<FolderCellViewModel>()
+        val cells = ArrayList<FolderCellViewModel>()
         // Create FolderCellViewModels
         for(folder in folders.values){
-            folderCells.add(FolderCellViewModel(folder.id, folder.title))
+            cells.add(FolderCellViewModel(folder.id, folder.title))
         }
 
-        _folderCells.value = folderCells
+        _folderCells.value = cells
     }
 }

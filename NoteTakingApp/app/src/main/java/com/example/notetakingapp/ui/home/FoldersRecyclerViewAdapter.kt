@@ -9,7 +9,7 @@ import com.example.notetakingapp.R
 import android.widget.CheckBox
 import androidx.lifecycle.MutableLiveData
 
-class FoldersRecyclerViewAdapter(private var folderCellList: List<FolderCellViewModel>, private val onFolderClicked: (position: Int) -> Unit) : RecyclerView.Adapter<FoldersRecyclerViewAdapter.ViewHolder>() {
+class FoldersRecyclerViewAdapter(private var folderCellList: ArrayList<FolderCellViewModel>, private val onFolderClicked: (position: Int) -> Unit) : RecyclerView.Adapter<FoldersRecyclerViewAdapter.ViewHolder>() {
 
     private var editMode: Boolean = false
     private var selectAll: Boolean = false
@@ -68,8 +68,10 @@ class FoldersRecyclerViewAdapter(private var folderCellList: List<FolderCellView
         this.notifyDataSetChanged()
     }
 
-    fun setFolders(folderCells: List<FolderCellViewModel>){
-        folderCellList = folderCells
+    fun setFolders(folderCells: ArrayList<FolderCellViewModel>){
+        folderCellList.clear()
+        folderCellList.addAll(folderCells)
+        this.notifyDataSetChanged()
     }
 
     inner class ViewHolder(
