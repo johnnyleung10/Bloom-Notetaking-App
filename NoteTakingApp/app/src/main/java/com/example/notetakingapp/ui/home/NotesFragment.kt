@@ -67,7 +67,6 @@ class NotesFragment : Fragment() {
         notesViewModel.setFolderTitle(folders[folderId]!!.title)
         notesViewModel.folderID = folderId // Store folderID as well
 
-
         val notesRecyclerView = binding.noteContainer
         notesRecyclerView.layoutManager = LinearLayoutManager(activity)
 
