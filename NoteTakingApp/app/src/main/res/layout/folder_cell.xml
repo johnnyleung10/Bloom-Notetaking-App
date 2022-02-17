@@ -33,12 +33,11 @@
             />
 
         <TextView
-            android:id="@+id/folderCount"
+            android:id="@+id/notesInFolderCount"
             android:layout_width="55dp"
             android:layout_height="match_parent"
             android:text="(100)"
             android:textSize="19sp"
-            android:textStyle="bold"
             android:layout_gravity="end"
             android:gravity="center_vertical|start"
             android:visibility="visible"
