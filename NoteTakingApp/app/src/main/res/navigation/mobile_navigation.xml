@@ -42,5 +42,10 @@
         android:id="@+id/fragment_edit_note"
         android:name="com.example.notetakingapp.ui.home.EditNoteFragment"
         android:label="fragment_edit_note_fragment"
-        tools:layout="@layout/fragment_edit_note" />
+        tools:layout="@layout/fragment_edit_note" >
+        <argument
+            android:name="note_id"
+            app:argType="long" />
+    </fragment>
+
 </navigation>
