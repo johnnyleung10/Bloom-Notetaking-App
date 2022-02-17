@@ -3,6 +3,7 @@ package com.example.notetakingapp.ui.home
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import android.text.SpannableStringBuilder
+import android.text.Html
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -39,13 +40,22 @@ class EditNoteFragment : Fragment() {
     ): View? {
         _binding = FragmentEditNoteBinding.inflate(inflater, container, false)
         val root: View = binding.root
-        val fm = FileManager.instance
+
+        val manager = FileManager.instance
+        val note = manager?.getNote(noteID)
 
         val editNoteTitle = binding.editNoteTitle
         val editNoteContents = binding.editNoteContents
 
         val title : MutableLiveData<String> = MutableLiveData<String>()
         val contents : MutableLiveData<String> = MutableLiveData<String>()
+
+        if (note != null && note.title != "New note") {
+            editNoteTitle.setText(note.title)
+        }
+        if (note != null && note.contents.toString() != "") {
+            editNoteContents.setText(Html.fromHtml(note.contents.toString()))
+        }
 
         title.value = ""
         contents.value = ""
@@ -63,11 +73,11 @@ class EditNoteFragment : Fragment() {
 //        }
 
         contents.observe(viewLifecycleOwner, {
-            fm!!.getNote(noteID)?.contents = SpannableStringBuilder(contents.value)
+            note!!.contents = SpannableStringBuilder(contents.value)
         })
 
         title.observe(viewLifecycleOwner, {
-            fm!!.getNote(noteID)?.title = title.value.toString()
+            note!!.title = title.value.toString()
         })
 
         return root

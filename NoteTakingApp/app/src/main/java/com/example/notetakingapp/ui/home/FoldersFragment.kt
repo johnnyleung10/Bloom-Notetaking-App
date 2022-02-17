@@ -57,6 +57,11 @@ class FoldersFragment : Fragment(),
             adapter.setFolders(it)
         })
 
+        val newNoteButton: ImageButton = binding.newNote
+        newNoteButton.setOnClickListener {
+            newNote()
+        }
+
         val editButton: ImageButton = binding.editFolder
         editButton.setOnClickListener{
             adapter.editMode()
@@ -168,5 +173,13 @@ class FoldersFragment : Fragment(),
         // Update the view model!
         adapter.selectAll(false)
         foldersViewModel.setFolders(fm!!.folderList)
+    }
+
+    private fun newNote() {
+        //val folderCellViewModel = folderCellViewModels[position]
+        val manager = FileManager.instance
+        val newNote = manager?.createNewNote("New note", 1)
+        val action = FoldersFragmentDirections.actionNavigationFoldersToFragmentEditNote(newNote?.id!!)
+        NavHostFragment.findNavController(this).navigate(action)
     }
 }
