@@ -9,4 +9,6 @@
     <string name="create">Create</string>
     <string name="cancel">Cancel</string>
     <string name="newFolderInstructions">Enter a name for this folder.</string>
+    <string name="rename">Rename</string>
+    <string name="renameFolderInstructions">Enter a new name for this folder.</string>
 </resources>

@@ -16,7 +16,7 @@ class FileManager() {
     private lateinit var databaseHelper : DatabaseHelper
 
     val folderList = HashMap<Long, FolderModel>()
-    private val allNotes = HashMap<Long, NoteModel>()
+    val allNotes = HashMap<Long, NoteModel>()
 
     fun initManager(context: Context) {
         this.context = context
@@ -50,7 +50,7 @@ class FileManager() {
         for (note in databaseHelper.getAllNotes()) {
             val i = note.folderID
             note.currFolder = folderList[i]?.title ?: UNIDENTIFIED_FOLDER
-            folderList[UNCATEGORIZED_FOLDER]?.noteList?.add(note)
+            folderList[i]?.noteList?.add(note)
 
             allNotes[note.id] = note
         }
@@ -92,7 +92,7 @@ class FileManager() {
 
         // Move notes to uncategorized
         for (note in folderList[folderID]?.noteList!!) {
-            moveNote(note, UNCATEGORIZED_FOLDER)
+            moveNote(note.id, UNCATEGORIZED_FOLDER)
         }
 
         // Remove from database
@@ -119,18 +119,19 @@ class FileManager() {
         newNote.currFolder = folderList[folderID]?.title ?: UNIDENTIFIED_FOLDER
         folderList[folderID]?.noteList?.add(newNote)
 
-        allNotes[newNote.id] = newNote
         // Update in database
         databaseHelper.insertNote(newNote)
+        allNotes[newNote.id] = newNote
         return newNote
     }
 
     /**
      * Moves note to recently deleted folder
      */
-    fun deleteNote(note : NoteModel) {
-        note.updateDeletionDate()
-        moveNote(note, RECENTLY_DELETED_FOLDER) // move to recently deleted
+    fun deleteNote(noteID : Long) {
+        val note = allNotes[noteID]
+        note?.updateDeletionDate()
+        moveNote(noteID, RECENTLY_DELETED_FOLDER) // move to recently deleted
     }
 
     fun getNote(id : Long) : NoteModel? {
@@ -152,20 +153,26 @@ class FileManager() {
     /**
      * Moves a note to the specified folder
      */
-    fun moveNote(note : NoteModel, folderID : Long) {
+    fun moveNote(noteID : Long, folderID : Long) {
+        val note = allNotes[noteID]
+        note?.updateDeletionDate()
+
         // Remove note from current folder
-        val currFolderIndex = note.folderID
+        val currFolderIndex = note?.folderID
         folderList[currFolderIndex]?.noteList?.remove(note)
 
         // Add note to new folder
-        folderList[folderID]?.noteList?.add(note)
-        note.currFolder = folderList[folderID]?.title ?: UNIDENTIFIED_FOLDER
+        folderList[folderID]?.noteList?.add(note!!)
+        note?.currFolder = folderList[folderID]?.title ?: UNIDENTIFIED_FOLDER
+        note?.folderID = folderID
 
-        note.updateModifiedDate()
+        note?.updateModifiedDate()
 
         // Update in database
-        databaseHelper.updateNote(note.id, folderId = folderID.toInt(),
-            dateModified = note.getLastModifiedDate(), dateDeleted = note.getDeletionDate())
+        if (note != null) {
+            databaseHelper.updateNote(note.id, folderId = folderID.toInt(),
+                dateModified = note.getLastModifiedDate(), dateDeleted = note.getDeletionDate())
+        }
     }
 
     companion object {

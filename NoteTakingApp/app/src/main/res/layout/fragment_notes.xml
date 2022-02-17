@@ -101,24 +101,6 @@
             />
 
         <Button
-            android:id="@+id/renameNote"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:drawableTop="@drawable/rename"
-            android:drawableTint="@drawable/action_buttons"
-            android:layout_marginBottom="20dp"
-            android:enabled="false"
-            android:layout_weight="0.2"
-            android:paddingTop="7dp"
-            android:gravity="bottom|center_horizontal"
-            android:background="#ffffff"
-            android:text="Rename"
-            android:textSize="11sp"
-            android:textStyle="normal"
-            android:contentDescription="Rename Note"
-            />
-
-        <Button
             android:id="@+id/moveNote"
             android:layout_width="50dp"
             android:layout_height="50dp"
