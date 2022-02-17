@@ -10,14 +10,11 @@ import android.widget.Button
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.NavHostFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.notetakingapp.databinding.FragmentNotesBinding
-import com.example.notetakingapp.models.FolderCellViewModel
 import com.example.notetakingapp.models.FolderModel
-import com.example.notetakingapp.models.NoteCellViewModel
 import com.example.notetakingapp.utilities.FileManager
 
 class NotesFragment : Fragment() {
@@ -120,12 +117,9 @@ class NotesFragment : Fragment() {
         })
 
         delete.setOnClickListener{
-            val sorted = adapter.checked.value!!
-            sorted.sortDescending()
-            for (i in sorted) {
-                fm!!.deleteNote(folder.noteList[i].id)
-                folder.noteList.removeAt(i)
-            }
+            for (i in adapter.checked.value!!)
+                fm!!.deleteNote(adapter.noteList[i].noteId)
+            // Update the view model!
             adapter.selectAll(false)
             notesViewModel.setNotes(folder.noteList)
         }

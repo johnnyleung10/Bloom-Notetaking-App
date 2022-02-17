@@ -2,19 +2,14 @@ package com.example.notetakingapp.ui.home
 
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
-import android.util.Log
+import android.text.SpannableStringBuilder
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.EditorInfo
-import android.widget.EditText
-import com.example.notetakingapp.R
+import androidx.lifecycle.MutableLiveData
 import com.example.notetakingapp.databinding.FragmentEditNoteBinding
-import com.example.notetakingapp.databinding.FragmentFoldersBinding
-import com.google.android.material.textfield.TextInputEditText
+import com.example.notetakingapp.utilities.FileManager
 
 class EditNoteFragment : Fragment() {
 
@@ -44,28 +39,38 @@ class EditNoteFragment : Fragment() {
     ): View? {
         _binding = FragmentEditNoteBinding.inflate(inflater, container, false)
         val root: View = binding.root
+        val fm = FileManager.instance
 
-        val editNoteTitle = root.findViewById(R.id.editNoteTitle) as EditText
+        val editNoteTitle = binding.editNoteTitle
         val editNoteContents = binding.editNoteContents
 
-        if (editNoteTitle == null) Log.d("EditText", "EditText is null")
+        val title : MutableLiveData<String> = MutableLiveData<String>()
+        val contents : MutableLiveData<String> = MutableLiveData<String>()
 
-        editNoteTitle.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                TODO("Not yet implemented")
-            }
+        title.value = ""
+        contents.value = ""
 
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                Log.d("EditText", "Text title changed")
-            }
+        editNoteTitle.setOnFocusChangeListener { v, hasFocus ->
+            title.value = editNoteTitle.text.toString()
+        }
 
-            override fun afterTextChanged(s: Editable?) {
-                TODO("Not yet implemented")
-            }
+        editNoteContents.setOnFocusChangeListener { v, hasFocus ->
+            contents.value = editNoteContents.text.toString()
+        }
 
+//        editNoteContents.addTextChangedListener {
+//            System.out.println("text ")
+//        }
+
+        contents.observe(viewLifecycleOwner, {
+            fm!!.getNote(noteID)?.contents = SpannableStringBuilder(contents.value)
         })
 
-        return inflater.inflate(R.layout.fragment_edit_note, container, false)
+        title.observe(viewLifecycleOwner, {
+            fm!!.getNote(noteID)?.title = title.value.toString()
+        })
+
+        return root
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
