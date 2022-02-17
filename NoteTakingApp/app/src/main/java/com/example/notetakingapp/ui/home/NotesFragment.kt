@@ -70,13 +70,13 @@ class NotesFragment : Fragment() {
         val notesRecyclerView = binding.noteContainer
         notesRecyclerView.layoutManager = LinearLayoutManager(activity)
 
-        val adapter = NotesRecyclerViewAdapter(notesViewModel.noteCells.value!!.toList(), ::onNoteClick)
+        val adapter = NotesRecyclerViewAdapter(notesViewModel.noteCells.value!!, ::onNoteClick)
         notesRecyclerView.adapter = adapter
 
         // Observer pattern
         notesViewModel.noteCells.observe(viewLifecycleOwner, {
             noteCount.text = "(${it.size})"
-            adapter.setNotes(it.toList())
+            adapter.setNotes(it)
         })
 
         val editButton: ImageButton = binding.editNotes
