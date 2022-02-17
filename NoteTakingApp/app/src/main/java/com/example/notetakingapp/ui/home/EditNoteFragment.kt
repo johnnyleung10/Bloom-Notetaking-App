@@ -76,7 +76,7 @@ class EditNoteFragment : Fragment() {
 //
 //        })
 
-        return inflater.inflate(R.layout.fragment_edit_note, container, false)
+        return root
     }
 
     override fun onDestroyView() {
