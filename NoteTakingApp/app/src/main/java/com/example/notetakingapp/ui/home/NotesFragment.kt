@@ -155,8 +155,7 @@ class NotesFragment : Fragment() {
     }
 
     private fun onNoteClick(position: Int) {
-        // TODO: navigate to note explorer page for note at position
-        System.out.println("click on Note $position")
+        val noteId = notesViewModel.noteCells.value!![position].noteId
     }
 
     private fun newNote() {
