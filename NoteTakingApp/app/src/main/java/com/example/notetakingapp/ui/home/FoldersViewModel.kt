@@ -25,4 +25,5 @@ class FoldersViewModel : ViewModel() {
 
         _folderCells.value = cells
     }
+
 }

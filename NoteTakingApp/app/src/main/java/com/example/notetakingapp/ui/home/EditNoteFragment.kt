@@ -2,21 +2,16 @@ package com.example.notetakingapp.ui.home
 
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
-import android.text.Editable
 import android.text.Html
-import android.text.TextWatcher
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.EditorInfo
 import android.widget.EditText
-import android.widget.TextView
 import com.example.notetakingapp.R
 import com.example.notetakingapp.databinding.FragmentEditNoteBinding
 import com.example.notetakingapp.utilities.FileManager
-import com.google.android.material.textfield.TextInputEditText
 
 class EditNoteFragment : Fragment() {
 
