@@ -28,7 +28,7 @@ class NotesViewModel : ViewModel() {
         val noteCells = ArrayList<NoteCellViewModel>()
         // Create NoteCellViewModels
         for(note in notes){
-            noteCells.add(NoteCellViewModel(note.title))
+            noteCells.add(NoteCellViewModel(note.id, note.title))
         }
 
         _noteCells.value = noteCells

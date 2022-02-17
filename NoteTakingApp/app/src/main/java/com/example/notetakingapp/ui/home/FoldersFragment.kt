@@ -79,9 +79,6 @@ class FoldersFragment : Fragment(),
 
         adapter.checked.observe(viewLifecycleOwner, {
             val size = adapter.checked.value?.size ?: 0
-            // TODO: check if size = folder count
-            // TODO: discuss whether to implement move folders
-            // TODO: discuss whether to keep both select and deselect
 
             deselectAll.isEnabled = false
             delete.isEnabled = false
@@ -94,10 +91,17 @@ class FoldersFragment : Fragment(),
             }
             if (size == 1)
                 rename.isEnabled = true
-            if (size != 20)
+            if (size != adapter.itemCount)
                 selectAll.isEnabled = true
-
         })
+
+        delete.setOnClickListener{
+            for (i in adapter.checked.value!!)
+                fm!!.deleteFolder(adapter.folderCellList[i].folderId)
+            // Update the view model!
+            adapter.selectAll(false)
+            foldersViewModel.setFolders(fm!!.folderList)
+        }
 
         selectAll.setOnClickListener{
             adapter.selectAll(true)
