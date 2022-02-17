@@ -178,7 +178,7 @@ class FoldersFragment : Fragment(),
     private fun newNote() {
         //val folderCellViewModel = folderCellViewModels[position]
         val manager = FileManager.instance
-        val newNote = manager?.createNewNote("New note", 1)
+        val newNote = manager?.createNewNote("", 1)
         val action = FoldersFragmentDirections.actionNavigationFoldersToFragmentEditNote(newNote?.id!!)
         NavHostFragment.findNavController(this).navigate(action)
     }
