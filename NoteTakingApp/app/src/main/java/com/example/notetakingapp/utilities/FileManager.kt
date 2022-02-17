@@ -16,6 +16,7 @@ class FileManager() {
     private lateinit var databaseHelper : DatabaseHelper
 
     val folderList = HashMap<Long, FolderModel>()
+    private val allNotes = HashMap<Long, NoteModel>()
 
     fun initManager(context: Context) {
         this.context = context
@@ -50,6 +51,8 @@ class FileManager() {
             val i = note.folderID
             note.currFolder = folderList[i]?.title ?: UNIDENTIFIED_FOLDER
             folderList[UNCATEGORIZED_FOLDER]?.noteList?.add(note)
+
+            allNotes[note.id] = note
         }
     }
 
@@ -93,7 +96,7 @@ class FileManager() {
         }
 
         // Remove from database
-        databaseHelper?.deleteOneFolder(id = folderID)
+        databaseHelper.deleteOneFolder(id = folderID)
         folderList.remove(folderID)
 
         return true
@@ -102,20 +105,21 @@ class FileManager() {
     /**
      * Creates a new note in uncategorized folder
      */
-    fun createNewNote(name : String) : NoteModel? {
+    fun createNewNote(name : String) : NoteModel {
         return createNewNote(name, UNCATEGORIZED_FOLDER)
     }
 
     /**
      * Creates a new note inside the specified folder
      */
-    fun createNewNote(name : String, folderID : Long) : NoteModel? {
+    fun createNewNote(name : String, folderID : Long) : NoteModel {
         // Create note and assign it to folder
         val newNote = NoteModel(name, context)
         newNote.folderID = folderID
         newNote.currFolder = folderList[folderID]?.title ?: UNIDENTIFIED_FOLDER
         folderList[folderID]?.noteList?.add(newNote)
 
+        allNotes[newNote.id] = newNote
         // Update in database
         databaseHelper.insertNote(newNote)
         return newNote
@@ -129,12 +133,17 @@ class FileManager() {
         moveNote(note, RECENTLY_DELETED_FOLDER) // move to recently deleted
     }
 
+    fun getNote(id : Long) : NoteModel? {
+        return allNotes[id]
+    }
+
     /**
      * Removes a note from database
      */
     fun permanentlyDeleteNote(note : NoteModel) : Boolean {
         if (note.folderID != RECENTLY_DELETED_FOLDER) return false
         folderList[RECENTLY_DELETED_FOLDER]?.noteList?.remove(note)
+        allNotes.remove(note.id)
         databaseHelper.deleteOneNote(note.id)
 
         return true
