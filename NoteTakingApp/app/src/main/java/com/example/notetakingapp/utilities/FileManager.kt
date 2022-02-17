@@ -16,7 +16,7 @@ class FileManager() {
     private lateinit var databaseHelper : DatabaseHelper
 
     val folderList = HashMap<Long, FolderModel>()
-    private val allNotes = HashMap<Long, NoteModel>()
+    val allNotes = HashMap<Long, NoteModel>()
 
     fun initManager(context: Context) {
         this.context = context
@@ -119,9 +119,9 @@ class FileManager() {
         newNote.currFolder = folderList[folderID]?.title ?: UNIDENTIFIED_FOLDER
         folderList[folderID]?.noteList?.add(newNote)
 
-        allNotes[newNote.id] = newNote
         // Update in database
         databaseHelper.insertNote(newNote)
+        allNotes[newNote.id] = newNote
         return newNote
     }
 
@@ -162,10 +162,9 @@ class FileManager() {
         folderList[currFolderIndex]?.noteList?.remove(note)
 
         // Add note to new folder
-        if (note != null) {
-            folderList[folderID]?.noteList?.add(note)
-        }
+        folderList[folderID]?.noteList?.add(note!!)
         note?.currFolder = folderList[folderID]?.title ?: UNIDENTIFIED_FOLDER
+        note?.folderID = folderID
 
         note?.updateModifiedDate()
 

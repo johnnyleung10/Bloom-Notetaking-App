@@ -123,7 +123,7 @@ class NotesFragment : Fragment() {
             val sorted = adapter.checked.value!!
             sorted.sortDescending()
             for (i in sorted) {
-                fm!!.deleteNote(folder.noteList[i])
+                fm!!.deleteNote(folder.noteList[i].id)
                 folder.noteList.removeAt(i)
             }
             adapter.selectAll(false)
