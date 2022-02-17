@@ -50,7 +50,7 @@ class FileManager() {
         for (note in databaseHelper.getAllNotes()) {
             val i = note.folderID
             note.currFolder = folderList[i]?.title ?: UNIDENTIFIED_FOLDER
-            folderList[UNCATEGORIZED_FOLDER]?.noteList?.add(note)
+            folderList[i]?.noteList?.add(note)
 
             allNotes[note.id] = note
         }
