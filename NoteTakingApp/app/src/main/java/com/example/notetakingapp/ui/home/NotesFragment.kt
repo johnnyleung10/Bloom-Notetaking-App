@@ -64,9 +64,6 @@ class NotesFragment : Fragment() {
 
         val noteCount = binding.noteCount
 
-        // Add notes to ViewModel for note data
-        notesViewModel.setNotes(folder.noteList)
-
         notesViewModel.setFolderTitle(folders[folderId]!!.title)
         notesViewModel.folderID = folderId // Store folderID as well
 
@@ -74,7 +71,7 @@ class NotesFragment : Fragment() {
         val notesRecyclerView = binding.noteContainer
         notesRecyclerView.layoutManager = LinearLayoutManager(activity)
 
-        val adapter = NotesRecyclerViewAdapter(notesViewModel.noteCells.value!!, ::onNoteClick)
+        val adapter = NotesRecyclerViewAdapter(ArrayList(), ::onNoteClick)
         notesRecyclerView.adapter = adapter
 
         // Observer pattern
@@ -138,6 +135,9 @@ class NotesFragment : Fragment() {
             adapter.selectAll(false)
         }
 
+        // Only set notes in ViewModel once observer has been created!
+        notesViewModel.setNotes(folder.noteList)
+
         return root
     }
 
@@ -157,5 +157,8 @@ class NotesFragment : Fragment() {
         val newNote = manager?.createNewNote("New note", folderId)
         val action = NotesFragmentDirections.actionNavigationNotesToFragmentEditNote(newNote?.id!!)
         NavHostFragment.findNavController(this).navigate(action)
+
+        val folder = manager.folderList[notesViewModel.folderID]
+        notesViewModel.setNotes(folder!!.noteList)
     }
 }
