@@ -2,23 +2,23 @@ package com.example.notetakingapp.ui.home
 
 import NotesRecyclerViewAdapter
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageButton
 import android.widget.TextView
+import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.NavHostFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.notetakingapp.databinding.FragmentNotesBinding
-import com.example.notetakingapp.models.FolderCellViewModel
 import com.example.notetakingapp.models.FolderModel
-import com.example.notetakingapp.models.NoteCellViewModel
 import com.example.notetakingapp.utilities.FileManager
 
-class NotesFragment : Fragment() {
+class NotesFragment : Fragment(), MoveNoteDialogFragment.MoveNoteDialogListener {
 
     private lateinit var notesViewModel: NotesViewModel
     private var _binding: FragmentNotesBinding? = null
@@ -26,6 +26,7 @@ class NotesFragment : Fragment() {
     private var folderId: Long = 0
     private lateinit var folder: FolderModel
     private lateinit var folders: HashMap<Long, FolderModel>
+    private lateinit var adapter: NotesRecyclerViewAdapter
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -62,15 +63,13 @@ class NotesFragment : Fragment() {
 
         val noteCount = binding.noteCount
 
-        // Add notes to ViewModel for note data
-        notesViewModel.setNotes(folder.noteList)
-
         notesViewModel.setFolderTitle(folders[folderId]!!.title)
+        notesViewModel.folderID = folderId // Store folderID as well
 
         val notesRecyclerView = binding.noteContainer
         notesRecyclerView.layoutManager = LinearLayoutManager(activity)
 
-        val adapter = NotesRecyclerViewAdapter(notesViewModel.noteCells.value!!, ::onNoteClick)
+        adapter = NotesRecyclerViewAdapter(ArrayList(), ::onNoteClick)
         notesRecyclerView.adapter = adapter
 
         // Observer pattern
@@ -90,9 +89,14 @@ class NotesFragment : Fragment() {
             adapter.checked.value = ArrayList()
         }
 
+        val newNoteButton: ImageButton = binding.newNote
+        newNoteButton.setOnClickListener{
+            Log.d("NOTE", "New note clicked")
+            newNote()
+        }
+
         val selectAll: Button = binding.selectAllNotes
         val deselectAll: Button = binding.deselectAllNotes
-        // TODO: add onclicklistensers
         val delete: Button = binding.deleteNote
         val moveNote: Button = binding.moveNote
 
@@ -114,14 +118,15 @@ class NotesFragment : Fragment() {
         })
 
         delete.setOnClickListener{
-            val sorted = adapter.checked.value!!
-            sorted.sortDescending()
-            for (i in sorted) {
-                fm!!.deleteNote(folder.noteList[i])
-                folder.noteList.removeAt(i)
-            }
+            for (i in adapter.checked.value!!)
+                fm!!.deleteNote(adapter.noteList[i].noteId)
+            // Update the view model!
             adapter.selectAll(false)
             notesViewModel.setNotes(folder.noteList)
+        }
+
+        moveNote.setOnClickListener { _ ->
+            moveNote()
         }
 
         selectAll.setOnClickListener{
@@ -132,6 +137,9 @@ class NotesFragment : Fragment() {
             adapter.selectAll(false)
         }
 
+        // Only set notes in ViewModel once observer has been created!
+        notesViewModel.setNotes(folder.noteList)
+
         return root
     }
 
@@ -141,7 +149,40 @@ class NotesFragment : Fragment() {
     }
 
     private fun onNoteClick(position: Int) {
-        // TODO: navigate to note explorer page for note at position
-        System.out.println("click on Note $position")
+        val noteId = notesViewModel.noteCells.value!![position].noteId
+        val action = NotesFragmentDirections.actionNavigationNotesToFragmentEditNote(noteId)
+        NavHostFragment.findNavController(this).navigate(action)
+    }
+
+    private fun newNote() {
+        val manager = FileManager.instance
+        val newNote = manager?.createNewNote("New Note", folderId)
+        val action = NotesFragmentDirections.actionNavigationNotesToFragmentEditNote(newNote?.id!!)
+        NavHostFragment.findNavController(this).navigate(action)
+
+        val folder = manager.folderList[notesViewModel.folderID]
+        notesViewModel.setNotes(folder!!.noteList)
+    }
+
+    private fun moveNote() {
+        val dialogFragment = MoveNoteDialogFragment(fm!!.folderList.values.toTypedArray())
+        dialogFragment.show(requireFragmentManager().beginTransaction(), "move_note")
+        dialogFragment.setTargetFragment(this, 1);
+    }
+
+    // MoveNoteDialogListener
+    override fun onMoveNote(dialog: DialogFragment, newFolderId: Long) {
+        if(adapter.checked.value?.size != 1){
+            return
+        }
+        val notePosition = adapter.checked.value!![0]
+        val noteId = adapter.noteList[notePosition].noteId
+
+        fm?.moveNote(noteId, newFolderId)
+
+        // Update the view model!
+        adapter.selectAll(false)
+        val folder = fm!!.folderList[notesViewModel.folderID]
+        notesViewModel.setNotes(folder!!.noteList)
     }
 }

@@ -17,12 +17,14 @@ import com.example.notetakingapp.models.FolderModel
 import com.example.notetakingapp.utilities.FileManager
 
 class FoldersFragment : Fragment(),
-    NewFolderDialogFragment.NewFolderDialogListener{
+    NewFolderDialogFragment.NewFolderDialogListener,
+    RenameFolderDialogFragment.RenameFolderDialogListener {
 
     private lateinit var foldersViewModel: FoldersViewModel
     private var _binding: FragmentFoldersBinding? = null
     private var fm = FileManager.instance
     private lateinit var folders: HashMap<Long, FolderModel>
+    private lateinit var adapter: FoldersRecyclerViewAdapter
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -46,7 +48,7 @@ class FoldersFragment : Fragment(),
         val folderRecyclerView = binding.folderContainer
         folderRecyclerView.layoutManager = LinearLayoutManager(activity)
 
-        val adapter = FoldersRecyclerViewAdapter(ArrayList(), ::onFolderClick)
+        adapter = FoldersRecyclerViewAdapter(ArrayList(), ::onFolderClick)
         folderRecyclerView.adapter = adapter
 
         // Observer pattern
@@ -54,6 +56,11 @@ class FoldersFragment : Fragment(),
             folderCount.text = "(${it.size})"
             adapter.setFolders(it)
         })
+
+        val newNoteButton: ImageButton = binding.newNote
+        newNoteButton.setOnClickListener {
+            newNote()
+        }
 
         val editButton: ImageButton = binding.editFolder
         editButton.setOnClickListener{
@@ -68,13 +75,17 @@ class FoldersFragment : Fragment(),
 
         val selectAll: Button = binding.selectAllFolders
         val deselectAll: Button = binding.deselectAllFolders
-        // TODO: add onclicklistensers
         val delete: Button = binding.deleteFolder
         val createFolderButton: Button = binding.createFolder
-        val rename: Button = binding.renameFolder
+        val renameFolderButton: Button = binding.renameFolder
 
+        // Add onclicklisteners
         createFolderButton.setOnClickListener { _ ->
             createNewFolder()
+        }
+
+        renameFolderButton.setOnClickListener { _ ->
+            renameFolder()
         }
 
         adapter.checked.observe(viewLifecycleOwner, {
@@ -82,7 +93,7 @@ class FoldersFragment : Fragment(),
 
             deselectAll.isEnabled = false
             delete.isEnabled = false
-            rename.isEnabled = false
+            renameFolderButton.isEnabled = false
             selectAll.isEnabled = false
 
             if (size >= 1){
@@ -90,7 +101,7 @@ class FoldersFragment : Fragment(),
                 delete.isEnabled = true
             }
             if (size == 1)
-                rename.isEnabled = true
+                renameFolderButton.isEnabled = true
             if (size != adapter.itemCount)
                 selectAll.isEnabled = true
         })
@@ -134,11 +145,41 @@ class FoldersFragment : Fragment(),
         dialogFragment.setTargetFragment(this, 1);
     }
 
+    private fun renameFolder() {
+        val dialogFragment = RenameFolderDialogFragment()
+        dialogFragment.show(requireFragmentManager().beginTransaction(), "rename_folder")
+        dialogFragment.setTargetFragment(this, 1);
+    }
+
     // NewFolderDialogListener
 
     override fun onCreateNewFolder(dialog: DialogFragment, newFolderName: String) {
         fm?.createNewFolder(newFolderName)
         // Update the view model!
         foldersViewModel.setFolders(fm!!.folderList)
+    }
+
+    // RenameFolderDialogListener
+
+    override fun onRenameFolder(dialog: DialogFragment, newFolderName: String) {
+        if(adapter.checked.value?.size != 1){
+            return
+        }
+        val folderPosition = adapter.checked.value!![0]
+        val folderId = adapter.folderCellList[folderPosition].folderId
+
+        fm?.editFolder(folderId, newFolderName)
+
+        // Update the view model!
+        adapter.selectAll(false)
+        foldersViewModel.setFolders(fm!!.folderList)
+    }
+
+    private fun newNote() {
+        //val folderCellViewModel = folderCellViewModels[position]
+        val manager = FileManager.instance
+        val newNote = manager?.createNewNote("", 1)
+        val action = FoldersFragmentDirections.actionNavigationFoldersToFragmentEditNote(newNote?.id!!)
+        NavHostFragment.findNavController(this).navigate(action)
     }
 }

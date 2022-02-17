@@ -13,6 +13,9 @@
         <action
             android:id="@+id/action_navigation_folders_to_navigation_notes"
             app:destination="@id/navigation_notes" />
+        <action
+            android:id="@+id/action_navigation_folders_to_fragment_edit_note"
+            app:destination="@id/fragment_edit_note" />
     </fragment>
 
     <fragment
@@ -34,5 +37,18 @@
         <argument
             android:name="folder_id"
             app:argType="long" />
+        <action
+            android:id="@+id/action_navigation_notes_to_fragment_edit_note"
+            app:destination="@id/fragment_edit_note" />
     </fragment>
+    <fragment
+        android:id="@+id/fragment_edit_note"
+        android:name="com.example.notetakingapp.ui.home.EditNoteFragment"
+        android:label="fragment_edit_note_fragment"
+        tools:layout="@layout/fragment_edit_note" >
+        <argument
+            android:name="note_id"
+            app:argType="long" />
+    </fragment>
+
 </navigation>

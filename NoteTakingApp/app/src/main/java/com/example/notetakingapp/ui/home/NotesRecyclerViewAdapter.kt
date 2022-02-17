@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.notetakingapp.R
 import com.example.notetakingapp.models.NoteCellViewModel
 
-class NotesRecyclerViewAdapter(private var noteList: ArrayList<NoteCellViewModel>, private val onNoteClicked: (position: Int) -> Unit) : RecyclerView.Adapter<NotesRecyclerViewAdapter.ViewHolder>() {
+class NotesRecyclerViewAdapter(var noteList: ArrayList<NoteCellViewModel>, private val onNoteClicked: (position: Int) -> Unit) : RecyclerView.Adapter<NotesRecyclerViewAdapter.ViewHolder>() {
 
     private var editMode: Boolean = false
     private var selectAll: Boolean = false
@@ -58,7 +58,7 @@ class NotesRecyclerViewAdapter(private var noteList: ArrayList<NoteCellViewModel
 
         val newChecked = ArrayList<Int>()
         if (selectAll){
-            for(i in 1..20)
+            for(i in 2 until noteList.size)
                 newChecked.add(i)
         }
         checked.value = newChecked
