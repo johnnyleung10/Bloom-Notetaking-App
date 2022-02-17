@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     tools:context=".ui.home.EditNoteFragment" >
 
-    <com.google.android.material.textfield.TextInputEditText
+    <EditText
         android:id="@+id/editNoteTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -17,7 +17,7 @@
         android:textColor="@color/black"
         android:textColorHint="@color/black" />
 
-    <com.google.android.material.textfield.TextInputEditText
+    <EditText
         android:id="@+id/editNoteContents"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -28,5 +28,6 @@
         android:inputType="textMultiLine"
         android:singleLine="false"
         android:textColor="@color/black"
-        android:textColorHint="@color/black"/>
+        android:textColorHint="@color/black"
+        android:autofillHints="" />
 </RelativeLayout>
