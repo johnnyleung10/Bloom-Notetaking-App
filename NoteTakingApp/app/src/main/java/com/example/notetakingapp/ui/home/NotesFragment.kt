@@ -101,14 +101,12 @@ class NotesFragment : Fragment() {
         // TODO: add onclicklistensers
         val delete: Button = binding.deleteNote
         val moveNote: Button = binding.moveNote
-        val rename: Button = binding.renameNote
 
         adapter.checked.observe(viewLifecycleOwner, {
             val size = adapter.checked.value?.size ?: 0
 
             deselectAll.isEnabled = false
             delete.isEnabled = false
-            rename.isEnabled = false
             selectAll.isEnabled = false
             moveNote.isEnabled = false
 
@@ -117,8 +115,6 @@ class NotesFragment : Fragment() {
                 delete.isEnabled = true
                 moveNote.isEnabled = true
             }
-            if (size == 1)
-                rename.isEnabled = true
             if (size != adapter.itemCount)
                 selectAll.isEnabled = true
         })
