@@ -32,6 +32,7 @@ class FoldersRecyclerViewAdapter(private var folderCellList: ArrayList<FolderCel
 
         val folderCellViewModel = folderCellList[position]
         holder.folderTitle.text = folderCellViewModel.title
+        holder.notesInFolderCount.text = "(${folderCellViewModel.noteCount})"
 
         if (!editMode) {
             holder.checkbox.isChecked = false
@@ -39,7 +40,7 @@ class FoldersRecyclerViewAdapter(private var folderCellList: ArrayList<FolderCel
         }
 
         holder.checkbox.isVisible = editMode
-        holder.folderCount.isVisible = !editMode
+        holder.notesInFolderCount.isVisible = !editMode
 
         if (!customCheck && editMode)
             holder.checkbox.isChecked = selectAll
@@ -80,7 +81,7 @@ class FoldersRecyclerViewAdapter(private var folderCellList: ArrayList<FolderCel
     ) : RecyclerView.ViewHolder(ItemView), View.OnClickListener {
 
         val folderTitle: TextView = itemView.findViewById(R.id.folderTitle)
-        val folderCount: TextView = itemView.findViewById(R.id.folderCount)
+        val notesInFolderCount: TextView = itemView.findViewById(R.id.notesInFolderCount)
         val checkbox: CheckBox = itemView.findViewById(R.id.checkbox)
 
         init {

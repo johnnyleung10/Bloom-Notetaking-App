@@ -52,7 +52,7 @@ class FoldersFragment : Fragment(),
         folderRecyclerView.layoutManager = LinearLayoutManager(activity)
 
         for((folderId, folder) in folders){
-            folderCellViewModels.add(FolderCellViewModel(folderId, folder.title))
+            folderCellViewModels.add(FolderCellViewModel(folderId, folder.title, folder.noteList.size))
         }
 
         val adapter = FoldersRecyclerViewAdapter(folderCellViewModels, ::onFolderClick)

@@ -20,7 +20,7 @@ class FoldersViewModel : ViewModel() {
         val cells = ArrayList<FolderCellViewModel>()
         // Create FolderCellViewModels
         for(folder in folders.values){
-            cells.add(FolderCellViewModel(folder.id, folder.title))
+            cells.add(FolderCellViewModel(folder.id, folder.title, folder.noteList.size))
         }
 
         _folderCells.value = cells

@@ -33,7 +33,7 @@
             />
 
         <TextView
-            android:id="@+id/folderCount"
+            android:id="@+id/notesInFolderCount"
             android:layout_width="55dp"
             android:layout_height="match_parent"
             android:text="(100)"
