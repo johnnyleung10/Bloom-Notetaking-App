@@ -151,6 +151,8 @@ class NotesFragment : Fragment() {
 
     private fun onNoteClick(position: Int) {
         val noteId = notesViewModel.noteCells.value!![position].noteId
+        val action = NotesFragmentDirections.actionNavigationNotesToFragmentEditNote(noteId)
+        NavHostFragment.findNavController(this).navigate(action)
     }
 
     private fun newNote() {

@@ -3,6 +3,7 @@ package com.example.notetakingapp.ui.home
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import android.text.Editable
+import android.text.Html
 import android.text.TextWatcher
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -11,8 +12,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
+import android.widget.TextView
 import com.example.notetakingapp.R
 import com.example.notetakingapp.databinding.FragmentEditNoteBinding
+import com.example.notetakingapp.utilities.FileManager
 import com.google.android.material.textfield.TextInputEditText
 
 class EditNoteFragment : Fragment() {
@@ -43,28 +46,22 @@ class EditNoteFragment : Fragment() {
     ): View? {
         _binding = FragmentEditNoteBinding.inflate(inflater, container, false)
         val root: View = binding.root
+        val manager = FileManager.instance
+        val note = manager?.getNote(noteID)
 
         val editNoteTitle = root.findViewById(R.id.editNoteTitle) as EditText
         val editNoteContents = binding.editNoteContents
 
         if (editNoteTitle == null) Log.d("EditText", "EditText is null")
 
-        editNoteTitle.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                TODO("Not yet implemented")
-            }
+        if (note != null && note.title != "New note") {
+            editNoteTitle.setText(note.title)
+        }
+        if (note != null && note.contents.toString() != "") {
+            editNoteContents.setText(Html.fromHtml(note.contents.toString()))
+        }
 
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                Log.d("EditText", "Text title changed")
-            }
-
-            override fun afterTextChanged(s: Editable?) {
-                TODO("Not yet implemented")
-            }
-
-        })
-
-        return inflater.inflate(R.layout.fragment_edit_note, container, false)
+        return root
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
