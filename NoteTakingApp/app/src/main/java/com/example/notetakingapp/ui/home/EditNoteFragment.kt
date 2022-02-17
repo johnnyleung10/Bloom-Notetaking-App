@@ -37,7 +37,7 @@ class EditNoteFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentEditNoteBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
@@ -47,38 +47,40 @@ class EditNoteFragment : Fragment() {
         val editNoteTitle = binding.editNoteTitle
         val editNoteContents = binding.editNoteContents
 
-        val title : MutableLiveData<String> = MutableLiveData<String>()
-        val contents : MutableLiveData<String> = MutableLiveData<String>()
+//        val title : MutableLiveData<String> = MutableLiveData<String>()
+//        val contents : MutableLiveData<String> = MutableLiveData<String>()
 
-        if (note != null && note.title != "New note") {
+        if (note != null && note.title != "New Note") {
             editNoteTitle.setText(note.title)
         }
         if (note != null && note.contents.toString() != "") {
             editNoteContents.setText(Html.fromHtml(note.contents.toString()))
         }
 
-        title.value = ""
-        contents.value = ""
+//        title.value = note!!.title
+//        contents.value = note.contents.toString()
 
         editNoteTitle.setOnFocusChangeListener { v, hasFocus ->
-            title.value = editNoteTitle.text.toString()
+            note!!.title = editNoteTitle.text.toString()
+            if (note.title == "")
+                note.title = "New Note"
         }
 
         editNoteContents.setOnFocusChangeListener { v, hasFocus ->
-            contents.value = editNoteContents.text.toString()
+            note!!.contents = SpannableStringBuilder(editNoteContents.text)
         }
 
 //        editNoteContents.addTextChangedListener {
 //            System.out.println("text ")
 //        }
 
-        contents.observe(viewLifecycleOwner, {
-            note!!.contents = SpannableStringBuilder(contents.value)
-        })
-
-        title.observe(viewLifecycleOwner, {
-            note!!.title = title.value.toString()
-        })
+//        contents.observe(viewLifecycleOwner, {
+//            note.contents = SpannableStringBuilder(contents.value)
+//        })
+//
+//        title.observe(viewLifecycleOwner, {
+//            note.title = title.value.toString()
+//        })
 
         return root
     }
