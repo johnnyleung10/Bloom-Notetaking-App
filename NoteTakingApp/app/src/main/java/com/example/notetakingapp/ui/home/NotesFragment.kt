@@ -12,6 +12,7 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.NavHostFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.notetakingapp.databinding.FragmentNotesBinding
 import com.example.notetakingapp.models.FolderCellViewModel
@@ -67,6 +68,8 @@ class NotesFragment : Fragment() {
         notesViewModel.setNotes(folder.noteList)
 
         notesViewModel.setFolderTitle(folders[folderId]!!.title)
+        notesViewModel.folderID = folderId // Store folderID as well
+
 
         val notesRecyclerView = binding.noteContainer
         notesRecyclerView.layoutManager = LinearLayoutManager(activity)
@@ -94,6 +97,7 @@ class NotesFragment : Fragment() {
         val newNoteButton: ImageButton = binding.newNote
         newNoteButton.setOnClickListener{
             Log.d("NOTE", "New note clicked")
+            newNote()
         }
 
         val selectAll: Button = binding.selectAllNotes
@@ -145,5 +149,13 @@ class NotesFragment : Fragment() {
     private fun onNoteClick(position: Int) {
         // TODO: navigate to note explorer page for note at position
         System.out.println("click on Note $position")
+    }
+
+    private fun newNote() {
+        //val folderCellViewModel = folderCellViewModels[position]
+        val manager = FileManager.instance
+        val newNote = manager?.createNewNote("New note", folderId)
+        val action = NotesFragmentDirections.actionNavigationNotesToFragmentEditNote(newNote?.id!!)
+        NavHostFragment.findNavController(this).navigate(action)
     }
 }
