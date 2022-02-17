@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageButton
 import android.widget.TextView
+import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.NavHostFragment
@@ -17,7 +18,7 @@ import com.example.notetakingapp.databinding.FragmentNotesBinding
 import com.example.notetakingapp.models.FolderModel
 import com.example.notetakingapp.utilities.FileManager
 
-class NotesFragment : Fragment() {
+class NotesFragment : Fragment(), MoveNoteDialogFragment.MoveNoteDialogListener {
 
     private lateinit var notesViewModel: NotesViewModel
     private var _binding: FragmentNotesBinding? = null
@@ -25,6 +26,7 @@ class NotesFragment : Fragment() {
     private var folderId: Long = 0
     private lateinit var folder: FolderModel
     private lateinit var folders: HashMap<Long, FolderModel>
+    private lateinit var adapter: NotesRecyclerViewAdapter
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -67,7 +69,7 @@ class NotesFragment : Fragment() {
         val notesRecyclerView = binding.noteContainer
         notesRecyclerView.layoutManager = LinearLayoutManager(activity)
 
-        val adapter = NotesRecyclerViewAdapter(ArrayList(), ::onNoteClick)
+        adapter = NotesRecyclerViewAdapter(ArrayList(), ::onNoteClick)
         notesRecyclerView.adapter = adapter
 
         // Observer pattern
@@ -95,7 +97,6 @@ class NotesFragment : Fragment() {
 
         val selectAll: Button = binding.selectAllNotes
         val deselectAll: Button = binding.deselectAllNotes
-        // TODO: add onclicklistensers
         val delete: Button = binding.deleteNote
         val moveNote: Button = binding.moveNote
 
@@ -124,6 +125,10 @@ class NotesFragment : Fragment() {
             notesViewModel.setNotes(folder.noteList)
         }
 
+        moveNote.setOnClickListener { _ ->
+            moveNote()
+        }
+
         selectAll.setOnClickListener{
             adapter.selectAll(true)
         }
@@ -150,13 +155,34 @@ class NotesFragment : Fragment() {
     }
 
     private fun newNote() {
-        //val folderCellViewModel = folderCellViewModels[position]
         val manager = FileManager.instance
         val newNote = manager?.createNewNote("New note", folderId)
         val action = NotesFragmentDirections.actionNavigationNotesToFragmentEditNote(newNote?.id!!)
         NavHostFragment.findNavController(this).navigate(action)
 
         val folder = manager.folderList[notesViewModel.folderID]
+        notesViewModel.setNotes(folder!!.noteList)
+    }
+
+    private fun moveNote() {
+        val dialogFragment = MoveNoteDialogFragment(fm!!.folderList.values.toTypedArray())
+        dialogFragment.show(requireFragmentManager().beginTransaction(), "move_note")
+        dialogFragment.setTargetFragment(this, 1);
+    }
+
+    // MoveNoteDialogListener
+    override fun onMoveNote(dialog: DialogFragment, newFolderId: Long) {
+        if(adapter.checked.value?.size != 1){
+            return
+        }
+        val notePosition = adapter.checked.value!![0]
+        val noteId = adapter.noteList[notePosition].noteId
+
+        fm?.moveNote(noteId, newFolderId)
+
+        // Update the view model!
+        adapter.selectAll(false)
+        val folder = fm!!.folderList[notesViewModel.folderID]
         notesViewModel.setNotes(folder!!.noteList)
     }
 }

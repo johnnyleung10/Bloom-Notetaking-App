@@ -58,7 +58,7 @@ class NotesRecyclerViewAdapter(var noteList: ArrayList<NoteCellViewModel>, priva
 
         val newChecked = ArrayList<Int>()
         if (selectAll){
-            for(i in 1..20)
+            for(i in 2 until noteList.size)
                 newChecked.add(i)
         }
         checked.value = newChecked
