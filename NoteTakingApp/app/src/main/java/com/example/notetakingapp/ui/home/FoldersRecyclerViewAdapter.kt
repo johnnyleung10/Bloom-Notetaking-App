@@ -60,7 +60,7 @@ class FoldersRecyclerViewAdapter(private var folderCellList: ArrayList<FolderCel
 
         val newChecked = ArrayList<Int>()
         if (selectAll){
-            for(i in 1..20)
+            for(i in 0 until folderCellList.size)
                 newChecked.add(i)
         }
         checked.value = newChecked
