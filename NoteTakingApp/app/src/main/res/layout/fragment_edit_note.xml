@@ -18,13 +18,13 @@
         android:textColorHint="@color/black" />
 
     <com.google.android.material.textfield.TextInputEditText
-        android:id="@+id/editNoteDescription"
+        android:id="@+id/editNoteContents"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="10dp"
         android:layout_below="@id/editNoteTitle"
         android:gravity="start|top"
-        android:hint="Enter Note Description"
+        android:hint="Enter Note Contents"
         android:inputType="textMultiLine"
         android:singleLine="false"
         android:textColor="@color/black"
