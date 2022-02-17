@@ -41,9 +41,29 @@ internal class FileManagerTest {
         Assert.assertEquals(2, manager?.folderList?.size)
         if (manager != null) {
             Assert.assertEquals("Uncategorized", manager.folderList[1]?.title!!)
-        }
-        if (manager != null) {
             Assert.assertEquals("Recently Deleted", manager.folderList[2]?.title!!)
+        }
+    }
+
+    @Test
+    fun initFiles2() {
+        cleanupManager()
+
+        val appContext = InstrumentationRegistry.getInstrumentation().targetContext
+        val manager : FileManager? = FileManager.instance
+        manager?.initManager(appContext)
+        manager?.initFiles()
+        val note1 = manager?.createNewNote("New note", 2)
+        val note2 = manager?.createNewNote("New note", 1)
+        val note3 = manager?.createNewNote("New note", 1)
+
+        manager?.folderList?.clear()
+        manager?.allNotes?.clear()
+
+        manager?.initFiles()
+        if (manager != null) {
+            Assert.assertEquals(2, manager.folderList[1]?.noteList?.size)
+            Assert.assertEquals(1, manager.folderList[2]?.noteList?.size)
         }
     }
 
