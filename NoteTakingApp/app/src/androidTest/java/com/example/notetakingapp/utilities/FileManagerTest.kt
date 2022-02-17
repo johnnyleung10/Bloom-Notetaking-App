@@ -1,5 +1,6 @@
 package com.example.notetakingapp.utilities
 
+import android.text.SpannableStringBuilder
 import androidx.test.platform.app.InstrumentationRegistry
 import com.example.notetakingapp.models.FolderModel
 import com.example.notetakingapp.models.sqlite.DatabaseHelper
@@ -226,6 +227,22 @@ internal class FileManagerTest {
         }
         if (manager != null) {
             Assert.assertEquals(1, manager.folderList[1]?.noteList?.size)
+        }
+    }
+
+    @Test
+    fun editNote() {
+        cleanupManager()
+
+        val appContext = InstrumentationRegistry.getInstrumentation().targetContext
+        val manager : FileManager? = FileManager.instance
+        manager?.initManager(appContext)
+        manager?.initFiles()
+
+        // Make a note
+        val note = manager?.createNewNote("New note", 2)
+        if (note != null) {
+            manager.editNote(note.id, title = "Note 2", contents = SpannableStringBuilder("Stuff"))
         }
     }
 }

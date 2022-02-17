@@ -2,6 +2,7 @@ package com.example.notetakingapp.utilities
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.text.SpannableStringBuilder
 import android.util.Log
 import com.example.notetakingapp.models.FolderModel
 import com.example.notetakingapp.models.NoteModel
@@ -123,6 +124,22 @@ class FileManager() {
         databaseHelper.insertNote(newNote)
         allNotes[newNote.id] = newNote
         return newNote
+    }
+
+    /**
+     * Edits a note
+     */
+    fun editNote(noteID : Long, title: String? = null, contents : SpannableStringBuilder? = null) {
+        // Get note
+        val note = getNote(noteID)
+
+        title?.let { note?.title = title }
+        contents?.let { note?.contents = contents }
+        note?.updateModifiedDate()
+
+        // Update the database
+        databaseHelper.updateNote(noteID, title = title, content = note?.spannableStringToText(),
+            dateModified = note?.getLastModifiedDate())
     }
 
     /**
