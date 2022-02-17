@@ -13,7 +13,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.NavHostFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.notetakingapp.databinding.FragmentFoldersBinding
-import com.example.notetakingapp.models.FolderCellViewModel
 import com.example.notetakingapp.models.FolderModel
 import com.example.notetakingapp.utilities.FileManager
 
@@ -24,8 +23,6 @@ class FoldersFragment : Fragment(),
     private var _binding: FragmentFoldersBinding? = null
     private var fm = FileManager.instance
     private lateinit var folders: HashMap<Long, FolderModel>
-    private var folderCellViewModels = ArrayList<FolderCellViewModel>()
-
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -41,8 +38,6 @@ class FoldersFragment : Fragment(),
         foldersViewModel =
             ViewModelProvider(this).get(FoldersViewModel::class.java)
 
-        foldersViewModel.setFolders(folders)
-
         _binding = FragmentFoldersBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
@@ -51,11 +46,7 @@ class FoldersFragment : Fragment(),
         val folderRecyclerView = binding.folderContainer
         folderRecyclerView.layoutManager = LinearLayoutManager(activity)
 
-        for((folderId, folder) in folders){
-            folderCellViewModels.add(FolderCellViewModel(folderId, folder.title, folder.noteList.size))
-        }
-
-        val adapter = FoldersRecyclerViewAdapter(folderCellViewModels, ::onFolderClick)
+        val adapter = FoldersRecyclerViewAdapter(ArrayList(), ::onFolderClick)
         folderRecyclerView.adapter = adapter
 
         // Observer pattern
@@ -116,6 +107,9 @@ class FoldersFragment : Fragment(),
             adapter.selectAll(false)
         }
 
+        // Only set folders in ViewModel once observer has been created!
+        foldersViewModel.setFolders(folders)
+
         return root
     }
 
@@ -125,7 +119,7 @@ class FoldersFragment : Fragment(),
     }
 
     private fun onFolderClick(position: Int) {
-        val folderCellViewModel = folderCellViewModels[position]
+        val folderCellViewModel = foldersViewModel.folderCells.value!![position]
         val action = FoldersFragmentDirections.actionNavigationFoldersToNavigationNotes(folderCellViewModel.folderId)
         NavHostFragment.findNavController(this).navigate(action)
     }
