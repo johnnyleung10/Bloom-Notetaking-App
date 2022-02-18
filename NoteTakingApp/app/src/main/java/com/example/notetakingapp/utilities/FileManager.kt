@@ -92,8 +92,12 @@ class FileManager() {
         if (folderID == UNCATEGORIZED_FOLDER || folderID == RECENTLY_DELETED_FOLDER) return false
 
         // Move notes to uncategorized
+        val currNotes : ArrayList<Long> = ArrayList()
         for (note in folderList[folderID]?.noteList!!) {
-            moveNote(note.id, UNCATEGORIZED_FOLDER)
+            currNotes.add(note.id)
+        }
+        for (note in currNotes) {
+            moveNote(note, UNCATEGORIZED_FOLDER)
         }
 
         // Remove from database
