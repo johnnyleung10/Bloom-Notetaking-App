@@ -6,11 +6,9 @@ import com.example.notetakingapp.models.FolderModel
 import com.example.notetakingapp.models.sqlite.DatabaseHelper
 import org.junit.Assert
 import org.junit.Test
-import org.testng.annotations.BeforeMethod
 
 internal class FileManagerTest {
 
-    @BeforeMethod(alwaysRun = true)
     fun cleanupManager() {
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
         val db = DatabaseHelper(appContext)

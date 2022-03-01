@@ -5,8 +5,11 @@ import android.database.sqlite.SQLiteOpenHelper
 import android.database.sqlite.SQLiteDatabase
 import android.content.Context
 import android.provider.BaseColumns
+import android.util.Log
 import com.example.notetakingapp.models.FolderModel
 import com.example.notetakingapp.models.NoteModel
+import java.util.*
+import kotlin.collections.ArrayList
 
 private const val SQL_CREATE_NOTE_ENTRIES =
     "CREATE TABLE ${DatabaseHelper.DatabaseContract.NoteEntry.TABLE_NAME} (" +
@@ -112,9 +115,9 @@ class DatabaseHelper(private val context: Context) :
         return retList
     }
 
-    fun getAllNotes(): List<NoteModel> {
+    fun getAllNotes(columnName: String): List<NoteModel> {
         val retList : ArrayList<NoteModel> = arrayListOf()
-        val queryString = "SELECT * FROM " + NoteEntry.TABLE_NAME + " ORDER BY " + BaseColumns._ID
+        val queryString = "SELECT * FROM " + NoteEntry.TABLE_NAME + " ORDER BY " + columnName
         val dbRead = this.readableDatabase
 
         val cursor = dbRead.rawQuery(queryString, null)
@@ -242,6 +245,7 @@ class DatabaseHelper(private val context: Context) :
 
         object NoteEntry : BaseColumns {
             const val TABLE_NAME = "note_table"
+            const val COLUMN_NAME_ID = BaseColumns._ID
             const val COLUMN_NAME_TITLE = "title"
             const val COLUMN_NAME_CONTENTS = "contents"
             const val COLUMN_NAME_FOLDER_ID = "folder_id"

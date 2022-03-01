@@ -48,7 +48,7 @@ class FileManager() {
      * Initializes existing notes from database, and assigns it to respective folders
      */
     private fun initNotes() {
-        for (note in databaseHelper.getAllNotes()) {
+        for (note in databaseHelper.getAllNotes(DatabaseHelper.DatabaseContract.NoteEntry.COLUMN_NAME_ID)) {
             val i = note.folderID
             note.currFolder = folderList[i]?.title ?: UNIDENTIFIED_FOLDER
             folderList[i]?.noteList?.add(note)
