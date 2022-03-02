@@ -41,13 +41,4 @@ class NoteModel(
     fun spannableStringToText(): String {
         return contents.toHtml()
     }
-
-    /**
-     * Restore note from recently deleted
-     */
-    fun restoreNote() {
-        TODO("Implement later")
-//        currFolder = "Recently Deleted"  // Bring back to original folder
-//        deleteFile()
-    }
 }

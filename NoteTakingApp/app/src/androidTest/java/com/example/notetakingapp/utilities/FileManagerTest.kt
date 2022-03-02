@@ -54,9 +54,9 @@ internal class FileManagerTest {
         val manager : FileManager? = FileManager.instance
         manager?.initManager(appContext)
         manager?.initFiles()
-        val note1 = manager?.createNewNote("New note", 2)
-        val note2 = manager?.createNewNote("New note", 1)
-        val note3 = manager?.createNewNote("New note", 1)
+        manager?.createNewNote("New note", 2)
+        manager?.createNewNote("New note", 1)
+        manager?.createNewNote("New note", 1)
 
         manager?.folderList?.clear()
         manager?.allNotes?.clear()
@@ -204,7 +204,7 @@ internal class FileManagerTest {
         // Make a note
         val note = manager?.createNewNote("New note", 2)
         if (note != null) {
-            manager.permanentlyDeleteNote(note)
+            manager.permanentlyDeleteNote(note.id)
         }
         if (manager != null) {
             Assert.assertEquals(0, manager.folderList[2]?.noteList?.size)
