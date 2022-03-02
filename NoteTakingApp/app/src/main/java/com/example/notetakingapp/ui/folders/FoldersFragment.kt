@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.NavHostFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.notetakingapp.databinding.FragmentFoldersBinding
+import com.example.notetakingapp.viewmodels.FoldersViewModel
 import com.example.notetakingapp.utilities.FileManager
 
 class FoldersFragment : Fragment(),

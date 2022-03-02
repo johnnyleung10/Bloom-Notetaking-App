@@ -1,4 +1,4 @@
-package com.example.notetakingapp.ui.folders
+package com.example.notetakingapp.viewmodels
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

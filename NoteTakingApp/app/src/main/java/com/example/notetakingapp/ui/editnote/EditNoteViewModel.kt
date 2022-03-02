@@ -1,4 +1,4 @@
-package com.example.notetakingapp.ui.notes
+package com.example.notetakingapp.ui.editnote
 
 import android.text.SpannableStringBuilder
 import androidx.lifecycle.ViewModel
