@@ -146,7 +146,13 @@ class FoldersFragment : Fragment(),
     }
 
     private fun renameFolder() {
-        val dialogFragment = RenameFolderDialogFragment()
+        if(adapter.checked.value?.size != 1){
+            return
+        }
+        val folderPosition = adapter.checked.value!![0]
+        val folderName = adapter.folderCellList[folderPosition].title
+
+        val dialogFragment = RenameFolderDialogFragment(folderName)
         dialogFragment.show(requireFragmentManager().beginTransaction(), "rename_folder")
         dialogFragment.setTargetFragment(this, 1);
     }

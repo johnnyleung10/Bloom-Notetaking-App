@@ -10,7 +10,7 @@ import androidx.fragment.app.DialogFragment
 import com.example.notetakingapp.R
 
 
-class RenameFolderDialogFragment : DialogFragment() {
+class RenameFolderDialogFragment(private val prevFolderName: String) : DialogFragment() {
 
     // Use this instance of the interface to deliver action events
     private lateinit var listener: RenameFolderDialogListener
@@ -30,6 +30,7 @@ class RenameFolderDialogFragment : DialogFragment() {
 
             val mView: View = inflater.inflate(R.layout.fragment_rename_folder_dialog, null)
             val folderNameTextInput = mView.findViewById<EditText>(R.id.newFolderTitle)
+            folderNameTextInput.setText(prevFolderName)
 
             // Inflate and set the layout for the dialog
             // Pass null as the parent view because its going in the dialog layout
