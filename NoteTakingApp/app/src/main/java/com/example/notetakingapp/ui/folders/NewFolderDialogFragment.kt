@@ -1,4 +1,4 @@
-package com.example.notetakingapp.ui.home
+package com.example.notetakingapp.ui.folders
 
 import android.app.AlertDialog
 import android.app.Dialog

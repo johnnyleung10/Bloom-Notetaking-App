@@ -1,4 +1,4 @@
-package com.example.notetakingapp.ui.home
+package com.example.notetakingapp.ui.notes
 
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle

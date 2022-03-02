@@ -1,6 +1,5 @@
-package com.example.notetakingapp.ui.home
+package com.example.notetakingapp.ui.folders
 
-import FoldersRecyclerViewAdapter
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -13,7 +12,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.NavHostFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.notetakingapp.databinding.FragmentFoldersBinding
-import com.example.notetakingapp.models.FolderModel
 import com.example.notetakingapp.utilities.FileManager
 
 class FoldersFragment : Fragment(),
@@ -134,14 +132,20 @@ class FoldersFragment : Fragment(),
 
     private fun onFolderClick(position: Int) {
         val folderCellViewModel = foldersViewModel.folderCells.value!![position]
-        val action = FoldersFragmentDirections.actionNavigationFoldersToNavigationNotes(folderCellViewModel.folderId)
+        val action =
+            FoldersFragmentDirections.actionNavigationFoldersToNavigationNotes(
+                folderCellViewModel.folderId
+            )
         NavHostFragment.findNavController(this).navigate(action)
     }
 
     private fun newNote() {
         val manager = FileManager.instance
         val newNote = manager?.createNewNote("", 1)
-        val action = FoldersFragmentDirections.actionNavigationFoldersToFragmentEditNote(newNote?.id!!)
+        val action =
+            FoldersFragmentDirections.actionNavigationFoldersToFragmentEditNote(
+                newNote?.id!!
+            )
         NavHostFragment.findNavController(this).navigate(action)
     }
 

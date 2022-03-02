@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/navigation_folders"
-        android:name="com.example.notetakingapp.ui.home.FoldersFragment"
+        android:name="com.example.notetakingapp.ui.folders.FoldersFragment"
         android:label="@string/title_home"
         tools:layout="@layout/fragment_folders" >
         <action
@@ -31,7 +31,7 @@
         tools:layout="@layout/fragment_notifications" />
     <fragment
         android:id="@+id/navigation_notes"
-        android:name="com.example.notetakingapp.ui.home.NotesFragment"
+        android:name="com.example.notetakingapp.ui.notes.NotesFragment"
         android:label="fragment_notes"
         tools:layout="@layout/fragment_notes" >
         <argument
@@ -43,7 +43,7 @@
     </fragment>
     <fragment
         android:id="@+id/fragment_edit_note"
-        android:name="com.example.notetakingapp.ui.home.EditNoteFragment"
+        android:name="com.example.notetakingapp.ui.notes.EditNoteFragment"
         android:label="fragment_edit_note_fragment"
         tools:layout="@layout/fragment_edit_note" >
         <argument

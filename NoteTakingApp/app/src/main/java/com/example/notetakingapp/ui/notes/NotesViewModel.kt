@@ -1,12 +1,10 @@
-package com.example.notetakingapp.ui.home
+package com.example.notetakingapp.ui.notes
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.notetakingapp.models.NoteCellViewModel
 import com.example.notetakingapp.models.NoteModel
-import com.example.notetakingapp.models.NoteViewModel
-import com.example.notetakingapp.utilities.FileManager
 
 class NotesViewModel : ViewModel() {
 

@@ -1,6 +1,5 @@
-package com.example.notetakingapp.ui.home
+package com.example.notetakingapp.ui.notes
 
-import NotesRecyclerViewAdapter
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -150,14 +149,20 @@ class NotesFragment : Fragment(), MoveNoteDialogFragment.MoveNoteDialogListener 
 
     private fun onNoteClick(position: Int) {
         val noteId = notesViewModel.noteCells.value!![position].noteId
-        val action = NotesFragmentDirections.actionNavigationNotesToFragmentEditNote(noteId)
+        val action =
+            NotesFragmentDirections.actionNavigationNotesToFragmentEditNote(
+                noteId
+            )
         NavHostFragment.findNavController(this).navigate(action)
     }
 
     private fun newNote() {
         val manager = FileManager.instance
         val newNote = manager?.createNewNote("New Note", folderId)
-        val action = NotesFragmentDirections.actionNavigationNotesToFragmentEditNote(newNote?.id!!)
+        val action =
+            NotesFragmentDirections.actionNavigationNotesToFragmentEditNote(
+                newNote?.id!!
+            )
         NavHostFragment.findNavController(this).navigate(action)
 
         val folder = manager.folderList[notesViewModel.folderID]
