@@ -14,7 +14,7 @@ data class Note (
     var id: Long,
     var title: String,
     var content: String,
-    var dataCreated: String,
-    var dataModified: String,
-    var dataDeleted: String
+    var dateCreated: String,
+    var dateModified: String,
+    var dateDeleted: String
     )
