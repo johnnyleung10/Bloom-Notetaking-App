@@ -51,6 +51,8 @@ class EditNoteFragment : Fragment() {
 
         val boldButton = binding.boldButton
         var boldFlag : Boolean = false
+        val italicsButton = binding.italicsButton
+        var italicsFlag : Boolean = false
 
         var lastCursorPosition = editNoteContents.selectionStart
 
@@ -72,7 +74,6 @@ class EditNoteFragment : Fragment() {
 
         // BUTTONS
         boldButton.setOnClickListener {
-            boldFlag = !boldFlag
             // Bold selected
             val str: Spannable = editNoteContents.text
 
@@ -85,33 +86,133 @@ class EditNoteFragment : Fragment() {
                 // Check to see bold or unbold
                 for (i in spans.indices) {
                     Log.d("STYLE", spans[i].style.toString())
-                    if (spans[i].style != Typeface.BOLD) {
+                    if (spans[i].style != Typeface.BOLD && spans[i].style != Typeface.BOLD_ITALIC) {
                         boldAll = true
                         break
                     }
                 }
                 Log.d("STYLE", selStart.toString() + " " +selEnd + " " +spans.size)
                 if (!boldAll && spans.size >= selEnd - selStart) {
-                    for (i in spans.indices) {
-                        if (spans[i].style == Typeface.BOLD) {
-                            str.removeSpan(spans[i])
+                    var i = selStart
+                    for (j in selStart until selEnd) {
+                        val thisSpan = str.getSpans(i, j, StyleSpan::class.java)
+                        if (thisSpan.isNotEmpty()) {
+                            if (thisSpan[i].style == Typeface.BOLD) {
+                                str.removeSpan(spans[i])
+                            } else if (thisSpan[i].style == Typeface.BOLD_ITALIC) {
+                                str.removeSpan(spans[i])
+                                str.setSpan(
+                                    StyleSpan(Typeface.ITALIC),
+                                    i,
+                                    j,
+                                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                                )
+                            }
                         }
+                        i = j
                     }
+
+//                    for (i in spans.indices) {
+//                        if (spans[i].style == Typeface.BOLD) {
+//                            str.removeSpan(spans[i])
+//                        }
+//                    }
                 } else {
                     var i = selStart
                     for (j in selStart + 1 until selEnd + 1) {
                         Log.d("Span", "$i $j")
-                        str.setSpan(
-                            StyleSpan(Typeface.BOLD),
-                            i,
-                            j,
-                            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-                        )
+                        val thisSpan = str.getSpans(i, j, StyleSpan::class.java)
+                        if (thisSpan.isEmpty()) {
+                            str.setSpan(
+                                StyleSpan(Typeface.BOLD),
+                                i,
+                                j,
+                                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                            )
+                        } else if (thisSpan[0].style == Typeface.ITALIC) {
+                            str.setSpan(
+                                StyleSpan(Typeface.BOLD_ITALIC),
+                                i,
+                                j,
+                                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                            )
+                        }
                         i = j
                     }
                 }
             } else {
                 boldFlag = !boldFlag
+            }
+        }
+        italicsButton.setOnClickListener {
+            // Italicize selected
+            val str: Spannable = editNoteContents.text
+
+            val selStart = editNoteContents.selectionStart
+            val selEnd = editNoteContents.selectionEnd
+            if (selStart < selEnd) {
+                var boldAll = false
+                val spans = str.getSpans(selStart, selEnd, StyleSpan::class.java)
+
+                // Check to see italicize or unitalicize
+                for (i in spans.indices) {
+                    Log.d("STYLE", spans[i].style.toString())
+                    if (spans[i].style != Typeface.ITALIC && spans[i].style != Typeface.BOLD_ITALIC) {
+                        boldAll = true
+                        break
+                    }
+                }
+                Log.d("STYLE", selStart.toString() + " " +selEnd + " " +spans.size)
+                if (!boldAll && spans.size >= selEnd - selStart) {
+                    var i = selStart
+                    for (j in selStart until selEnd) {
+                        val thisSpan = str.getSpans(i, j, StyleSpan::class.java)
+                        if (thisSpan.isNotEmpty()) {
+                            if (thisSpan[i].style == Typeface.ITALIC) {
+                                str.removeSpan(spans[i])
+                            } else if (thisSpan[i].style == Typeface.BOLD_ITALIC) {
+                                str.removeSpan(spans[i])
+                                str.setSpan(
+                                    StyleSpan(Typeface.BOLD),
+                                    i,
+                                    j,
+                                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                                )
+                            }
+                        }
+                        i = j
+                    }
+
+//                    for (i in spans.indices) {
+//                        if (spans[i].style == Typeface.BOLD) {
+//                            str.removeSpan(spans[i])
+//                        }
+//                    }
+                } else {
+                    var i = selStart
+                    for (j in selStart + 1 until selEnd + 1) {
+                        Log.d("Span", "$i $j")
+                        val thisSpan = str.getSpans(i, j, StyleSpan::class.java)
+                        if (thisSpan.isEmpty()) {
+                            str.setSpan(
+                                StyleSpan(Typeface.ITALIC),
+                                i,
+                                j,
+                                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                            )
+                        } else if (thisSpan[0].style == Typeface.BOLD) {
+                            str.setSpan(
+                                StyleSpan(Typeface.BOLD_ITALIC),
+                                i,
+                                j,
+                                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                            )
+                        }
+                        i = j
+                    }
+                }
+            } else {
+                italicsFlag = !italicsFlag
             }
         }
 
@@ -149,11 +250,31 @@ class EditNoteFragment : Fragment() {
                 val str: Spannable = editNoteContents.text
                 val endLength: Int = start + count
 
-                if (boldFlag) {
+                if (boldFlag && italicsFlag) {
+                    if (lastCursorPosition <= endLength) {
+                        Log.d("Span", "$lastCursorPosition $endLength")
+                        str.setSpan(
+                            StyleSpan(Typeface.BOLD_ITALIC),
+                            lastCursorPosition,
+                            endLength,
+                            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                        )
+                    }
+                } else if (boldFlag) {
                     if (lastCursorPosition <= endLength) {
                         Log.d("Span", "$lastCursorPosition $endLength")
                         str.setSpan(
                             StyleSpan(Typeface.BOLD),
+                            lastCursorPosition,
+                            endLength,
+                            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                        )
+                    }
+                } else if (italicsFlag) {
+                    if (lastCursorPosition <= endLength) {
+                        Log.d("Span", "$lastCursorPosition $endLength")
+                        str.setSpan(
+                            StyleSpan(Typeface.ITALIC),
                             lastCursorPosition,
                             endLength,
                             Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
