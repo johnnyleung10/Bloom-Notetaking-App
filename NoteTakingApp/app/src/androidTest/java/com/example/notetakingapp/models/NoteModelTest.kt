@@ -1,8 +1,6 @@
 package com.example.notetakingapp.models
 
-import android.text.Html
 import android.text.SpannableStringBuilder
-import android.util.Log
 import androidx.test.platform.app.InstrumentationRegistry
 import org.junit.Assert
 import org.junit.Test
@@ -122,12 +120,11 @@ internal class NoteModelTest {
 
     @Test
     fun spannableStringToText() {
-//        val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-//        val newNote = NoteModel("New Note", appContext)
-//        newNote.contents = SpannableStringBuilder("Hi there")
-//        val htmlContent = newNote.spannableStringToText()
-//        Assert.assertEquals("<p dir=\"ltr\">Hi there</p>\n", htmlContent)
-//        Assert.assertEquals("Hi there\n", Html.fromHtml(htmlContent))
-//        Log.d("HTML Result", Html.fromHtml(htmlContent).toString())
+        val appContext = InstrumentationRegistry.getInstrumentation().targetContext
+        val newNote = NoteModel("New Note", appContext)
+        newNote.contents = SpannableStringBuilder("Hi there")
+        val htmlContent = newNote.spannableStringToText()
+        Assert.assertEquals("<p dir=\"ltr\">Hi there</p>\n", htmlContent)
+        //Assert.assertEquals("Hi there\n", Html.fromHtml(htmlContent))
     }
 }
