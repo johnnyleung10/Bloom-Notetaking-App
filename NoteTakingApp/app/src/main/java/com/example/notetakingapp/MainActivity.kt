@@ -26,10 +26,6 @@ class MainActivity : AppCompatActivity() {
         fm?.initManager(this)
         fm?.initFiles()
 
-        // Instantiate data synchronizer
-        val ds = DataSynchronizer.instance!!
-        ds.initSynchronizer(this)
-
         // Hide Action Bar
         window.requestFeature(Window.FEATURE_ACTION_BAR);
         actionBar?.hide();
