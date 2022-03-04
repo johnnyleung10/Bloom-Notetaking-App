@@ -1,19 +1,19 @@
 package com.example.NoteAppService.models
 
-import javax.persistence.*
+import javax.persistence.Entity
+import javax.persistence.GeneratedValue
+import javax.persistence.GenerationType
+import javax.persistence.Id
+import javax.persistence.Table
 
 @Entity
-@Table(name = "NOTE_TABLE")
-data class Note (
+@Table(name = "FOLDER_TABLE")
+data class Folder(
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     var id: Long,
-
     var title: String,
-    var contentRich: String,
-    var contentPlain: String,
     var dateCreated: String,
     var dateModified: String,
     var dateDeleted: String,
-    var folderId: Long
-    )
+)
