@@ -83,11 +83,11 @@ class FoldersFragment : Fragment(),
             newNote()
         }
 
-        createFolderButton.setOnClickListener { _ ->
+        createFolderButton.setOnClickListener {
             createNewFolder()
         }
 
-        renameFolderButton.setOnClickListener { _ ->
+        renameFolderButton.setOnClickListener {
             renameFolder()
         }
 
@@ -142,7 +142,7 @@ class FoldersFragment : Fragment(),
 
     private fun newNote() {
         val manager = FileManager.instance
-        val newNote = manager?.createNewNote("", 1)
+        val newNote = manager?.createNewNote("New Note", 1)
         val action =
             FoldersFragmentDirections.actionNavigationFoldersToFragmentEditNote(
                 newNote?.id!!
@@ -153,9 +153,10 @@ class FoldersFragment : Fragment(),
     private fun createNewFolder() {
         val dialogFragment = NewFolderDialogFragment()
         dialogFragment.show(requireFragmentManager().beginTransaction(), "create_folder")
-        dialogFragment.setTargetFragment(this, 1);
+        dialogFragment.setTargetFragment(this, 1)
     }
 
+    // TODO: convert to in-place rename
     private fun renameFolder() {
         if(adapter.checked.value?.size != 1){
             return
@@ -165,7 +166,7 @@ class FoldersFragment : Fragment(),
 
         val dialogFragment = RenameFolderDialogFragment(folderName)
         dialogFragment.show(requireFragmentManager().beginTransaction(), "rename_folder")
-        dialogFragment.setTargetFragment(this, 1);
+        dialogFragment.setTargetFragment(this, 1)
     }
 
     private fun editFolders(){

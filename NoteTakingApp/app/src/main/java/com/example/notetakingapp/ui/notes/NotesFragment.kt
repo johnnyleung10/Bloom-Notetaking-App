@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageButton
 import android.widget.TextView
+import androidx.core.view.isVisible
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -104,6 +105,8 @@ class NotesFragment : Fragment(), MoveNoteDialogFragment.MoveNoteDialogListener 
         val selectAll: Button = binding.selectAllNotes
         val deselectAll: Button = binding.deselectAllNotes
 
+        if (folderId == 2.toLong())
+            newNoteButton.isVisible = false
         newNoteButton.setOnClickListener{
             newNote()
         }
@@ -112,6 +115,7 @@ class NotesFragment : Fragment(), MoveNoteDialogFragment.MoveNoteDialogListener 
             editNotes()
         }
 
+        // TODO: permanent delete for Recently Deleted
         delete.setOnClickListener{
             deleteNotes()
         }
@@ -194,7 +198,7 @@ class NotesFragment : Fragment(), MoveNoteDialogFragment.MoveNoteDialogListener 
     private fun moveNote() {
         val dialogFragment = MoveNoteDialogFragment(fm.folderList.values.toTypedArray())
         dialogFragment.show(requireFragmentManager().beginTransaction(), "move_note")
-        dialogFragment.setTargetFragment(this, 1);
+        dialogFragment.setTargetFragment(this, 1)
     }
 
     /* MoveNoteDialogListener */
