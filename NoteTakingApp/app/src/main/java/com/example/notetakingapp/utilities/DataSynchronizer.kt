@@ -10,14 +10,7 @@ import com.example.notetakingapp.models.FolderModel
 import com.example.notetakingapp.models.NoteModel
 import com.example.notetakingapp.models.sqlite.DatabaseHelper
 
-class DataSynchronizer() {
-    private lateinit var context : Context
-    private lateinit var databaseHelper : DatabaseHelper
-
-    fun initSynchronizer(context: Context) {
-        this.context = context
-        databaseHelper = DatabaseHelper(context)
-    }
+class DataSynchronizer(private val context: Context, private val databaseHelper: DatabaseHelper) {
 
     /**
      * INSERTING
@@ -51,17 +44,5 @@ class DataSynchronizer() {
 
     fun updateFolder(id: Long, title: String? = null, dateModified: String? = null, dateDeleted: String? = null) {
         databaseHelper.updateFolder(id, title = title, dateModified = dateModified)
-    }
-
-    companion object {
-        @SuppressLint("StaticFieldLeak")
-        private var ourInstance: DataSynchronizer? = null
-        val instance: DataSynchronizer?
-            get() {
-                if (ourInstance == null) {
-                    ourInstance = DataSynchronizer()
-                }
-                return ourInstance
-            }
     }
 }
