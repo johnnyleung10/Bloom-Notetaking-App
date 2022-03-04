@@ -85,7 +85,7 @@ class EditNoteFragment : Fragment() {
 
                 // Check to see bold or unbold
                 for (i in spans.indices) {
-                    Log.d("STYLE", spans[i].style.toString())
+                    Log.d("STYLE_SPAN", spans[i].style.toString())
                     if (spans[i].style != Typeface.BOLD && spans[i].style != Typeface.BOLD_ITALIC) {
                         boldAll = true
                         break
@@ -94,13 +94,13 @@ class EditNoteFragment : Fragment() {
                 Log.d("STYLE", selStart.toString() + " " +selEnd + " " +spans.size)
                 if (!boldAll && spans.size >= selEnd - selStart) {
                     var i = selStart
-                    for (j in selStart until selEnd) {
+                    for (j in selStart + 1 until selEnd + 1) {
                         val thisSpan = str.getSpans(i, j, StyleSpan::class.java)
                         if (thisSpan.isNotEmpty()) {
-                            if (thisSpan[i].style == Typeface.BOLD) {
-                                str.removeSpan(spans[i])
-                            } else if (thisSpan[i].style == Typeface.BOLD_ITALIC) {
-                                str.removeSpan(spans[i])
+                            if (thisSpan[0].style == Typeface.BOLD) {
+                                str.removeSpan(thisSpan[0])
+                            } else if (thisSpan[0].style == Typeface.BOLD_ITALIC) {
+                                str.removeSpan(thisSpan[0])
                                 str.setSpan(
                                     StyleSpan(Typeface.ITALIC),
                                     i,
@@ -130,6 +130,7 @@ class EditNoteFragment : Fragment() {
                                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
                             )
                         } else if (thisSpan[0].style == Typeface.ITALIC) {
+                            str.removeSpan(thisSpan[0])
                             str.setSpan(
                                 StyleSpan(Typeface.BOLD_ITALIC),
                                 i,
@@ -165,13 +166,13 @@ class EditNoteFragment : Fragment() {
                 Log.d("STYLE", selStart.toString() + " " +selEnd + " " +spans.size)
                 if (!boldAll && spans.size >= selEnd - selStart) {
                     var i = selStart
-                    for (j in selStart until selEnd) {
+                    for (j in selStart + 1 until selEnd + 1) {
                         val thisSpan = str.getSpans(i, j, StyleSpan::class.java)
                         if (thisSpan.isNotEmpty()) {
-                            if (thisSpan[i].style == Typeface.ITALIC) {
-                                str.removeSpan(spans[i])
-                            } else if (thisSpan[i].style == Typeface.BOLD_ITALIC) {
-                                str.removeSpan(spans[i])
+                            if (thisSpan[0].style == Typeface.ITALIC) {
+                                str.removeSpan(thisSpan[0])
+                            } else if (thisSpan[0].style == Typeface.BOLD_ITALIC) {
+                                str.removeSpan(thisSpan[0])
                                 str.setSpan(
                                     StyleSpan(Typeface.BOLD),
                                     i,
@@ -201,6 +202,7 @@ class EditNoteFragment : Fragment() {
                                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
                             )
                         } else if (thisSpan[0].style == Typeface.BOLD) {
+                            str.removeSpan(thisSpan[0])
                             str.setSpan(
                                 StyleSpan(Typeface.BOLD_ITALIC),
                                 i,
