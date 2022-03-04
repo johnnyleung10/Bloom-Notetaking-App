@@ -2,6 +2,7 @@ package com.example.notetakingapp.networking
 
 import com.example.notetakingapp.networking.models.NoteRequestModel
 import com.example.notetakingapp.networking.models.NoteResponseModel
+import com.example.notetakingapp.networking.models.TestResponseModel
 import io.ktor.client.*
 import io.ktor.client.engine.android.*
 import io.ktor.client.features.*
@@ -16,6 +17,8 @@ interface ApiService {
     suspend fun getNotes(): List<NoteResponseModel>
 
     suspend fun createNote(noteRequestModel: NoteRequestModel): NoteResponseModel?
+
+    suspend fun getTest(): List<TestResponseModel>
 
     companion object {
         fun create(): ApiService {

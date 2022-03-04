@@ -2,6 +2,7 @@ package com.example.notetakingapp.networking
 
 import com.example.notetakingapp.networking.models.NoteRequestModel
 import com.example.notetakingapp.networking.models.NoteResponseModel
+import com.example.notetakingapp.networking.models.TestResponseModel
 import io.ktor.client.*
 import io.ktor.client.features.*
 import io.ktor.client.request.*
@@ -47,6 +48,24 @@ class ApiServiceImpl(
             // 5xx - response
             println("Error: ${ex.response.status.description}")
             null
+        }
+    }
+
+    override suspend fun getTest(): List<TestResponseModel> {
+        return try {
+            client.get { url(ApiRoutes.TEST) }
+        } catch (ex: RedirectResponseException) {
+            // 3xx - responses
+            println("Error: ${ex.response.status.description}")
+            emptyList()
+        } catch (ex: ClientRequestException) {
+            // 4xx - responses
+            println("Error: ${ex.response.status.description}")
+            emptyList()
+        } catch (ex: ServerResponseException) {
+            // 5xx - response
+            println("Error: ${ex.response.status.description}")
+            emptyList()
         }
     }
 }

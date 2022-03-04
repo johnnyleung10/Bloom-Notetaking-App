@@ -15,10 +15,12 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.notetakingapp.databinding.FragmentNotesBinding
 import com.example.notetakingapp.models.FolderModel
+import com.example.notetakingapp.networking.ApiService
 import com.example.notetakingapp.ui.folders.FoldersRecyclerViewAdapter
 import com.example.notetakingapp.viewmodels.NotesViewModel
 import com.example.notetakingapp.utilities.FileManager
 import com.example.notetakingapp.viewmodels.FoldersViewModel
+import kotlinx.coroutines.runBlocking
 
 class NotesFragment : Fragment(), MoveNoteDialogFragment.MoveNoteDialogListener {
 
@@ -29,6 +31,7 @@ class NotesFragment : Fragment(), MoveNoteDialogFragment.MoveNoteDialogListener 
     private lateinit var folder: FolderModel
     private lateinit var folders: HashMap<Long, FolderModel>
     private lateinit var adapter: NotesRecyclerViewAdapter
+    private val apiService: ApiService = ApiService.create()
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -48,6 +51,13 @@ class NotesFragment : Fragment(), MoveNoteDialogFragment.MoveNoteDialogListener 
 
         notesViewModel.setFolderTitle(folders[folderId]!!.title)
         notesViewModel.folderID = folderId // Store folderID as well
+
+        // TODO: remove this
+        // test ApiService
+        runBlocking {
+            val test = apiService.getTest()
+            Log.d("XXX", test.toString())
+        }
     }
 
     override fun onCreateView(
