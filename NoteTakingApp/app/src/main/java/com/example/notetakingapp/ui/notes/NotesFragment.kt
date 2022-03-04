@@ -51,13 +51,6 @@ class NotesFragment : Fragment(), MoveNoteDialogFragment.MoveNoteDialogListener 
 
         notesViewModel.setFolderTitle(folders[folderId]!!.title)
         notesViewModel.folderID = folderId // Store folderID as well
-
-        // TODO: remove this
-        // test ApiService
-        runBlocking {
-            val test = apiService.getTest()
-            Log.d("XXX", test.toString())
-        }
     }
 
     override fun onCreateView(
