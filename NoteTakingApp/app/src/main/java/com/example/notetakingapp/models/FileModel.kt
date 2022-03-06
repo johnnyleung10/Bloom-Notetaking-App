@@ -30,17 +30,18 @@ abstract class FileModel(
     }
 
     /**
-     * Delete note, sends to recently deleted folder
+     * Update the deletion date to lastsModified
      */
     fun updateDeletionDate() {
+        updateModifiedDate()
         deletionDate = lastModifiedDate
     }
 
     /**
      * Restore note from recently deleted
      */
-    fun restoreFile() {
-        lastModifiedDate = LocalDateTime.now()
+    fun restoreFileDate() {
+        updateModifiedDate()
         deletionDate = null
     }
 }
