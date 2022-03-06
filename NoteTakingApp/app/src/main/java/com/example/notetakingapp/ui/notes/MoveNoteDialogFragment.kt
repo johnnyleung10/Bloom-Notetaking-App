@@ -1,11 +1,9 @@
-package com.example.notetakingapp.ui.home
+package com.example.notetakingapp.ui.notes
 
 import android.app.AlertDialog
 import android.app.Dialog
 import android.content.DialogInterface
 import android.os.Bundle
-import android.view.View
-import android.widget.EditText
 import androidx.fragment.app.DialogFragment
 import com.example.notetakingapp.R
 import com.example.notetakingapp.models.FolderModel
