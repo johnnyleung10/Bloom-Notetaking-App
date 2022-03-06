@@ -35,6 +35,7 @@ class NoteModel(
 
         if (contents.length >= 2) {
             val textContent = Html.fromHtml(contents)
+            // Conversion to HTML adds additional tab characters at the end which need to be removed
             this.contents =
                 SpannableStringBuilder(textContent.subSequence(0, textContent.length - 2))
         }

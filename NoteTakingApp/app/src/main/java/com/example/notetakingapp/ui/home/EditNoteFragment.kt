@@ -111,12 +111,6 @@ class EditNoteFragment : Fragment() {
                         }
                         i = j
                     }
-
-//                    for (i in spans.indices) {
-//                        if (spans[i].style == Typeface.BOLD) {
-//                            str.removeSpan(spans[i])
-//                        }
-//                    }
                 } else {
                     var i = selStart
                     for (j in selStart + 1 until selEnd + 1) {
@@ -228,27 +222,14 @@ class EditNoteFragment : Fragment() {
 
         editNoteContents.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
-                //Log.d("Widgets", "afterTextChanged()")
                 lastCursorPosition = editNoteContents.selectionStart
             }
 
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                //Log.d("Widgets", "beforeTextChanged()")
                 lastCursorPosition = editNoteContents.selectionStart
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-//                Log.d("Index", ""+ start +" " +before +" " +count)
-//                Log.d("Sequence", s.toString())
-//                if (boldFlag && !codeMode) {
-//                    codeMode = true
-//                    note!!.contents.bold { append (s?.subSequence(start, start + count)) }
-//                    longDescription.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), start, longDescription.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-//                    editNoteContents.setText(note.contents)
-//                    //editNoteContents.setSelection(start + count)
-//                } else {
-//                    codeMode = false
-//                }
                 val str: Spannable = editNoteContents.text
                 val endLength: Int = start + count
 

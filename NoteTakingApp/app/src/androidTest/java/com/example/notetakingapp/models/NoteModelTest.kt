@@ -1,6 +1,8 @@
 package com.example.notetakingapp.models
 
+import android.text.Html
 import android.text.SpannableStringBuilder
+import androidx.core.text.bold
 import androidx.test.platform.app.InstrumentationRegistry
 import org.junit.Assert
 import org.junit.Test
@@ -123,8 +125,14 @@ internal class NoteModelTest {
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
         val newNote = NoteModel("New Note", appContext)
         newNote.contents = SpannableStringBuilder("Hi there")
-        val htmlContent = newNote.spannableStringToText()
+        var htmlContent = newNote.spannableStringToText()
         Assert.assertEquals("<p dir=\"ltr\">Hi there</p>\n", htmlContent)
-        //Assert.assertEquals("Hi there\n", Html.fromHtml(htmlContent))
+        var textContent = Html.fromHtml(htmlContent)
+        Assert.assertEquals("Hi there", textContent.subSequence(0, textContent.length - 2).toString())
+
+        // Add bolding
+        newNote.contents.bold { append(" bold test") }
+        htmlContent = newNote.spannableStringToText()
+        Assert.assertEquals("<p dir=\"ltr\">Hi there<b> bold test</b></p>\n", htmlContent)
     }
 }
