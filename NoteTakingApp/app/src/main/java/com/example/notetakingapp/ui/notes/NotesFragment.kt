@@ -5,15 +5,14 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.ImageButton
-import android.widget.TextView
+import android.widget.*
 import androidx.core.view.isVisible
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.NavHostFragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.notetakingapp.R
 import com.example.notetakingapp.databinding.FragmentNotesBinding
 import com.example.notetakingapp.models.FolderModel
 import com.example.notetakingapp.ui.folders.FoldersRecyclerViewAdapter
@@ -104,6 +103,9 @@ class NotesFragment : Fragment(), MoveNoteDialogFragment.MoveNoteDialogListener 
         val moveNote: Button = binding.moveNote
         val selectAll: Button = binding.selectAllNotes
         val deselectAll: Button = binding.deselectAllNotes
+        val search: EditText = binding.searchTerm
+        val spinner: Spinner = binding.sortBy
+        val sortOrder: ImageButton = binding.sortOrder
 
         if (folderId == 2.toLong())
             newNoteButton.isVisible = false
@@ -130,6 +132,20 @@ class NotesFragment : Fragment(), MoveNoteDialogFragment.MoveNoteDialogListener 
 
         deselectAll.setOnClickListener{
             adapter.selectAll(false)
+        }
+        
+        // TODO: reverse sorted results
+        sortOrder.setOnClickListener{}
+
+        // TODO: return search results
+        search.text.clear()
+
+        ArrayAdapter.createFromResource(
+            requireContext(), R.array.sort_by, R.layout.dropdown
+        ).also { adapter ->
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            spinner.adapter = adapter
+            spinner.setSelection(2)
         }
 
         adapter.checked.observe(viewLifecycleOwner) {

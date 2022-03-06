@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.TextView
+import androidx.cardview.widget.CardView
 import androidx.core.view.isVisible
 import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.RecyclerView
@@ -78,6 +79,7 @@ class NotesRecyclerViewAdapter(var noteList: ArrayList<NoteCellViewModel>, priva
         ItemView: View,
         private val onItemClicked: (position: Int) -> Unit
     ) : RecyclerView.ViewHolder(ItemView), View.OnClickListener {
+        val cardview: CardView = itemView.findViewById((R.id.card_view))
 
         val noteTitle: TextView = itemView.findViewById(R.id.noteTitle)
         val checkbox: CheckBox = itemView.findViewById(R.id.checkbox)

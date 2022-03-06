@@ -30,10 +30,9 @@
         android:layout_marginStart="10dp"
         android:layout_marginBottom="30dp"
         android:gravity="center_vertical|start"
-        android:text="(00)"
+        android:text="@string/empty"
         android:textSize="18sp"
         android:textStyle="normal"
-        app:layout_constraintBottom_toTopOf="@+id/folderContainer"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/homeFolders"
         />
@@ -43,9 +42,8 @@
         android:layout_width="25dp"
         android:layout_height="25dp"
         android:src="@drawable/create"
-        android:background="#ffffff"
+        android:background="#00000000"
         android:layout_marginEnd="10dp"
-        android:contentDescription="New Note"
         app:layout_constraintTop_toBottomOf="@+id/homeFolders"
         app:layout_constraintEnd_toStartOf="@+id/editFolder"
         />
@@ -56,22 +54,102 @@
         android:layout_height="25dp"
         android:layout_marginEnd="-5dp"
         android:src="@drawable/edit"
-        android:background="#ffffff"
-        android:contentDescription="More Actions"
+        android:background="#00000000"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/homeFolders"
         />
 
+    <LinearLayout
+        android:id="@+id/actionBar"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginBottom="30dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/foldersCount"
+        app:layout_constraintBottom_toTopOf="@+id/folderContainer">
+
+        <ImageView
+            android:id="@+id/search"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:src="@drawable/search"
+            android:background="#00000000"
+            android:layout_marginStart="2dp"
+            android:layout_marginEnd="5dp"
+            android:layout_gravity="center_vertical|start"
+            />
+
+        <EditText
+            android:id="@+id/searchTerm"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:hint="Search Term"
+            android:textSize="15sp"
+            android:textStyle="normal"
+            android:layout_gravity="start"
+            android:gravity="center_vertical|start"
+            android:inputType="text"
+            android:singleLine="true"
+            android:backgroundTint="#333333"
+            />
+
+        <ImageView
+            android:id="@+id/sort"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:src="@drawable/sort"
+            android:background="#00000000"
+            android:layout_marginStart="145dp"
+            android:layout_marginEnd="-5dp"
+            android:layout_gravity="center_vertical|end"
+            app:layout_constraintStart_toEndOf="@id/searchTerm"
+            app:layout_constraintEnd_toStartOf="@+id/sortBy"
+            />
+
+        <Spinner
+            android:id="@+id/sortBy"
+            android:layout_width="wrap_content"
+            android:layout_height="25dp"
+            android:gravity="start"
+            android:layout_gravity="start|center_vertical"
+            android:textColor="#333333"
+            android:textSize="16sp"
+            android:textStyle="normal"
+            android:background="@drawable/ic_spinner"
+            app:layout_constraintStart_toEndOf="@id/sort"
+            app:layout_constraintEnd_toStartOf="@id/sortOrder"
+            />
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="20dp"
+            android:background="#a9a9a9"
+            android:layout_gravity="center"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp"/>
+
+        <ImageButton
+            android:id="@+id/sortOrder"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:src="@drawable/order"
+            android:background="#00000000"
+            android:layout_marginEnd="10dp"
+            android:layout_gravity="center_vertical|end"
+            app:layout_constraintEnd_toEndOf="parent"
+            />
+    </LinearLayout>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/folderContainer"
         android:layout_width="0dp"
-        android:layout_height="497dp"
-        android:layout_marginStart="1dp"
-        android:layout_marginTop="30dp"
-        android:layout_marginEnd="1dp"
+        android:layout_height="470dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/foldersCount" />
+        app:layout_constraintTop_toBottomOf="@+id/actionBar"
         />
 
     <LinearLayout
@@ -80,8 +158,9 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:visibility="gone"
-        app:layout_constraintTop_toBottomOf="@+id/folderContainer"
-        >
+        android:divider="?android:listDivider"
+        android:showDividers="middle"
+        app:layout_constraintTop_toBottomOf="@+id/folderContainer">
 
         <Button
             android:id="@+id/deleteFolder"
@@ -92,12 +171,11 @@
             android:enabled="false"
             android:layout_weight="0.2"
             android:paddingTop="7dp"
-            android:background="#ffffff"
-            android:text="Delete"
+            android:background="#00000000"
+            android:text="@string/delete"
             android:textSize="11sp"
             android:textStyle="normal"
             android:gravity="bottom|center_horizontal"
-            android:contentDescription="Delete Folder"
             />
 
         <Button
@@ -111,11 +189,10 @@
             android:layout_weight="0.2"
             android:paddingTop="7dp"
             android:gravity="bottom|center_horizontal"
-            android:background="#ffffff"
-            android:text="Rename"
+            android:background="#00000000"
+            android:text="@string/rename"
             android:textSize="11sp"
             android:textStyle="normal"
-            android:contentDescription="Rename Folder"
             />
 
         <Button
@@ -128,11 +205,10 @@
             android:layout_weight="0.2"
             android:gravity="bottom|center_horizontal"
             android:paddingTop="7dp"
-            android:background="#ffffff"
+            android:background="#00000000"
             android:text="New"
             android:textSize="11sp"
             android:textStyle="normal"
-            android:contentDescription="Create Folder"
             />
 
         <Button
@@ -145,11 +221,10 @@
             android:layout_weight="0.2"
             android:gravity="bottom|center_horizontal"
             android:paddingTop="7dp"
-            android:background="#ffffff"
-            android:text="Deselect All"
+            android:background="#00000000"
+            android:text="@string/deselectAll"
             android:textSize="11sp"
             android:textStyle="normal"
-            android:contentDescription="Deselect All Folders"
             />
 
         <Button
@@ -162,11 +237,10 @@
             android:layout_weight="0.2"
             android:gravity="bottom|center_horizontal"
             android:paddingTop="7dp"
-            android:background="#ffffff"
-            android:text="Select All"
+            android:background="#00000000"
+            android:text="@string/selectAll"
             android:textSize="11sp"
             android:textStyle="normal"
-            android:contentDescription="Select All Folders"
             />
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

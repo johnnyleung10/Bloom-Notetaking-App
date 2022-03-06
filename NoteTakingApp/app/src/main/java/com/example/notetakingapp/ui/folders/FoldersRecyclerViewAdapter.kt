@@ -43,9 +43,10 @@ class FoldersRecyclerViewAdapter(var folderCellList: ArrayList<FolderCellViewMod
         holder.notesInFolderCount.text = "(${folderCellViewModel.noteCount})"
         holder.notesInFolderCount.isVisible = !editMode
 
-        if (position == 0 || position == 1)
+        if (position == 0 || position == 1) {
+            holder.folderTitle.inputType = InputType.TYPE_NULL
             return
-
+        }
         if (!editMode) {
             holder.folderTitle.inputType = InputType.TYPE_NULL
             holder.folderTitle.width = holder.folderTitle.text.length * 50

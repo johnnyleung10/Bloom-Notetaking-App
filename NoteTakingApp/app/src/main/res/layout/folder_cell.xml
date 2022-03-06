@@ -30,7 +30,7 @@
             android:layout_gravity="start"
             android:gravity="center_vertical|start"
             android:layout_marginStart="10dp"
-            android:inputType="text"
+            android:inputType="none"
             android:singleLine="true"
             android:backgroundTint="#00ffffff"
             />
@@ -39,7 +39,7 @@
             android:id="@+id/notesInFolderCount"
             android:layout_width="55dp"
             android:layout_height="match_parent"
-            android:text="(100)"
+            android:text="@string/empty"
             android:textSize="19sp"
             android:layout_gravity="end"
             android:gravity="center_vertical|start"
