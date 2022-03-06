@@ -50,9 +50,9 @@ class EditNoteFragment : Fragment() {
         val editNoteContents = binding.editNoteContents
 
         val boldButton = binding.boldButton
-        var boldFlag : Boolean = false
+        var boldFlag = false
         val italicsButton = binding.italicsButton
-        var italicsFlag : Boolean = false
+        var italicsFlag = false
 
         var lastCursorPosition = editNoteContents.selectionStart
 
@@ -63,14 +63,25 @@ class EditNoteFragment : Fragment() {
             editNoteContents.setText(note.contents)
         }
 
+        // Note title listeners
         editNoteTitle.setOnFocusChangeListener { v, hasFocus ->
             note!!.title = editNoteTitle.text.toString()
 
-            if (note.title == "")
-                note.title = "New Note"
+            if (note.title == "") note.title = "New Note"
 
             manager.editNote(noteID, title = note.title)
         }
+
+        editNoteTitle.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+                note!!.title = editNoteTitle.text.toString() // No formatting
+                manager.editNote(noteID, title = note.title)
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+        })
 
         // BUTTONS
         boldButton.setOnClickListener {
@@ -85,13 +96,13 @@ class EditNoteFragment : Fragment() {
 
                 // Check to see bold or unbold
                 for (i in spans.indices) {
-                    Log.d("STYLE_SPAN", spans[i].style.toString())
+                    //("STYLE_SPAN", spans[i].style.toString())
                     if (spans[i].style != Typeface.BOLD && spans[i].style != Typeface.BOLD_ITALIC) {
                         boldAll = true
                         break
                     }
                 }
-                Log.d("STYLE", selStart.toString() + " " +selEnd + " " +spans.size)
+                //.d("STYLE", selStart.toString() + " " +selEnd + " " +spans.size)
                 if (!boldAll && spans.size >= selEnd - selStart) {
                     var i = selStart
                     for (j in selStart + 1 until selEnd + 1) {
@@ -114,7 +125,7 @@ class EditNoteFragment : Fragment() {
                 } else {
                     var i = selStart
                     for (j in selStart + 1 until selEnd + 1) {
-                        Log.d("Span", "$i $j")
+                        //Log.d("Span", "$i $j")
                         val thisSpan = str.getSpans(i, j, StyleSpan::class.java)
                         if (thisSpan.isEmpty()) {
                             str.setSpan(
@@ -151,13 +162,13 @@ class EditNoteFragment : Fragment() {
 
                 // Check to see italicize or unitalicize
                 for (i in spans.indices) {
-                    Log.d("STYLE", spans[i].style.toString())
+                    //Log.d("STYLE", spans[i].style.toString())
                     if (spans[i].style != Typeface.ITALIC && spans[i].style != Typeface.BOLD_ITALIC) {
                         boldAll = true
                         break
                     }
                 }
-                Log.d("STYLE", selStart.toString() + " " +selEnd + " " +spans.size)
+                //Log.d("STYLE", selStart.toString() + " " +selEnd + " " +spans.size)
                 if (!boldAll && spans.size >= selEnd - selStart) {
                     var i = selStart
                     for (j in selStart + 1 until selEnd + 1) {
@@ -186,7 +197,7 @@ class EditNoteFragment : Fragment() {
                 } else {
                     var i = selStart
                     for (j in selStart + 1 until selEnd + 1) {
-                        Log.d("Span", "$i $j")
+                        //Log.d("Span", "$i $j")
                         val thisSpan = str.getSpans(i, j, StyleSpan::class.java)
                         if (thisSpan.isEmpty()) {
                             str.setSpan(
@@ -212,11 +223,9 @@ class EditNoteFragment : Fragment() {
             }
         }
 
+        // Note contents listeners
         editNoteContents.setOnFocusChangeListener { v, hasFocus ->
-            //note!!.contents = SpannableStringBuilder(editNoteContents.text)
-            //note!!.contents = SpannableStringBuilder(editNoteContents.text)
             note!!.contents = SpannableStringBuilder(editNoteContents.text)
-            Log.d("HTML", Html.toHtml(note.contents))
             manager.editNote(noteID, contents = note.contents)
         }
 
@@ -235,7 +244,7 @@ class EditNoteFragment : Fragment() {
 
                 if (boldFlag && italicsFlag) {
                     if (lastCursorPosition <= endLength) {
-                        Log.d("Span", "$lastCursorPosition $endLength")
+                        //Log.d("Span", "$lastCursorPosition $endLength")
                         str.setSpan(
                             StyleSpan(Typeface.BOLD_ITALIC),
                             lastCursorPosition,
@@ -245,7 +254,7 @@ class EditNoteFragment : Fragment() {
                     }
                 } else if (boldFlag) {
                     if (lastCursorPosition <= endLength) {
-                        Log.d("Span", "$lastCursorPosition $endLength")
+                        //Log.d("Span", "$lastCursorPosition $endLength")
                         str.setSpan(
                             StyleSpan(Typeface.BOLD),
                             lastCursorPosition,
@@ -255,7 +264,7 @@ class EditNoteFragment : Fragment() {
                     }
                 } else if (italicsFlag) {
                     if (lastCursorPosition <= endLength) {
-                        Log.d("Span", "$lastCursorPosition $endLength")
+                        //Log.d("Span", "$lastCursorPosition $endLength")
                         str.setSpan(
                             StyleSpan(Typeface.ITALIC),
                             lastCursorPosition,
