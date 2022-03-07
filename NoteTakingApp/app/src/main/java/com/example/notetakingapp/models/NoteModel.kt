@@ -1,6 +1,7 @@
 package com.example.notetakingapp.models
 
 import android.content.Context
+import android.text.Html
 import android.text.SpannableStringBuilder
 import androidx.core.text.toHtml
 import com.example.notetakingapp.models.sqlite.DatabaseHelper
@@ -32,7 +33,12 @@ class NoteModel(
             this.deletionDate = dateDeletedLCT
         }
 
-        this.contents = SpannableStringBuilder(contents)
+        if (contents.length >= 2) {
+            val textContent = Html.fromHtml(contents)
+            // Conversion to HTML adds additional tab characters at the end which need to be removed
+            this.contents =
+                SpannableStringBuilder(textContent.subSequence(0, textContent.length - 2))
+        }
     }
 
     /**
@@ -40,14 +46,5 @@ class NoteModel(
      */
     fun spannableStringToText(): String {
         return contents.toHtml()
-    }
-
-    /**
-     * Restore note from recently deleted
-     */
-    fun restoreNote() {
-        TODO("Implement later")
-//        currFolder = "Recently Deleted"  // Bring back to original folder
-//        deleteFile()
     }
 }

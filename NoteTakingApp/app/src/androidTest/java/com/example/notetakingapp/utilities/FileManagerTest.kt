@@ -52,9 +52,9 @@ internal class FileManagerTest {
         val manager : FileManager? = FileManager.instance
         manager?.initManager(appContext)
         manager?.initFiles()
-        val note1 = manager?.createNewNote("New note", 2)
-        val note2 = manager?.createNewNote("New note", 1)
-        val note3 = manager?.createNewNote("New note", 1)
+        manager?.createNewNote("New note", 2)
+        manager?.createNewNote("New note", 1)
+        manager?.createNewNote("New note", 1)
 
         manager?.folderList?.clear()
         manager?.allNotes?.clear()
@@ -202,7 +202,7 @@ internal class FileManagerTest {
         // Make a note
         val note = manager?.createNewNote("New note", 2)
         if (note != null) {
-            manager.permanentlyDeleteNote(note)
+            manager.permanentlyDeleteNote(note.id)
         }
         if (manager != null) {
             Assert.assertEquals(0, manager.folderList[2]?.noteList?.size)
@@ -242,5 +242,53 @@ internal class FileManagerTest {
         if (note != null) {
             manager.editNote(note.id, title = "Note 2", contents = SpannableStringBuilder("Stuff"))
         }
+        val id = note?.id
+
+        // Reset
+        manager?.folderList?.clear()
+        manager?.allNotes?.clear()
+
+        manager?.initFiles()
+        if (manager != null) {
+            val testNote = manager.getNote(id!!)
+            Assert.assertEquals("Note 2", testNote?.title)
+            //Assert.assertEquals(SpannableStringBuilder("Stuff"), testNote?.contents)
+        }
+    }
+
+    @Test
+    fun restoreNote() {
+        cleanupManager()
+
+        val appContext = InstrumentationRegistry.getInstrumentation().targetContext
+        val manager : FileManager? = FileManager.instance
+        manager?.initManager(appContext)
+        manager?.initFiles()
+
+        // Make a note
+        val note = manager?.createNewNote("New note", 1)
+        if (note != null) {
+            // Delete and restore
+            manager.deleteNote(note.id)
+            manager.restoreNote(note.id)
+            Assert.assertEquals("", note.getDeletionDate())
+        }
+        if (manager != null) {
+            Assert.assertEquals(1, manager.folderList[1]?.noteList?.size)
+        }
+
+        // Try in a new folder
+        manager?.createNewFolder("New Folder 1")
+        val note1 = manager?.createNewNote("New note 1", 3)
+        if (note1 != null) {
+            // Delete and restore
+            manager.deleteNote(note1.id)
+            manager.restoreNote(note1.id)
+            Assert.assertEquals("", note1.getDeletionDate())
+        }
+        if (manager != null) {
+            Assert.assertEquals(1, manager.folderList[3]?.noteList?.size)
+        }
+
     }
 }
