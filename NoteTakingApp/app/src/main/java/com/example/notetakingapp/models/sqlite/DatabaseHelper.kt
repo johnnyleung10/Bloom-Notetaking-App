@@ -141,7 +141,7 @@ class DatabaseHelper(private val context: Context) :
         return retList
     }
 
-    fun sortNotes(columnName: String, folderId: Int): List<NoteModel> {
+    fun getSortedNotes(columnName: String, folderId: Int): List<NoteModel> {
         val retList : ArrayList<NoteModel> = arrayListOf()
         val queryString = "SELECT * FROM " + NoteEntry.TABLE_NAME + " WHERE folder_Id=" + folderId + " ORDER BY " + columnName
         val dbRead = this.readableDatabase
