@@ -31,7 +31,6 @@ class NotesFragment : Fragment(), MoveNoteDialogFragment.MoveNoteDialogListener 
     private lateinit var folder: FolderModel
     private lateinit var folders: HashMap<Long, FolderModel>
     private lateinit var adapter: NotesRecyclerViewAdapter
-    private val apiService: ApiService = ApiService.create()
 
     // This property is only valid between onCreateView and
     // onDestroyView.
