@@ -38,9 +38,7 @@ private const val SQL_DELETE_FOLDER_ENTRIES = "DROP TABLE IF EXISTS ${DatabaseHe
 class DatabaseHelper(private val context: Context) :
     SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 
-    /**
-     * INSERTING
-     */
+    // INSERTING
     fun insertNote(note: NoteModel): Long {
         val values = ContentValues().apply {
             put(NoteEntry.COLUMN_NAME_TITLE, note.title)
@@ -178,9 +176,7 @@ class DatabaseHelper(private val context: Context) :
         return false
     }
 
-    /**
-     * UPDATING
-     */
+    // UPDATING
     fun updateNote(id: Long, title: String? = null, content: String? = null, dateModified: String? = null, dateDeleted: String? = null, folderId: Int? = null) {
         val dbWrite = this.writableDatabase
         val values = ContentValues().apply {
@@ -218,9 +214,7 @@ class DatabaseHelper(private val context: Context) :
         dbWrite.close()
     }
 
-    /**
-     * CLEAR DATABASE
-     */
+    // CLEAR DATABASE
     fun clearDatabase() {
         val dbWrite = this.writableDatabase
         dbWrite.execSQL(SQL_DELETE_NOTE_ENTRIES)
