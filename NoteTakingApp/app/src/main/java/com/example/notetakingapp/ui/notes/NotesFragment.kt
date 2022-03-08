@@ -1,7 +1,6 @@
 package com.example.notetakingapp.ui.notes
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,10 +14,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.notetakingapp.R
 import com.example.notetakingapp.databinding.FragmentNotesBinding
 import com.example.notetakingapp.models.FolderModel
-import com.example.notetakingapp.ui.folders.FoldersRecyclerViewAdapter
 import com.example.notetakingapp.viewmodels.NotesViewModel
 import com.example.notetakingapp.utilities.FileManager
-import com.example.notetakingapp.viewmodels.FoldersViewModel
 
 class NotesFragment : Fragment(), MoveNoteDialogFragment.MoveNoteDialogListener {
 
@@ -30,8 +27,7 @@ class NotesFragment : Fragment(), MoveNoteDialogFragment.MoveNoteDialogListener 
     private lateinit var folders: HashMap<Long, FolderModel>
     private lateinit var adapter: NotesRecyclerViewAdapter
 
-    // This property is only valid between onCreateView and
-    // onDestroyView.
+    // This property is only valid between onCreateView and onDestroyView.
     private val binding get() = _binding!!
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -86,7 +82,7 @@ class NotesFragment : Fragment(), MoveNoteDialogFragment.MoveNoteDialogListener 
         val notesRecyclerView = binding.noteContainer
         notesRecyclerView.layoutManager = LinearLayoutManager(activity)
 
-        adapter = NotesRecyclerViewAdapter(ArrayList(), ::onNoteClick)
+        adapter = NotesRecyclerViewAdapter(ArrayList(), ::onNoteClick, folderId)
         notesRecyclerView.adapter = adapter
 
         // Observer pattern
@@ -140,6 +136,7 @@ class NotesFragment : Fragment(), MoveNoteDialogFragment.MoveNoteDialogListener 
         // TODO: return search results
         search.text.clear()
 
+        // TODO: return sort results
         ArrayAdapter.createFromResource(
             requireContext(), R.array.sort_by, R.layout.dropdown
         ).also { adapter ->

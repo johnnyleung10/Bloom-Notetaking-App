@@ -12,11 +12,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.notetakingapp.models.FolderCellViewModel
 import android.widget.CheckBox
 import android.widget.EditText
-import androidx.cardview.widget.CardView
 import androidx.lifecycle.MutableLiveData
 import com.example.notetakingapp.R
 
-class FoldersRecyclerViewAdapter(var folderCellList: ArrayList<FolderCellViewModel>, private val onFolderClicked: (position: Int) -> Unit) : RecyclerView.Adapter<FoldersRecyclerViewAdapter.ViewHolder>() {
+class FoldersRecyclerViewAdapter(var folderCellList: ArrayList<FolderCellViewModel>, private val onFolderClicked: (position: Int) -> Unit, private val onFolderRenamed: (position: Int, newTitle: String) -> Unit) : RecyclerView.Adapter<FoldersRecyclerViewAdapter.ViewHolder>() {
 
     private var editMode: Boolean = false
     private var selectAll: Boolean = false
@@ -32,7 +31,7 @@ class FoldersRecyclerViewAdapter(var folderCellList: ArrayList<FolderCellViewMod
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.folder_cell, parent, false)
 
-        return ViewHolder(view, onFolderClicked)
+        return ViewHolder(view, onFolderClicked, onFolderRenamed)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -95,7 +94,8 @@ class FoldersRecyclerViewAdapter(var folderCellList: ArrayList<FolderCellViewMod
 
     inner class ViewHolder(
         ItemView: View,
-        private val onItemClicked: (position: Int) -> Unit
+        private val onItemClicked: (position: Int) -> Unit,
+        private val onFolderRenamed: (position: Int, newTitle: String, ) -> Unit
     ) : RecyclerView.ViewHolder(ItemView), View.OnClickListener {
 
         val folderTitle: EditText = itemView.findViewById(R.id.folderTitle)
@@ -104,6 +104,10 @@ class FoldersRecyclerViewAdapter(var folderCellList: ArrayList<FolderCellViewMod
 
         init {
             itemView.setOnClickListener(this)
+
+            folderTitle.setOnFocusChangeListener{ _, _ ->
+                onFolderRenamed(adapterPosition, folderTitle.text.toString())
+            }
 
             checkbox.setOnClickListener {
                 if (checked.value?.contains(adapterPosition) == true)
