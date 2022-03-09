@@ -6,12 +6,10 @@ import com.example.notetakingapp.models.FolderModel
 import com.example.notetakingapp.models.sqlite.DatabaseHelper
 import org.junit.Assert
 import org.junit.Test
-import org.testng.annotations.BeforeMethod
 
 internal class FileManagerTest {
 
-    @BeforeMethod(alwaysRun = true)
-    fun cleanupManager() {
+    private fun cleanupManager() {
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
         val db = DatabaseHelper(appContext)
         val manager : FileManager? = FileManager.instance
@@ -291,6 +289,78 @@ internal class FileManagerTest {
         if (manager != null) {
             Assert.assertEquals(1, manager.folderList[3]?.noteList?.size)
         }
-
     }
+
+    @Test
+    fun sortNotes() {
+        cleanupManager()
+
+        val appContext = InstrumentationRegistry.getInstrumentation().targetContext
+        val manager : FileManager? = FileManager.instance
+        manager?.initManager(appContext)
+        manager?.initFiles()
+
+        // Make notes
+        val note1 = manager?.createNewNote("B Note", 1)
+        val note2 = manager?.createNewNote("A Note", 1)
+        val note3 = manager?.createNewNote("C Note", 1)
+
+        // Test sort by title
+        manager?.sortNotes(DatabaseHelper.DatabaseContract.NoteEntry.COLUMN_NAME_TITLE, 1) // ASC
+        if (manager != null) {
+            Assert.assertEquals(note2?.title, manager.folderList[1]?.noteList?.get(0)?.title)
+            Assert.assertEquals(note1?.title, manager.folderList[1]?.noteList?.get(1)?.title)
+            Assert.assertEquals(note3?.title, manager.folderList[1]?.noteList?.get(2)?.title)
+        }
+        manager?.sortNotes(DatabaseHelper.DatabaseContract.NoteEntry.COLUMN_NAME_TITLE, 1, descending = true) // DESC
+        if (manager != null) {
+            Assert.assertEquals(note3?.title, manager.folderList[1]?.noteList?.get(0)?.title)
+        }
+
+        // Test sort by createdDate
+        manager?.sortNotes(DatabaseHelper.DatabaseContract.NoteEntry.COLUMN_NAME_DATE_CREATED, 1) // ASC
+        if (manager != null) {
+            Assert.assertEquals(note1?.title, manager.folderList[1]?.noteList?.get(0)?.title)
+        }
+        manager?.sortNotes(DatabaseHelper.DatabaseContract.NoteEntry.COLUMN_NAME_DATE_CREATED, 1, descending = true) // DESC
+        if (manager != null) {
+            Assert.assertEquals(note3?.title, manager.folderList[1]?.noteList?.get(0)?.title)
+            Assert.assertEquals(note2?.title, manager.folderList[1]?.noteList?.get(1)?.title)
+            Assert.assertEquals(note1?.title, manager.folderList[1]?.noteList?.get(2)?.title)
+        }
+    }
+
+    @Test
+    fun searchNotes() {
+        cleanupManager()
+
+        val appContext = InstrumentationRegistry.getInstrumentation().targetContext
+        val manager : FileManager? = FileManager.instance
+        manager?.initManager(appContext)
+        manager?.initFiles()
+
+        // Make notes
+        val note1 = manager?.createNewNote("B Note", 1)
+        val note2 = manager?.createNewNote("A Note", 1)
+        val note3 = manager?.createNewNote("C Note", 1)
+
+        // Search
+        var resultList = manager?.searchNotes("A",1)
+        if (manager != null) {
+            Assert.assertEquals(note2?.id, resultList?.get(0))
+        }
+        resultList = manager?.searchNotes("B",1)
+        if (manager != null) {
+            Assert.assertEquals(note1?.id, resultList?.get(0))
+        }
+        resultList = manager?.searchNotes("C",1)
+        if (manager != null) {
+            Assert.assertEquals(note3?.id, resultList?.get(0))
+        }
+        resultList = manager?.searchNotes("Note",1)
+        if (manager != null) {
+            Assert.assertEquals(3, resultList?.size)
+        }
+    }
+
 }

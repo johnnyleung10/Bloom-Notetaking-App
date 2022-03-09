@@ -26,6 +26,9 @@ class FileManager() {
         dataSynchronizer = DataSynchronizer(databaseHelper)
     }
 
+    /**
+     * Sets up class by creating folders and notes from the database
+     */
     fun initFiles() {
         initFolders()
         initNotes()
@@ -192,7 +195,6 @@ class FileManager() {
      */
     fun moveNote(noteID : Long, folderID : Long) {
         val note = allNotes[noteID]
-        //note?.updateModifiedDate()
 
         // Remove note from current folder
         val currFolderIndex = note?.folderID
@@ -208,13 +210,31 @@ class FileManager() {
             note?.updateDeletionDate() // More up to date
         }
 
-        //note?.updateModifiedDate()
-
         // Update in database
         if (note != null) {
             dataSynchronizer.updateNote(note.id, folderId = folderID,
                 dateModified = note.getLastModifiedDate(), dateDeleted = note.getDeletionDate())
         }
+    }
+
+    /**
+     * Sort notes by columnName in specified folder
+     */
+    fun sortNotes(columnName : String, folderID: Long, descending: Boolean? = false) {
+        val newOrder = databaseHelper.getSortedNotes(columnName, folderID, descending)
+        folderList[folderID]!!.noteList.clear()
+        for (noteID : Long in newOrder) {
+            val note : NoteModel? = allNotes[noteID]
+            folderList[folderID]!!.noteList.add(note!!)
+        }
+    }
+
+    /**
+     * Search notes by title in the specified folder. Returns a list of noteIDs that match search
+     * criteria
+     */
+    fun searchNotes(searchTerm : String, folderID: Long) : List<Long> {
+        return databaseHelper.searchNote(DatabaseHelper.DatabaseContract.NoteEntry.COLUMN_NAME_TITLE, searchTerm, folderID)
     }
 
     companion object {
