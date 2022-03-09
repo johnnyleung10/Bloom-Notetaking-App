@@ -6,14 +6,21 @@ import javax.persistence.*
 @Table(name = "NOTE_TABLE")
 data class Note (
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     var id: Long,
 
     var title: String,
+
     var contentRich: String,
+
     var contentPlain: String,
+
     var dateCreated: String,
+
     var dateModified: String,
+
     var dateDeleted: String,
+
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "folder_id", referencedColumnName="id")
     var folderId: Long
     )

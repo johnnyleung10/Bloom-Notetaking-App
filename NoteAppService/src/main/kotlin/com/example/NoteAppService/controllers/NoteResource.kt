@@ -13,7 +13,7 @@ class NoteResource(val service: NoteService) {
     }
 
     @PostMapping
-    fun post(@RequestBody note: Note) {
-        service.post(note)
+    fun post(@RequestBody note: Note): Long {
+        return service.post(note)
     }
 }
