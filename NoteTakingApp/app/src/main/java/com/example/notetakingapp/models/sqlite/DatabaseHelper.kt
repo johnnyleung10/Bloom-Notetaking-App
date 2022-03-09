@@ -22,8 +22,8 @@ private const val SQL_CREATE_NOTE_ENTRIES =
             "${DatabaseHelper.DatabaseContract.NoteEntry.COLUMN_NAME_DATE_MODIFIED} TEXT," +
             "${DatabaseHelper.DatabaseContract.NoteEntry.COLUMN_NAME_DATE_DELETED} TEXT," +
             "${DatabaseHelper.DatabaseContract.NoteEntry.COLUMN_NAME_FOLDER_ID} INTEGER," +
-            "${DatabaseHelper.DatabaseContract.NoteEntry.COLUMN_NAME_IS_DIRTY} BOOLEAN," +
-            "${DatabaseHelper.DatabaseContract.NoteEntry.COLUMN_NAME_IS_PERMANENTLY_DELETED} BOOLEAN," +
+            "${DatabaseHelper.DatabaseContract.NoteEntry.COLUMN_NAME_IS_DIRTY} BOOLEAN DEFAULT FALSE," +
+            "${DatabaseHelper.DatabaseContract.NoteEntry.COLUMN_NAME_IS_PERMANENTLY_DELETED} BOOLEAN DEFAULT FALSE," +
             "FOREIGN KEY ("+DatabaseHelper.DatabaseContract.NoteEntry.COLUMN_NAME_FOLDER_ID+") REFERENCES "+DatabaseHelper.DatabaseContract.FolderEntry.TABLE_NAME+"("+BaseColumns._ID+"))"
 
 
@@ -34,8 +34,8 @@ private const val SQL_CREATE_FOLDER_ENTRIES =
             "${DatabaseHelper.DatabaseContract.FolderEntry.COLUMN_NAME_DATE_CREATED} TEXT," +
             "${DatabaseHelper.DatabaseContract.FolderEntry.COLUMN_NAME_DATE_MODIFIED} TEXT," +
             "${DatabaseHelper.DatabaseContract.FolderEntry.COLUMN_NAME_DATE_DELETED} TEXT," +
-            "${DatabaseHelper.DatabaseContract.FolderEntry.COLUMN_NAME_IS_DIRTY} BOOLEAN," +
-            "${DatabaseHelper.DatabaseContract.NoteEntry.COLUMN_NAME_IS_PERMANENTLY_DELETED} BOOLEAN)"
+            "${DatabaseHelper.DatabaseContract.FolderEntry.COLUMN_NAME_IS_DIRTY} BOOLEAN DEFAULT FALSE," +
+            "${DatabaseHelper.DatabaseContract.NoteEntry.COLUMN_NAME_IS_PERMANENTLY_DELETED} BOOLEAN DEFAULT FALSE)"
 
             private const val SQL_DELETE_NOTE_ENTRIES = "DROP TABLE IF EXISTS ${DatabaseHelper.DatabaseContract.NoteEntry.TABLE_NAME}"
 private const val SQL_DELETE_FOLDER_ENTRIES = "DROP TABLE IF EXISTS ${DatabaseHelper.DatabaseContract.FolderEntry.TABLE_NAME}"
@@ -99,13 +99,13 @@ class DatabaseHelper(private val context: Context) :
     }
 
     // QUERYING
-    fun getAllFolders(onlyDirty: Boolean = false, onlyPermanentlyDeleted: Boolean): List<FolderModel> {
+    fun getAllFolders(onlyDirty: Boolean = false, onlyPermanentlyDeleted: Boolean = false): List<FolderModel> {
         val retList : ArrayList<FolderModel> = arrayListOf()
-        val queryString = "SELECT * FROM " + FolderEntry.TABLE_NAME
+        var queryString = "SELECT * FROM " + FolderEntry.TABLE_NAME
         if (onlyDirty) {
-            queryString.plus(" WHERE " + FolderEntry.COLUMN_NAME_IS_DIRTY + "=TRUE")
+            queryString = queryString.plus(" WHERE " + FolderEntry.COLUMN_NAME_IS_DIRTY + "=TRUE")
         } else if(onlyPermanentlyDeleted){
-            queryString.plus(" WHERE " + FolderEntry.COLUMN_NAME_IS_PERMANENTLY_DELETED + "=TRUE")
+            queryString = queryString.plus(" WHERE " + FolderEntry.COLUMN_NAME_IS_PERMANENTLY_DELETED + "=TRUE")
         }
         val dbRead = this.readableDatabase
 
@@ -132,9 +132,9 @@ class DatabaseHelper(private val context: Context) :
         val retList : ArrayList<NoteModel> = arrayListOf()
         var queryString = "SELECT * FROM " + NoteEntry.TABLE_NAME
         if (onlyDirty) {
-            queryString.plus(" WHERE " + NoteEntry.COLUMN_NAME_IS_DIRTY + "=TRUE")
+            queryString = queryString.plus(" WHERE " + NoteEntry.COLUMN_NAME_IS_DIRTY + "=TRUE")
         } else if(onlyPermanentlyDeleted){
-            queryString.plus(" WHERE " + NoteEntry.COLUMN_NAME_IS_PERMANENTLY_DELETED + "=TRUE")
+            queryString = queryString.plus(" WHERE " + NoteEntry.COLUMN_NAME_IS_PERMANENTLY_DELETED + "=TRUE")
         }
 
         val dbRead = this.readableDatabase

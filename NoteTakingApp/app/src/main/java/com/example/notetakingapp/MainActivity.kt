@@ -24,6 +24,8 @@ class MainActivity : AppCompatActivity() {
         // Instantiate file manager
         val fm = FileManager.instance
         fm?.initManager(this)
+        // Handle the dirty data first!
+        fm?.dataSynchronizer?.handleDirtyData()
         fm?.initFiles()
 
         // Hide Action Bar

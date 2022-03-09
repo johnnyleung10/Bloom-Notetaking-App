@@ -15,7 +15,7 @@ private const val UNIDENTIFIED_FOLDER : String = "Unidentified Folder"
 class FileManager() {
     private lateinit var context : Context
     private lateinit var databaseHelper : DatabaseHelper
-    private lateinit var dataSynchronizer: DataSynchronizer
+    lateinit var dataSynchronizer: DataSynchronizer
 
     val folderList = HashMap<Long, FolderModel>()
     val allNotes = HashMap<Long, NoteModel>()
