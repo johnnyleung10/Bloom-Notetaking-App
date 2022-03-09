@@ -25,11 +25,17 @@ class NoteService(private val db: NoteRepository){
         return db.save(note).id
     }
 
-    fun delete(noteId: Long) {
-        db.deleteById(noteId)
+    fun delete(noteId: Long) : Boolean {
+        val noteOptional = db.findById(noteId)
+        if (noteOptional.isPresent) {
+            db.deleteById(noteId)
+            return true
+        }
+        return false
     }
 
-    fun put(noteId: Long, title: String? = null, contentRich: String? = null, contentPlain: String? = null, dateModified: String? = null, dateDeleted: String? = null) {
+    fun put(noteId: Long, title: String? = null, contentRich: String? = null, contentPlain: String? = null,
+            dateModified: String? = null, dateDeleted: String? = null, folderId : Long? = null) : Long {
         val noteOptional = db.findById(noteId)
 
         if (noteOptional.isPresent) {
@@ -39,7 +45,10 @@ class NoteService(private val db: NoteRepository){
             contentPlain?.let { note.contentPlain = contentPlain }
             dateModified?.let { note.dateModified = dateModified }
             dateDeleted?.let { note.dateDeleted = dateDeleted }
-            db.save(note)
+            folderId?.let { note.folderId = folderId }
+
+            return db.save(note).id
         }
+        return -1
     }
 }
