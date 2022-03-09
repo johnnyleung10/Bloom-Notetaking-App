@@ -13,13 +13,13 @@ import io.ktor.http.*
 interface ApiService {
 
     suspend fun getNotes(): List<NoteResponseModel>
-    suspend fun insertNote(noteCreationRequestModel: NoteCreationRequestModel): NoteResponseModel?
-    suspend fun updateNote(noteCreationRequestModel: NoteUpdateRequestModel): NoteResponseModel?
-    suspend fun deleteNote(noteDeletionRequestModel: NoteDeletionRequestModel): NoteResponseModel?
+    suspend fun insertNote(noteCreationRequestModel: NoteCreationRequestModel): EmptyResponseModel?
+    suspend fun updateNote(noteCreationRequestModel: NoteUpdateRequestModel): EmptyResponseModel?
+    suspend fun deleteNote(noteDeletionRequestModel: NoteDeletionRequestModel): EmptyResponseModel?
     suspend fun getFolders(): List<FolderResponseModel>
-    suspend fun insertFolder(folderRequestModel: FolderCreationRequestModel): FolderResponseModel?
-    suspend fun updateFolder(folderRequestModel: FolderUpdateRequestModel): FolderResponseModel?
-    suspend fun deleteFolder(folderDeletionRequestModel: FolderDeletionRequestModel): FolderResponseModel?
+    suspend fun insertFolder(folderRequestModel: FolderCreationRequestModel): EmptyResponseModel?
+    suspend fun updateFolder(folderRequestModel: FolderUpdateRequestModel): EmptyResponseModel?
+    suspend fun deleteFolder(folderDeletionRequestModel: FolderDeletionRequestModel): EmptyResponseModel?
     suspend fun getTest(): List<TestResponseModel>
 
     companion object {

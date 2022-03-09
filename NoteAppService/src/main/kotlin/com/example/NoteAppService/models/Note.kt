@@ -7,19 +7,19 @@ import javax.persistence.*
 data class Note (
     @Id
     var id: Long,
-    var title: String,
+    var title: String?,
 
-    var contentRich: String,
+    var contentRich: String?,
 
-    var contentPlain: String,
+    var contentPlain: String?,
 
-    var dateCreated: String,
+    var dateCreated: String?,
 
-    var dateModified: String,
+    var dateModified: String?,
 
-    var dateDeleted: String,
+    var dateDeleted: String?,
 
 //    @ManyToOne(fetch = FetchType.LAZY)
 //    @JoinColumn(name = "folder_id", referencedColumnName="id")
-    var folderId: Long
+    var folderId: Long?
     )

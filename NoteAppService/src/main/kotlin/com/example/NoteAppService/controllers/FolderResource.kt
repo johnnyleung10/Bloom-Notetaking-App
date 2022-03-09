@@ -1,5 +1,6 @@
 package com.example.NoteAppService.controllers
 
+import com.example.NoteAppService.models.EmptyResponse
 import com.example.NoteAppService.models.Folder
 import com.example.NoteAppService.services.FolderService
 import org.springframework.web.bind.annotation.DeleteMapping
@@ -28,15 +29,17 @@ class FolderResource(val service: FolderService) {
 //    }
 
     @PostMapping
-    fun post(@RequestBody folder: Folder): Long {
-        return service.post(folder)
+    fun post(@RequestBody folder: Folder): EmptyResponse {
+        service.post(folder)
+        return EmptyResponse()
     }
 
     //this is just a testing of put. It needs to be rewritten
     @PutMapping
     fun put(@RequestParam folderId: Long, @RequestParam(required = false) title: String?,
-            @RequestParam(required = false) dateModified: String?, @RequestParam(required = false) dateDeleted: String?) : Long {
-        return service.put(folderId, title=title,  dateModified=dateModified, dateDeleted=dateDeleted)
+            @RequestParam(required = false) dateModified: String?, @RequestParam(required = false) dateDeleted: String?) : EmptyResponse {
+        service.put(folderId, title=title,  dateModified=dateModified, dateDeleted=dateDeleted)
+        return EmptyResponse()
     }
 
 //    @PutMapping

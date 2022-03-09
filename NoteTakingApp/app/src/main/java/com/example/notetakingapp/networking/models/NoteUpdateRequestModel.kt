@@ -8,6 +8,7 @@ data class NoteUpdateRequestModel(
     val title: String?,
     val contentRich: String?,
     val contentPlain: String?,
+    val dateCreated: String?,
     val dateModified: String?,
     val dateDeleted: String?,
     val folderId: Long?

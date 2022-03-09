@@ -21,7 +21,7 @@ class DataSynchronizer(private val databaseHelper: DatabaseHelper) {
      */
     fun insertNote(note: NoteModel): Long {
         val noteCreationRequest = note.toNoteCreationRequestModel()
-        var isDirty = true
+        var isDirty = false
         runBlocking {
             val response = async { apiService.insertNote(noteCreationRequest) }
             isDirty = response.await() == null
@@ -32,7 +32,7 @@ class DataSynchronizer(private val databaseHelper: DatabaseHelper) {
 
     fun insertFolder(folder: FolderModel): Long {
         val folderCreationRequest = folder.toFolderCreationRequestModel()
-        var isDirty = true
+        var isDirty = false
         runBlocking {
             val response = async { apiService.insertFolder(folderCreationRequest) }
             isDirty = response.await() == null
@@ -76,9 +76,9 @@ class DataSynchronizer(private val databaseHelper: DatabaseHelper) {
     /**
      * UPDATING
      */
-    fun updateNote(id: Long, title: String? = null, content: String? = null, dateModified: String? = null, dateDeleted: String? = null, folderId: Long? = null) {
-        val noteUpdateRequest = NoteUpdateRequestModel(id, title, content, Html.fromHtml(content).toString(), dateModified, dateDeleted, folderId)
-        var isDirty = true
+    fun updateNote(id: Long, title: String? = null, content: String? = null, dateCreated: String? = null, dateModified: String? = null, dateDeleted: String? = null, folderId: Long? = null) {
+        val noteUpdateRequest = NoteUpdateRequestModel(id, title, content, Html.fromHtml(content).toString(), dateCreated, dateModified, dateDeleted, folderId)
+        var isDirty = false
         runBlocking {
             val response = async { apiService.updateNote(noteUpdateRequest) }
             isDirty = response.await() == null
@@ -89,7 +89,7 @@ class DataSynchronizer(private val databaseHelper: DatabaseHelper) {
 
     fun updateFolder(id: Long, title: String? = null, dateModified: String? = null, dateDeleted: String? = null) {
         val folderUpdateRequest = FolderUpdateRequestModel(id, title, dateModified, dateDeleted)
-        var isDirty = true
+        var isDirty = false
         runBlocking {
             val response = async { apiService.updateFolder(folderUpdateRequest) }
             isDirty = response.await() == null
@@ -115,7 +115,7 @@ class DataSynchronizer(private val databaseHelper: DatabaseHelper) {
         val dirtyNotes: List<NoteModel> = databaseHelper.getAllNotes(onlyDirty = true)
 
         for(dirtyNote: NoteModel in dirtyNotes){
-            updateNote(dirtyNote.id, dirtyNote.title, dirtyNote.spannableStringToText(), dirtyNote.getLastModifiedDate(), dirtyNote.getDeletionDate(), dirtyNote.folderID)
+            updateNote(id = dirtyNote.id, title = dirtyNote.title, content = dirtyNote.spannableStringToText(), dateModified = dirtyNote.getLastModifiedDate(), dateDeleted = dirtyNote.getDeletionDate(), folderId = dirtyNote.folderID)
         }
 
         // FOLDERS

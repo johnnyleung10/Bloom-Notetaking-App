@@ -33,10 +33,10 @@ class ApiServiceImpl(
         }
     }
 
-    override suspend fun insertNote(noteCreationRequest: NoteCreationRequestModel): NoteResponseModel? {
+    override suspend fun insertNote(noteCreationRequest: NoteCreationRequestModel): EmptyResponseModel? {
         return try {
 
-            client.post<NoteResponseModel> {
+            client.post<EmptyResponseModel> {
                 url(ApiRoutes.NOTES)
                 body = noteCreationRequest
             }
@@ -58,10 +58,10 @@ class ApiServiceImpl(
         }
     }
 
-    override suspend fun updateNote(noteUpdateRequest: NoteUpdateRequestModel): NoteResponseModel? {
+    override suspend fun updateNote(noteUpdateRequest: NoteUpdateRequestModel): EmptyResponseModel? {
         return try {
 
-            client.put<NoteResponseModel> {
+            client.put<EmptyResponseModel> {
                 url(ApiRoutes.NOTES)
                 body = noteUpdateRequest
             }
@@ -83,10 +83,10 @@ class ApiServiceImpl(
         }
     }
 
-    override suspend fun deleteNote(noteDeletionRequest: NoteDeletionRequestModel): NoteResponseModel? {
+    override suspend fun deleteNote(noteDeletionRequest: NoteDeletionRequestModel): EmptyResponseModel? {
         return try {
 
-            client.delete<NoteResponseModel> {
+            client.delete<EmptyResponseModel> {
                 url(ApiRoutes.NOTES)
                 body = noteDeletionRequest
             }
@@ -131,10 +131,10 @@ class ApiServiceImpl(
         }
     }
 
-    override suspend fun insertFolder(folderRequest: FolderCreationRequestModel): FolderResponseModel? {
+    override suspend fun insertFolder(folderRequest: FolderCreationRequestModel): EmptyResponseModel? {
         return try {
 
-            client.post<FolderResponseModel> {
+            client.post {
                 url(ApiRoutes.FOLDERS)
                 body = folderRequest
             }
@@ -156,10 +156,10 @@ class ApiServiceImpl(
         }
     }
 
-    override suspend fun updateFolder(folderRequest: FolderUpdateRequestModel): FolderResponseModel? {
+    override suspend fun updateFolder(folderRequest: FolderUpdateRequestModel): EmptyResponseModel? {
         return try {
 
-            client.put<FolderResponseModel> {
+            client.put<EmptyResponseModel> {
                 url(ApiRoutes.FOLDERS)
                 body = folderRequest
             }
@@ -181,10 +181,10 @@ class ApiServiceImpl(
         }
     }
 
-    override suspend fun deleteFolder(folderDeletionRequestModel: FolderDeletionRequestModel): FolderResponseModel? {
+    override suspend fun deleteFolder(folderDeletionRequestModel: FolderDeletionRequestModel): EmptyResponseModel? {
         return try {
 
-            client.delete<FolderResponseModel> {
+            client.delete<EmptyResponseModel> {
                 url(ApiRoutes.NOTES)
                 body = folderDeletionRequestModel
             }
