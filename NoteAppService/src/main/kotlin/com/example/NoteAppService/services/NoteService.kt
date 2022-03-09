@@ -13,7 +13,42 @@ class NoteService(private val db: NoteRepository){
         return noteList
     }
 
-    fun post(note: Note) {
-        db.save(note)
+    fun findNote(noteId: Long): Note? {
+        var NoteOptional = db.findById(noteId)
+        if (NoteOptional.isPresent) {
+            return NoteOptional.get()
+        }
+        return null
+    }
+
+    fun post(note: Note): Long {
+        return db.save(note).id
+    }
+
+    fun delete(noteId: Long) : Boolean {
+        val noteOptional = db.findById(noteId)
+        if (noteOptional.isPresent) {
+            db.deleteById(noteId)
+            return true
+        }
+        return false
+    }
+
+    fun put(noteId: Long, title: String? = null, contentRich: String? = null, contentPlain: String? = null,
+            dateModified: String? = null, dateDeleted: String? = null, folderId : Long? = null) : Long {
+        val noteOptional = db.findById(noteId)
+
+        if (noteOptional.isPresent) {
+            val note = noteOptional.get()
+            title?.let { note.title = title }
+            contentRich?.let { note.contentRich = contentRich }
+            contentPlain?.let { note.contentPlain = contentPlain }
+            dateModified?.let { note.dateModified = dateModified }
+            dateDeleted?.let { note.dateDeleted = dateDeleted }
+            folderId?.let { note.folderId = folderId }
+
+            return db.save(note).id
+        }
+        return -1
     }
 }
