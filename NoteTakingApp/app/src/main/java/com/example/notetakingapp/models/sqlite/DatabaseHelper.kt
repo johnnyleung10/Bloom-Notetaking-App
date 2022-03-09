@@ -23,6 +23,7 @@ private const val SQL_CREATE_NOTE_ENTRIES =
             "${DatabaseHelper.DatabaseContract.NoteEntry.COLUMN_NAME_DATE_DELETED} TEXT," +
             "${DatabaseHelper.DatabaseContract.NoteEntry.COLUMN_NAME_FOLDER_ID} INTEGER," +
             "${DatabaseHelper.DatabaseContract.NoteEntry.COLUMN_NAME_IS_DIRTY} BOOLEAN," +
+            "${DatabaseHelper.DatabaseContract.NoteEntry.COLUMN_NAME_IS_PERMANENTLY_DELETED} BOOLEAN," +
             "FOREIGN KEY ("+DatabaseHelper.DatabaseContract.NoteEntry.COLUMN_NAME_FOLDER_ID+") REFERENCES "+DatabaseHelper.DatabaseContract.FolderEntry.TABLE_NAME+"("+BaseColumns._ID+"))"
 
 
@@ -33,7 +34,8 @@ private const val SQL_CREATE_FOLDER_ENTRIES =
             "${DatabaseHelper.DatabaseContract.FolderEntry.COLUMN_NAME_DATE_CREATED} TEXT," +
             "${DatabaseHelper.DatabaseContract.FolderEntry.COLUMN_NAME_DATE_MODIFIED} TEXT," +
             "${DatabaseHelper.DatabaseContract.FolderEntry.COLUMN_NAME_DATE_DELETED} TEXT," +
-            "${DatabaseHelper.DatabaseContract.FolderEntry.COLUMN_NAME_IS_DIRTY} BOOLEAN)"
+            "${DatabaseHelper.DatabaseContract.FolderEntry.COLUMN_NAME_IS_DIRTY} BOOLEAN," +
+            "${DatabaseHelper.DatabaseContract.NoteEntry.COLUMN_NAME_IS_PERMANENTLY_DELETED} BOOLEAN)"
 
             private const val SQL_DELETE_NOTE_ENTRIES = "DROP TABLE IF EXISTS ${DatabaseHelper.DatabaseContract.NoteEntry.TABLE_NAME}"
 private const val SQL_DELETE_FOLDER_ENTRIES = "DROP TABLE IF EXISTS ${DatabaseHelper.DatabaseContract.FolderEntry.TABLE_NAME}"
@@ -234,7 +236,7 @@ class DatabaseHelper(private val context: Context) :
     /**
      * UPDATING
      */
-    fun updateNote(id: Long, title: String? = null, content: String? = null, dateModified: String? = null, dateDeleted: String? = null, folderId: Int? = null, isDirty:Boolean = false) {
+    fun updateNote(id: Long, title: String? = null, content: String? = null, dateModified: String? = null, dateDeleted: String? = null, folderId: Int? = null, isDirty:Boolean = false, isPermanentlyDeleted: Boolean = false){
 
         val dbWrite = this.writableDatabase
         val values = ContentValues().apply {
@@ -250,13 +252,14 @@ class DatabaseHelper(private val context: Context) :
             dateDeleted?.let { put(NoteEntry.COLUMN_NAME_DATE_DELETED, dateDeleted) }
             folderId?.let { put(NoteEntry.COLUMN_NAME_FOLDER_ID, folderId) }
             put(NoteEntry.COLUMN_NAME_IS_DIRTY, isDirty)
+            put(NoteEntry.COLUMN_NAME_IS_PERMANENTLY_DELETED, isPermanentlyDeleted)
         }
         dbWrite.update(NoteEntry.TABLE_NAME, values, BaseColumns._ID + " = ?",
             arrayOf(id.toString()))
         dbWrite.close()
     }
 
-    fun updateFolder(id: Long, title: String? = null, dateModified: String? = null, dateDeleted: String? = null, isDirty:Boolean = false) {
+    fun updateFolder(id: Long, title: String? = null, dateModified: String? = null, dateDeleted: String? = null, isDirty:Boolean = false, isPermanentlyDeleted: Boolean = false) {
         val dbWrite = this.writableDatabase
         val values = ContentValues().apply {
             title?.let { put(FolderEntry.COLUMN_NAME_TITLE, title) }
@@ -268,6 +271,7 @@ class DatabaseHelper(private val context: Context) :
             }
             dateDeleted?.let { put(FolderEntry.COLUMN_NAME_DATE_DELETED, dateDeleted) }
             put(FolderEntry.COLUMN_NAME_IS_DIRTY, isDirty)
+            put(FolderEntry.COLUMN_NAME_IS_PERMANENTLY_DELETED, isPermanentlyDeleted)
         }
         dbWrite.update(FolderEntry.TABLE_NAME, values, BaseColumns._ID + " = ?",
             arrayOf(id.toString()))
@@ -308,6 +312,7 @@ class DatabaseHelper(private val context: Context) :
             const val COLUMN_NAME_DATE_MODIFIED = "date_modified"
             const val COLUMN_NAME_DATE_DELETED = "date_deleted"
             const val COLUMN_NAME_IS_DIRTY = "is_dirty"
+            const val COLUMN_NAME_IS_PERMANENTLY_DELETED = "is_permanently_deleted"
         }
 
         object FolderEntry : BaseColumns {
@@ -317,6 +322,7 @@ class DatabaseHelper(private val context: Context) :
             const val COLUMN_NAME_DATE_MODIFIED = "date_modified"
             const val COLUMN_NAME_DATE_DELETED = "date_deleted"
             const val COLUMN_NAME_IS_DIRTY = "is_dirty"
+            const val COLUMN_NAME_IS_PERMANENTLY_DELETED = "is_permanently_deleted"
         }
     }
 
