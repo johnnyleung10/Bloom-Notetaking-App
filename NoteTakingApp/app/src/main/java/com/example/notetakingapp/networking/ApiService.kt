@@ -15,9 +15,11 @@ interface ApiService {
     suspend fun getNotes(): List<NoteResponseModel>
     suspend fun insertNote(noteCreationRequestModel: NoteCreationRequestModel): NoteResponseModel?
     suspend fun updateNote(noteCreationRequestModel: NoteUpdateRequestModel): NoteResponseModel?
+    suspend fun deleteNote(noteDeletionRequestModel: NoteDeletionRequestModel): NoteResponseModel?
     suspend fun getFolders(): List<FolderResponseModel>
     suspend fun insertFolder(folderRequestModel: FolderCreationRequestModel): FolderResponseModel?
     suspend fun updateFolder(folderRequestModel: FolderUpdateRequestModel): FolderResponseModel?
+    suspend fun deleteFolder(folderDeletionRequestModel: FolderDeletionRequestModel): FolderResponseModel?
     suspend fun getTest(): List<TestResponseModel>
 
     companion object {

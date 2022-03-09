@@ -5,7 +5,9 @@ import com.example.notetakingapp.models.FolderModel
 import com.example.notetakingapp.models.NoteModel
 import com.example.notetakingapp.models.sqlite.DatabaseHelper
 import com.example.notetakingapp.networking.ApiService
+import com.example.notetakingapp.networking.models.FolderDeletionRequestModel
 import com.example.notetakingapp.networking.models.FolderUpdateRequestModel
+import com.example.notetakingapp.networking.models.NoteDeletionRequestModel
 import com.example.notetakingapp.networking.models.NoteUpdateRequestModel
 import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
@@ -43,12 +45,32 @@ class DataSynchronizer(private val databaseHelper: DatabaseHelper) {
     /**
      * DELETING
      */
-    fun deleteOneNote(id: Long) : Boolean {
-        return databaseHelper.deleteOneNote(id)
+    fun deleteOneNote(id: Long) {
+        val noteDeletionRequest = NoteDeletionRequestModel(id)
+        var deletedSuccess = false
+        runBlocking {
+            val response = async { apiService.deleteNote(noteDeletionRequest) }
+            deletedSuccess = response.await() != null
+        }
+        if(deletedSuccess){
+            databaseHelper.deleteOneNote(id)
+        } else {
+            databaseHelper.updateNote(id, isPermanentlyDeleted = true)
+        }
     }
 
-    fun deleteOneFolder(id: Long) : Boolean {
-        return databaseHelper.deleteOneFolder(id = id)
+    fun deleteOneFolder(id: Long) {
+        val folderDeletionRequest = FolderDeletionRequestModel(id)
+        var deletedSuccess = false
+        runBlocking {
+            val response = async { apiService.deleteFolder(folderDeletionRequest) }
+            deletedSuccess = response.await() != null
+        }
+        if(deletedSuccess){
+            databaseHelper.deleteOneFolder(id = id)
+        } else {
+            databaseHelper.updateFolder(id, isPermanentlyDeleted = true)
+        }
     }
 
     /**

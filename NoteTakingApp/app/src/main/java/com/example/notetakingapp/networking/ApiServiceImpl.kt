@@ -83,6 +83,31 @@ class ApiServiceImpl(
         }
     }
 
+    override suspend fun deleteNote(noteDeletionRequest: NoteDeletionRequestModel): NoteResponseModel? {
+        return try {
+
+            client.delete<NoteResponseModel> {
+                url(ApiRoutes.NOTES)
+                body = noteDeletionRequest
+            }
+        } catch (ex: RedirectResponseException) {
+            // 3xx - responses
+            println("Error: ${ex.response.status.description}")
+            null
+        } catch (ex: ClientRequestException) {
+            // 4xx - responses
+            println("Error: ${ex.response.status.description}")
+            null
+        } catch (ex: ServerResponseException) {
+            // 5xx - response
+            println("Error: ${ex.response.status.description}")
+            null
+        } catch (ex: ConnectException) {
+            println("Error: ConnectException")
+            null
+        }
+    }
+
     /* FOLDERS */
 
     override suspend fun getFolders(): List<FolderResponseModel> {
@@ -137,6 +162,31 @@ class ApiServiceImpl(
             client.put<FolderResponseModel> {
                 url(ApiRoutes.FOLDERS)
                 body = folderRequest
+            }
+        } catch (ex: RedirectResponseException) {
+            // 3xx - responses
+            println("Error: ${ex.response.status.description}")
+            null
+        } catch (ex: ClientRequestException) {
+            // 4xx - responses
+            println("Error: ${ex.response.status.description}")
+            null
+        } catch (ex: ServerResponseException) {
+            // 5xx - response
+            println("Error: ${ex.response.status.description}")
+            null
+        } catch (ex: ConnectException) {
+            println("Error: ConnectException")
+            null
+        }
+    }
+
+    override suspend fun deleteFolder(folderDeletionRequestModel: FolderDeletionRequestModel): FolderResponseModel? {
+        return try {
+
+            client.delete<FolderResponseModel> {
+                url(ApiRoutes.NOTES)
+                body = folderDeletionRequestModel
             }
         } catch (ex: RedirectResponseException) {
             // 3xx - responses
