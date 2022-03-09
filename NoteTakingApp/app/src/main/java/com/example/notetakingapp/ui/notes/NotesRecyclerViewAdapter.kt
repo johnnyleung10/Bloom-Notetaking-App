@@ -1,5 +1,7 @@
 package com.example.notetakingapp.ui.notes
 
+import android.content.res.ColorStateList
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.notetakingapp.R
 import com.example.notetakingapp.models.NoteCellViewModel
 
-class NotesRecyclerViewAdapter(var noteList: ArrayList<NoteCellViewModel>, private val onNoteClicked: (position: Int) -> Unit) : RecyclerView.Adapter<NotesRecyclerViewAdapter.ViewHolder>() {
+class NotesRecyclerViewAdapter(var noteList: ArrayList<NoteCellViewModel>, private val onNoteClicked: (position: Int) -> Unit, var folderId: Long) : RecyclerView.Adapter<NotesRecyclerViewAdapter.ViewHolder>() {
 
     private var editMode: Boolean = false
     private var selectAll: Boolean = false
@@ -85,6 +87,9 @@ class NotesRecyclerViewAdapter(var noteList: ArrayList<NoteCellViewModel>, priva
         init {
             itemView.setOnClickListener(this)
 
+            if (folderId == 2.toLong())
+                noteTitle.setTextColor(ColorStateList.valueOf(Color.LTGRAY))
+
             checkbox.setOnClickListener {
                 if (checked.value?.contains(adapterPosition) == true)
                     checked.value?.remove(adapterPosition)
@@ -98,7 +103,8 @@ class NotesRecyclerViewAdapter(var noteList: ArrayList<NoteCellViewModel>, priva
 
         override fun onClick(v: View) {
             val position = adapterPosition
-            onItemClicked(position)
+            if (folderId != 2.toLong())
+                onItemClicked(position)
         }
     }
 }

@@ -1,18 +1,17 @@
 package com.example.notetakingapp.ui.notes
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.ImageButton
-import android.widget.TextView
+import android.widget.*
+import androidx.core.view.isVisible
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.NavHostFragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.notetakingapp.R
 import com.example.notetakingapp.databinding.FragmentNotesBinding
 import com.example.notetakingapp.models.FolderModel
 import com.example.notetakingapp.networking.ApiService
@@ -32,8 +31,7 @@ class NotesFragment : Fragment(), MoveNoteDialogFragment.MoveNoteDialogListener 
     private lateinit var folders: HashMap<Long, FolderModel>
     private lateinit var adapter: NotesRecyclerViewAdapter
 
-    // This property is only valid between onCreateView and
-    // onDestroyView.
+    // This property is only valid between onCreateView and onDestroyView.
     private val binding get() = _binding!!
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -88,7 +86,7 @@ class NotesFragment : Fragment(), MoveNoteDialogFragment.MoveNoteDialogListener 
         val notesRecyclerView = binding.noteContainer
         notesRecyclerView.layoutManager = LinearLayoutManager(activity)
 
-        adapter = NotesRecyclerViewAdapter(ArrayList(), ::onNoteClick)
+        adapter = NotesRecyclerViewAdapter(ArrayList(), ::onNoteClick, folderId)
         notesRecyclerView.adapter = adapter
 
         // Observer pattern
@@ -105,7 +103,12 @@ class NotesFragment : Fragment(), MoveNoteDialogFragment.MoveNoteDialogListener 
         val moveNote: Button = binding.moveNote
         val selectAll: Button = binding.selectAllNotes
         val deselectAll: Button = binding.deselectAllNotes
+        val search: EditText = binding.searchTerm
+        val spinner: Spinner = binding.sortBy
+        val sortOrder: ImageButton = binding.sortOrder
 
+        if (folderId == 2.toLong())
+            newNoteButton.isVisible = false
         newNoteButton.setOnClickListener{
             newNote()
         }
@@ -114,6 +117,7 @@ class NotesFragment : Fragment(), MoveNoteDialogFragment.MoveNoteDialogListener 
             editNotes()
         }
 
+        // TODO: permanent delete for Recently Deleted
         delete.setOnClickListener{
             deleteNotes()
         }
@@ -128,6 +132,21 @@ class NotesFragment : Fragment(), MoveNoteDialogFragment.MoveNoteDialogListener 
 
         deselectAll.setOnClickListener{
             adapter.selectAll(false)
+        }
+        
+        // TODO: reverse sorted results
+        sortOrder.setOnClickListener{}
+
+        // TODO: return search results
+        search.text.clear()
+
+        // TODO: return sort results
+        ArrayAdapter.createFromResource(
+            requireContext(), R.array.sort_by, R.layout.dropdown
+        ).also { adapter ->
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            spinner.adapter = adapter
+            spinner.setSelection(2)
         }
 
         adapter.checked.observe(viewLifecycleOwner) {
@@ -196,7 +215,7 @@ class NotesFragment : Fragment(), MoveNoteDialogFragment.MoveNoteDialogListener 
     private fun moveNote() {
         val dialogFragment = MoveNoteDialogFragment(fm.folderList.values.toTypedArray())
         dialogFragment.show(requireFragmentManager().beginTransaction(), "move_note")
-        dialogFragment.setTargetFragment(this, 1);
+        dialogFragment.setTargetFragment(this, 1)
     }
 
     /* MoveNoteDialogListener */

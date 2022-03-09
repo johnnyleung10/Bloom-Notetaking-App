@@ -156,6 +156,19 @@ class FileManager() {
         moveNote(noteID, RECENTLY_DELETED_FOLDER) // move to recently deleted
     }
 
+    /**
+     * Moves note to recently deleted folder
+     */
+    fun restoreNote(noteID : Long) : Boolean {
+        val note = allNotes[noteID]
+        if (note != null) {
+            if (!folderList[RECENTLY_DELETED_FOLDER]?.noteList?.contains(note)!!) return false
+            note.restoreFileDate()
+            moveNote(noteID, note.folderID) // Restore to original folder
+        }
+        return true
+    }
+
     fun getNote(id : Long) : NoteModel? {
         return allNotes[id]
     }
@@ -163,11 +176,13 @@ class FileManager() {
     /**
      * Removes a note from database
      */
-    fun permanentlyDeleteNote(note : NoteModel) : Boolean {
-        if (note.folderID != RECENTLY_DELETED_FOLDER) return false
+    fun permanentlyDeleteNote(noteID : Long) : Boolean {
+        val note = allNotes[noteID]
+        if (!folderList[RECENTLY_DELETED_FOLDER]?.noteList?.contains(note)!!) return false
         folderList[RECENTLY_DELETED_FOLDER]?.noteList?.remove(note)
-        allNotes.remove(note.id)
-        dataSynchronizer.deleteOneNote(note.id)
+
+        allNotes.remove(noteID)
+        dataSynchronizer.deleteOneNote(noteID)
 
         return true
     }
@@ -177,7 +192,7 @@ class FileManager() {
      */
     fun moveNote(noteID : Long, folderID : Long) {
         val note = allNotes[noteID]
-        note?.updateDeletionDate()
+        //note?.updateModifiedDate()
 
         // Remove note from current folder
         val currFolderIndex = note?.folderID
@@ -185,10 +200,15 @@ class FileManager() {
 
         // Add note to new folder
         folderList[folderID]?.noteList?.add(note!!)
-        note?.currFolder = folderList[folderID]?.title ?: UNIDENTIFIED_FOLDER
-        note?.folderID = folderID
+        if (note?.getDeletionDate() == "") { // Only change folderID and folderName if not deleted
+            note.currFolder = folderList[folderID]?.title ?: UNIDENTIFIED_FOLDER
+            note.folderID = folderID
+            note.updateModifiedDate()
+        } else {
+            note?.updateDeletionDate() // More up to date
+        }
 
-        note?.updateModifiedDate()
+        //note?.updateModifiedDate()
 
         // Update in database
         if (note != null) {
