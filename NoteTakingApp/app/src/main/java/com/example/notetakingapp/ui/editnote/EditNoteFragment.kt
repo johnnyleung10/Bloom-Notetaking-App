@@ -4,6 +4,7 @@ import android.graphics.Typeface
 import android.os.Bundle
 import android.text.*
 import android.text.style.StyleSpan
+import android.text.style.UnderlineSpan
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -53,6 +54,8 @@ class EditNoteFragment : Fragment() {
         var boldFlag = false
         val italicsButton = binding.italicsButton
         var italicsFlag = false
+        val underlineButton = binding.underlineButton
+        var underlineFlag = false
 
         var lastCursorPosition = editNoteContents.selectionStart
 
@@ -222,6 +225,10 @@ class EditNoteFragment : Fragment() {
                 italicsFlag = !italicsFlag
             }
         }
+        underlineButton.setOnClickListener {
+            underlineFlag = !underlineFlag
+        }
+
 
         // Note contents listeners
         editNoteContents.setOnFocusChangeListener { v, hasFocus ->
@@ -267,6 +274,16 @@ class EditNoteFragment : Fragment() {
                         //Log.d("Span", "$lastCursorPosition $endLength")
                         str.setSpan(
                             StyleSpan(Typeface.ITALIC),
+                            lastCursorPosition,
+                            endLength,
+                            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                        )
+                    }
+                } else if (underlineFlag) {
+                    if (lastCursorPosition <= endLength) {
+                        //Log.d("Span", "$lastCursorPosition $endLength")
+                        str.setSpan(
+                            UnderlineSpan(),
                             lastCursorPosition,
                             endLength,
                             Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
