@@ -13,4 +13,16 @@
     <string name="renameFolderInstructions">Enter a new name for this folder.</string>
     <string name="move">Move</string>
     <string name="choose_folder">Choose Folder</string>
+
+    <string name="newNote">New Note</string>
+    <string name="empty">(0)</string>
+    <string name="delete">Delete</string>
+    <string name="selectAll">Select All</string>
+    <string name="deselectAll">Deselect All</string>
+
+    <string-array name="sort_by">
+        <item>Title</item>
+        <item>Created</item>
+        <item>Modified</item>
+    </string-array>
 </resources>

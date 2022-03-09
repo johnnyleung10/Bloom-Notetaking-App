@@ -6,8 +6,11 @@ import android.database.sqlite.SQLiteDatabase
 import android.content.Context
 import android.provider.BaseColumns
 import android.text.Html
+import android.util.Log
 import com.example.notetakingapp.models.FolderModel
 import com.example.notetakingapp.models.NoteModel
+import java.util.*
+import kotlin.collections.ArrayList
 
 private const val SQL_CREATE_NOTE_ENTRIES =
     "CREATE TABLE ${DatabaseHelper.DatabaseContract.NoteEntry.TABLE_NAME} (" +
@@ -37,9 +40,7 @@ private const val SQL_DELETE_FOLDER_ENTRIES = "DROP TABLE IF EXISTS ${DatabaseHe
 class DatabaseHelper(private val context: Context) :
     SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 
-    /**
-     * INSERTING
-     */
+    // INSERTING
     fun insertNote(note: NoteModel): Long {
         val values = ContentValues().apply {
             put(NoteEntry.COLUMN_NAME_TITLE, note.title)
@@ -72,7 +73,7 @@ class DatabaseHelper(private val context: Context) :
     }
 
     /**
-     * GET NUMBER OF ROWS
+     * Returns number of rows from Folder table
      */
     fun getNumberOfFolders(): Int {
         val dbRead = this.readableDatabase
@@ -88,9 +89,7 @@ class DatabaseHelper(private val context: Context) :
         return retVal
     }
 
-    /**
-     * QUERYING
-     */
+    // QUERYING
     fun getAllFolders(): List<FolderModel> {
         val retList : ArrayList<FolderModel> = arrayListOf()
         val queryString = "SELECT * FROM " + FolderEntry.TABLE_NAME
@@ -117,7 +116,7 @@ class DatabaseHelper(private val context: Context) :
 
     fun getAllNotes(): List<NoteModel> {
         val retList : ArrayList<NoteModel> = arrayListOf()
-        val queryString = "SELECT * FROM " + NoteEntry.TABLE_NAME + " ORDER BY " + BaseColumns._ID
+        val queryString = "SELECT * FROM " + NoteEntry.TABLE_NAME
         val dbRead = this.readableDatabase
 
         val cursor = dbRead.rawQuery(queryString, null)
@@ -171,9 +170,28 @@ class DatabaseHelper(private val context: Context) :
         return retList
     }
 
-    /**
-     * DELETING
-     */
+    fun getSortedNotes(columnName: String, folderId: Long, descending: Boolean? = false): List<Long> {
+        val retList : ArrayList<Long> = arrayListOf()
+        var queryString = "SELECT * FROM " + NoteEntry.TABLE_NAME + " WHERE folder_Id=" + folderId + " ORDER BY " + columnName
+        if (descending == true) queryString += " DESC" // Descending
+        val dbRead = this.readableDatabase
+
+        val cursor = dbRead.rawQuery(queryString, null)
+
+        if (cursor.moveToFirst()) {
+            do {
+                val id = cursor.getInt(0)
+
+                retList.add(id.toLong())
+            } while (cursor.moveToNext())
+        }
+
+        dbRead.close()
+        cursor.close()
+        return retList
+    }
+
+    // DELETING
     fun deleteOneNote(id: Long) : Boolean {
         val queryString = "DELETE FROM " + NoteEntry.TABLE_NAME + " WHERE " + BaseColumns._ID + " = " + id
         val dbRead = this.readableDatabase
@@ -206,9 +224,7 @@ class DatabaseHelper(private val context: Context) :
         return false
     }
 
-    /**
-     * UPDATING
-     */
+    // UPDATING
     fun updateNote(id: Long, title: String? = null, content: String? = null, dateModified: String? = null, dateDeleted: String? = null, folderId: Int? = null) {
         val dbWrite = this.writableDatabase
         val values = ContentValues().apply {
@@ -246,9 +262,7 @@ class DatabaseHelper(private val context: Context) :
         dbWrite.close()
     }
 
-    /**
-     * CLEAR DATABASE
-     */
+    // CLEAR DATABASE
     fun clearDatabase() {
         val dbWrite = this.writableDatabase
         dbWrite.execSQL(SQL_DELETE_NOTE_ENTRIES)
@@ -273,6 +287,7 @@ class DatabaseHelper(private val context: Context) :
 
         object NoteEntry : BaseColumns {
             const val TABLE_NAME = "note_table"
+            const val COLUMN_NAME_ID = BaseColumns._ID
             const val COLUMN_NAME_TITLE = "title"
             const val COLUMN_NAME_CONTENTS_RICH = "contents_rich"
             const val COLUMN_NAME_CONTENTS_PLAIN = "contents_plain"
