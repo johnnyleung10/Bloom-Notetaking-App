@@ -1,5 +1,6 @@
 package com.example.notetakingapp.utilities
 
+import android.text.Html
 import com.example.notetakingapp.models.FolderModel
 import com.example.notetakingapp.models.NoteModel
 import com.example.notetakingapp.models.sqlite.DatabaseHelper
@@ -54,7 +55,7 @@ class DataSynchronizer(private val databaseHelper: DatabaseHelper) {
      * UPDATING
      */
     fun updateNote(id: Long, title: String? = null, content: String? = null, dateModified: String? = null, dateDeleted: String? = null, folderId: Long? = null) {
-        val noteUpdateRequest = NoteUpdateRequestModel(id, title, content, content, dateModified, dateDeleted, folderId)
+        val noteUpdateRequest = NoteUpdateRequestModel(id, title, content, Html.fromHtml(content).toString(), dateModified, dateDeleted, folderId)
         var isDirty = true
         runBlocking {
             val response = async { apiService.updateNote(noteUpdateRequest) }
