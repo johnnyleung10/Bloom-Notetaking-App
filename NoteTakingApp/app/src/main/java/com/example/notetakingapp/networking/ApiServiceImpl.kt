@@ -4,6 +4,7 @@ import com.example.notetakingapp.networking.models.*
 import io.ktor.client.*
 import io.ktor.client.features.*
 import io.ktor.client.request.*
+import java.net.ConnectException
 
 class ApiServiceImpl(
     private val client: HttpClient
@@ -25,6 +26,9 @@ class ApiServiceImpl(
         } catch (ex: ServerResponseException) {
             // 5xx - response
             println("Error: ${ex.response.status.description}")
+            emptyList()
+        } catch (ex: ConnectException) {
+            println("Error: ConnectException")
             emptyList()
         }
     }
@@ -48,6 +52,9 @@ class ApiServiceImpl(
             // 5xx - response
             println("Error: ${ex.response.status.description}")
             null
+        } catch (ex: ConnectException) {
+            println("Error: ConnectException")
+            null
         }
     }
 
@@ -70,6 +77,9 @@ class ApiServiceImpl(
             // 5xx - response
             println("Error: ${ex.response.status.description}")
             null
+        } catch (ex: ConnectException) {
+            println("Error: ConnectException")
+            null
         }
     }
 
@@ -89,6 +99,9 @@ class ApiServiceImpl(
         } catch (ex: ServerResponseException) {
             // 5xx - response
             println("Error: ${ex.response.status.description}")
+            emptyList()
+        } catch (ex: ConnectException) {
+            println("Error: ConnectException")
             emptyList()
         }
     }
@@ -112,6 +125,9 @@ class ApiServiceImpl(
             // 5xx - response
             println("Error: ${ex.response.status.description}")
             null
+        } catch (ex: ConnectException) {
+            println("Error: ConnectException")
+            null
         }
     }
 
@@ -134,6 +150,9 @@ class ApiServiceImpl(
             // 5xx - response
             println("Error: ${ex.response.status.description}")
             null
+        } catch (ex: ConnectException) {
+            println("Error: ConnectException")
+            null
         }
     }
 
@@ -153,6 +172,9 @@ class ApiServiceImpl(
         } catch (ex: ServerResponseException) {
             // 5xx - response
             println("Error: ${ex.response.status.description}")
+            emptyList()
+        } catch (ex: ConnectException) {
+            println("Error: ConnectException")
             emptyList()
         }
     }
