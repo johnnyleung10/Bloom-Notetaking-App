@@ -29,12 +29,12 @@ class ApiServiceImpl(
         }
     }
 
-    override suspend fun insertNote(noteRequest: NoteRequestModel): NoteResponseModel? {
+    override suspend fun insertNote(noteCreationRequest: NoteCreationRequestModel): NoteResponseModel? {
         return try {
 
             client.post<NoteResponseModel> {
                 url(ApiRoutes.NOTES)
-                body = noteRequest
+                body = noteCreationRequest
             }
         } catch (ex: RedirectResponseException) {
             // 3xx - responses
@@ -51,12 +51,12 @@ class ApiServiceImpl(
         }
     }
 
-    override suspend fun updateNote(noteRequest: NoteRequestModel): NoteResponseModel? {
+    override suspend fun updateNote(noteUpdateRequest: NoteUpdateRequestModel): NoteResponseModel? {
         return try {
 
             client.put<NoteResponseModel> {
                 url(ApiRoutes.NOTES)
-                body = noteRequest
+                body = noteUpdateRequest
             }
         } catch (ex: RedirectResponseException) {
             // 3xx - responses
@@ -93,7 +93,7 @@ class ApiServiceImpl(
         }
     }
 
-    override suspend fun insertFolder(folderRequest: FolderRequestModel): FolderResponseModel? {
+    override suspend fun insertFolder(folderRequest: FolderCreationRequestModel): FolderResponseModel? {
         return try {
 
             client.post<FolderResponseModel> {
@@ -115,7 +115,7 @@ class ApiServiceImpl(
         }
     }
 
-    override suspend fun updateFolder(folderRequest: FolderRequestModel): FolderResponseModel? {
+    override suspend fun updateFolder(folderRequest: FolderUpdateRequestModel): FolderResponseModel? {
         return try {
 
             client.put<FolderResponseModel> {

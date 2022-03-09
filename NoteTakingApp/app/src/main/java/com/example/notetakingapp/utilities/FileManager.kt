@@ -212,7 +212,7 @@ class FileManager() {
 
         // Update in database
         if (note != null) {
-            dataSynchronizer.updateNote(note.id, folderId = folderID.toInt(),
+            dataSynchronizer.updateNote(note.id, folderId = folderID,
                 dateModified = note.getLastModifiedDate(), dateDeleted = note.getDeletionDate())
         }
     }

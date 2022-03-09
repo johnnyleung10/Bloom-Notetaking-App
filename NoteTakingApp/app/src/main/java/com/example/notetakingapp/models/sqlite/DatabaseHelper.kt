@@ -38,7 +38,7 @@ class DatabaseHelper(private val context: Context) :
     /**
      * INSERTING
      */
-    fun insertNote(note: NoteModel): Long {
+    fun insertNote(note: NoteModel, isDirty:Boolean = false): Long {
         val values = ContentValues().apply {
             put(NoteEntry.COLUMN_NAME_TITLE, note.title)
             put(NoteEntry.COLUMN_NAME_CONTENTS, note.spannableStringToText())
@@ -54,7 +54,7 @@ class DatabaseHelper(private val context: Context) :
         return id
     }
 
-    fun insertFolder(folder: FolderModel): Long {
+    fun insertFolder(folder: FolderModel, isDirty:Boolean = false): Long {
         val values = ContentValues().apply {
             put(FolderEntry.COLUMN_NAME_TITLE, folder.title)
             put(FolderEntry.COLUMN_NAME_DATE_CREATED, folder.getDateCreated())
@@ -178,7 +178,7 @@ class DatabaseHelper(private val context: Context) :
     /**
      * UPDATING
      */
-    fun updateNote(id: Long, title: String? = null, content: String? = null, dateModified: String? = null, dateDeleted: String? = null, folderId: Int? = null) {
+    fun updateNote(id: Long, title: String? = null, content: String? = null, dateModified: String? = null, dateDeleted: String? = null, folderId: Int? = null, isDirty:Boolean = false) {
         val dbWrite = this.writableDatabase
         val values = ContentValues().apply {
             title?.let { put(NoteEntry.COLUMN_NAME_TITLE, title) }
@@ -197,7 +197,7 @@ class DatabaseHelper(private val context: Context) :
         dbWrite.close()
     }
 
-    fun updateFolder(id: Long, title: String? = null, dateModified: String? = null, dateDeleted: String? = null) {
+    fun updateFolder(id: Long, title: String? = null, dateModified: String? = null, dateDeleted: String? = null, isDirty:Boolean = false) {
         val dbWrite = this.writableDatabase
         val values = ContentValues().apply {
             title?.let { put(FolderEntry.COLUMN_NAME_TITLE, title) }
