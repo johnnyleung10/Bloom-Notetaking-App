@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
@@ -33,13 +34,19 @@ class FolderResource(val service: FolderService) {
 
     //this is just a testing of put. It needs to be rewritten
     @PutMapping
-    fun put(@RequestBody folder: Folder) {
-        return service.put(1, folder.title)
+    fun put(@RequestParam folderId: Long, @RequestParam(required = false) title: String?,
+            @RequestParam(required = false) dateModified: String?, @RequestParam(required = false) dateDeleted: String?) : Long {
+        return service.put(folderId, title=title,  dateModified=dateModified, dateDeleted=dateDeleted)
     }
 
-    //      this is just a testing of delete by id. It needs to be rewritten
-//    @DeleteMapping("/{folderId}")
-//    fun delete(@PathVariable folderId: Long) {
-//        service.delete(folderId)
+//    @PutMapping
+//    fun put(@RequestParam folder: Folder) {
+//        return service.put(1, folder.title)
 //    }
+
+    //      this is just a testing of delete by id. It needs to be rewritten
+    @DeleteMapping
+    fun delete(@RequestParam folderId: Long) : Boolean {
+        return service.delete(folderId)
+    }
 }

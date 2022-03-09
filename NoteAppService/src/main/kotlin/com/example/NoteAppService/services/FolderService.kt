@@ -25,11 +25,16 @@ class FolderService(private val db: FolderRepository){
         return db.save(folder).id
     }
 
-    fun delete(folderId: Long) {
-        db.deleteById(folderId)
+    fun delete(folderId: Long) : Boolean {
+        val folderOptional = db.findById(folderId)
+        if (folderOptional.isPresent) {
+            db.deleteById(folderId)
+            return true
+        }
+        return false
     }
 
-    fun put(folderId: Long, title: String? = null, dateModified: String? = null, dateDeleted: String? = null) {
+    fun put(folderId: Long, title: String? = null, dateModified: String? = null, dateDeleted: String? = null) : Long {
         val folderOptional = db.findById(folderId)
 
         if (folderOptional.isPresent) {
@@ -37,7 +42,8 @@ class FolderService(private val db: FolderRepository){
             title?.let { folder.title = title }
             dateModified?.let { folder.dateModified = dateModified }
             dateDeleted?.let { folder.dateDeleted = dateDeleted }
-            db.save(folder)
+            return db.save(folder).id
         }
+        return -1
     }
 }
