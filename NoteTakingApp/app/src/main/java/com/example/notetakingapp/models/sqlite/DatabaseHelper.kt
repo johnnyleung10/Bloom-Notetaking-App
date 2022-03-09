@@ -70,7 +70,7 @@ class DatabaseHelper(private val context: Context) :
     }
 
     /**
-     * GET NUMBER OF ROWS
+     * Returns number of rows from Folder table
      */
     fun getNumberOfFolders(): Int {
         val dbRead = this.readableDatabase
@@ -86,9 +86,7 @@ class DatabaseHelper(private val context: Context) :
         return retVal
     }
 
-    /**
-     * QUERYING
-     */
+    // QUERYING
     fun getAllFolders(): List<FolderModel> {
         val retList : ArrayList<FolderModel> = arrayListOf()
         val queryString = "SELECT * FROM " + FolderEntry.TABLE_NAME
@@ -141,9 +139,10 @@ class DatabaseHelper(private val context: Context) :
         return retList
     }
 
-    fun getSortedNotes(columnName: String, folderId: Int): List<Int> {
-        val retList : ArrayList<Int> = arrayListOf()
-        val queryString = "SELECT * FROM " + NoteEntry.TABLE_NAME + " WHERE folder_Id=" + folderId + " ORDER BY " + columnName
+    fun getSortedNotes(columnName: String, folderId: Long, descending: Boolean? = false): List<Long> {
+        val retList : ArrayList<Long> = arrayListOf()
+        var queryString = "SELECT * FROM " + NoteEntry.TABLE_NAME + " WHERE folder_Id=" + folderId + " ORDER BY " + columnName
+        if (descending == true) queryString += " DESC" // Descending
         val dbRead = this.readableDatabase
 
         val cursor = dbRead.rawQuery(queryString, null)
@@ -152,7 +151,7 @@ class DatabaseHelper(private val context: Context) :
             do {
                 val id = cursor.getInt(0)
 
-                retList.add(id)
+                retList.add(id.toLong())
             } while (cursor.moveToNext())
         }
 
@@ -161,9 +160,7 @@ class DatabaseHelper(private val context: Context) :
         return retList
     }
 
-    /**
-     * DELETING
-     */
+    // DELETING
     fun deleteOneNote(id: Long) : Boolean {
         val queryString = "DELETE FROM " + NoteEntry.TABLE_NAME + " WHERE " + BaseColumns._ID + " = " + id
         val dbRead = this.readableDatabase

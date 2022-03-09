@@ -24,6 +24,9 @@ class FileManager() {
         databaseHelper = DatabaseHelper(context)
     }
 
+    /**
+     * Sets up class by creating folders and notes from the database
+     */
     fun initFiles() {
         initFolders()
         initNotes()
@@ -48,7 +51,7 @@ class FileManager() {
      * Initializes existing notes from database, and assigns it to respective folders
      */
     private fun initNotes() {
-        for (note in databaseHelper.getAllNotes(DatabaseHelper.DatabaseContract.NoteEntry.COLUMN_NAME_ID)) {
+        for (note in databaseHelper.getAllNotes()) {
             val i = note.folderID
             note.currFolder = folderList[i]?.title ?: UNIDENTIFIED_FOLDER
             folderList[i]?.noteList?.add(note)
@@ -190,7 +193,6 @@ class FileManager() {
      */
     fun moveNote(noteID : Long, folderID : Long) {
         val note = allNotes[noteID]
-        //note?.updateModifiedDate()
 
         // Remove note from current folder
         val currFolderIndex = note?.folderID
@@ -206,13 +208,24 @@ class FileManager() {
             note?.updateDeletionDate() // More up to date
         }
 
-        //note?.updateModifiedDate()
-
         // Update in database
         if (note != null) {
             databaseHelper.updateNote(note.id, folderId = folderID.toInt(),
                 dateModified = note.getLastModifiedDate(), dateDeleted = note.getDeletionDate())
         }
+    }
+
+    /**
+     * Sort notes by columnName in specified folder
+     */
+    fun sortNotes(columnName : String, folderID: Long, descending: Boolean? = false) {
+        val newOrder = databaseHelper.getSortedNotes(columnName, folderID, descending)
+        folderList[folderID]!!.noteList.clear()
+        for (noteID : Long in newOrder) {
+            val note : NoteModel? = allNotes[noteID]
+            folderList[folderID]!!.noteList.add(note!!)
+        }
+
     }
 
     companion object {
