@@ -142,9 +142,9 @@ class DatabaseHelper(private val context: Context) :
         return retList
     }
 
-    fun searchNote(column: String, searchTerm: String): List<NoteModel> {
-        val retList : ArrayList<NoteModel> = arrayListOf()
-        val queryString = "SELECT * FROM " + NoteEntry.TABLE_NAME + " WHERE " + column + " LIKE '%$searchTerm%'"
+    fun searchNote(column: String, searchTerm: String, folderId: Long, ): List<Long> {
+        val retList : ArrayList<Long> = arrayListOf()
+        val queryString = "SELECT * FROM " + NoteEntry.TABLE_NAME + " WHERE folder_Id=" + folderId + " AND " + column + " LIKE '%$searchTerm%'"
         val dbRead = this.readableDatabase
 
         val cursor = dbRead.rawQuery(queryString, null)
@@ -152,16 +152,16 @@ class DatabaseHelper(private val context: Context) :
         if (cursor.moveToFirst()) {
             do {
                 val id = cursor.getInt(0)
-                val title = cursor.getString(1)
-                val content = cursor.getString(2)
-                val dateCreated = cursor.getString(3)
-                val dateModified = cursor.getString(4)
-                val dateDeleted = cursor.getString(5)
-                val folderID = cursor.getLong(6)
+//                val title = cursor.getString(1)
+//                val content = cursor.getString(2)
+//                val dateCreated = cursor.getString(3)
+//                val dateModified = cursor.getString(4)
+//                val dateDeleted = cursor.getString(5)
+//                val folderID = cursor.getLong(6)
 
-                val note = NoteModel(title, context, id.toLong(), folderID, content, dateCreated,
-                    dateModified, dateDeleted)
-                retList.add(note)
+//                val note = NoteModel(title, context, id.toLong(), folderID, content, dateCreated,
+//                    dateModified, dateDeleted)
+                retList.add(id.toLong())
             } while (cursor.moveToNext())
         }
 

@@ -9,7 +9,7 @@ import org.junit.Test
 
 internal class FileManagerTest {
 
-    fun cleanupManager() {
+    private fun cleanupManager() {
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
         val db = DatabaseHelper(appContext)
         val manager : FileManager? = FileManager.instance
@@ -327,6 +327,39 @@ internal class FileManagerTest {
             Assert.assertEquals(note3?.title, manager.folderList[1]?.noteList?.get(0)?.title)
             Assert.assertEquals(note2?.title, manager.folderList[1]?.noteList?.get(1)?.title)
             Assert.assertEquals(note1?.title, manager.folderList[1]?.noteList?.get(2)?.title)
+        }
+    }
+
+    @Test
+    fun searchNotes() {
+        cleanupManager()
+
+        val appContext = InstrumentationRegistry.getInstrumentation().targetContext
+        val manager : FileManager? = FileManager.instance
+        manager?.initManager(appContext)
+        manager?.initFiles()
+
+        // Make notes
+        val note1 = manager?.createNewNote("B Note", 1)
+        val note2 = manager?.createNewNote("A Note", 1)
+        val note3 = manager?.createNewNote("C Note", 1)
+
+        // Search
+        var resultList = manager?.searchNotes("A",1)
+        if (manager != null) {
+            Assert.assertEquals(note2?.id, resultList?.get(0))
+        }
+        resultList = manager?.searchNotes("B",1)
+        if (manager != null) {
+            Assert.assertEquals(note1?.id, resultList?.get(0))
+        }
+        resultList = manager?.searchNotes("C",1)
+        if (manager != null) {
+            Assert.assertEquals(note3?.id, resultList?.get(0))
+        }
+        resultList = manager?.searchNotes("Note",1)
+        if (manager != null) {
+            Assert.assertEquals(3, resultList?.size)
         }
     }
 

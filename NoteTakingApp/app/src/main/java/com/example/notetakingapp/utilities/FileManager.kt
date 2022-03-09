@@ -225,7 +225,14 @@ class FileManager() {
             val note : NoteModel? = allNotes[noteID]
             folderList[folderID]!!.noteList.add(note!!)
         }
+    }
 
+    /**
+     * Search notes by title in the specified folder. Returns a list of noteIDs that match search
+     * criteria
+     */
+    fun searchNotes(searchTerm : String, folderID: Long) : List<Long> {
+        return databaseHelper.searchNote(DatabaseHelper.DatabaseContract.NoteEntry.COLUMN_NAME_TITLE, searchTerm, folderID)
     }
 
     companion object {
