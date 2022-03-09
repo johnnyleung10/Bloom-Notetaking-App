@@ -163,39 +163,6 @@
         app:layout_constraintTop_toBottomOf="@+id/folderContainer">
 
         <Button
-            android:id="@+id/deleteFolder"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:drawableTop="@drawable/delete"
-            android:drawableTint="@drawable/action_buttons"
-            android:enabled="false"
-            android:layout_weight="0.2"
-            android:paddingTop="7dp"
-            android:background="#00000000"
-            android:text="@string/delete"
-            android:textSize="11sp"
-            android:textStyle="normal"
-            android:gravity="bottom|center_horizontal"
-            />
-
-        <Button
-            android:id="@+id/renameFolder"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:drawableTop="@drawable/rename"
-            android:drawableTint="@drawable/action_buttons"
-            android:layout_marginBottom="20dp"
-            android:enabled="false"
-            android:layout_weight="0.2"
-            android:paddingTop="7dp"
-            android:gravity="bottom|center_horizontal"
-            android:background="#00000000"
-            android:text="@string/rename"
-            android:textSize="11sp"
-            android:textStyle="normal"
-            />
-
-        <Button
             android:id="@+id/createFolder"
             android:layout_width="50dp"
             android:layout_height="50dp"
@@ -209,6 +176,22 @@
             android:text="New"
             android:textSize="11sp"
             android:textStyle="normal"
+            />
+
+        <Button
+            android:id="@+id/deleteFolder"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:drawableTop="@drawable/delete"
+            android:drawableTint="@drawable/action_buttons"
+            android:enabled="false"
+            android:layout_weight="0.2"
+            android:paddingTop="7dp"
+            android:background="#00000000"
+            android:text="@string/delete"
+            android:textSize="11sp"
+            android:textStyle="normal"
+            android:gravity="bottom|center_horizontal"
             />
 
         <Button
