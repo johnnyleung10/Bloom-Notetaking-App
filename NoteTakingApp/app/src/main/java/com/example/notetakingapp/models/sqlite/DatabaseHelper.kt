@@ -121,9 +121,12 @@ class DatabaseHelper(private val context: Context) :
         return retList
     }
 
-    fun getAllNotes(): List<NoteModel> {
+    fun getAllNotes(onlyDirty: Boolean = false): List<NoteModel> {
         val retList : ArrayList<NoteModel> = arrayListOf()
-        val queryString = "SELECT * FROM " + NoteEntry.TABLE_NAME
+        var queryString = "SELECT * FROM " + NoteEntry.TABLE_NAME
+        if (onlyDirty) {
+            queryString.plus(" WHERE " + NoteEntry.COLUMN_NAME_IS_DIRTY + "=0")
+        }
         val dbRead = this.readableDatabase
 
         val cursor = dbRead.rawQuery(queryString, null)
