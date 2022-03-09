@@ -99,9 +99,14 @@ class DatabaseHelper(private val context: Context) :
     }
 
     // QUERYING
-    fun getAllFolders(): List<FolderModel> {
+    fun getAllFolders(onlyDirty: Boolean = false, onlyPermanentlyDeleted: Boolean): List<FolderModel> {
         val retList : ArrayList<FolderModel> = arrayListOf()
         val queryString = "SELECT * FROM " + FolderEntry.TABLE_NAME
+        if (onlyDirty) {
+            queryString.plus(" WHERE " + FolderEntry.COLUMN_NAME_IS_DIRTY + "=TRUE")
+        } else if(onlyPermanentlyDeleted){
+            queryString.plus(" WHERE " + FolderEntry.COLUMN_NAME_IS_PERMANENTLY_DELETED + "=TRUE")
+        }
         val dbRead = this.readableDatabase
 
        val cursor = dbRead.rawQuery(queryString, null)
@@ -123,12 +128,15 @@ class DatabaseHelper(private val context: Context) :
         return retList
     }
 
-    fun getAllNotes(onlyDirty: Boolean = false): List<NoteModel> {
+    fun getAllNotes(onlyDirty: Boolean = false, onlyPermanentlyDeleted: Boolean = false): List<NoteModel> {
         val retList : ArrayList<NoteModel> = arrayListOf()
         var queryString = "SELECT * FROM " + NoteEntry.TABLE_NAME
         if (onlyDirty) {
-            queryString.plus(" WHERE " + NoteEntry.COLUMN_NAME_IS_DIRTY + "=0")
+            queryString.plus(" WHERE " + NoteEntry.COLUMN_NAME_IS_DIRTY + "=TRUE")
+        } else if(onlyPermanentlyDeleted){
+            queryString.plus(" WHERE " + NoteEntry.COLUMN_NAME_IS_PERMANENTLY_DELETED + "=TRUE")
         }
+
         val dbRead = this.readableDatabase
 
         val cursor = dbRead.rawQuery(queryString, null)

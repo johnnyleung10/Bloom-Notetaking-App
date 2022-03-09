@@ -97,4 +97,41 @@ class DataSynchronizer(private val databaseHelper: DatabaseHelper) {
 
         databaseHelper.updateFolder(id, title = title, dateModified = dateModified, isDirty = isDirty)
     }
+
+    /* SYNCHRONIZING */
+
+    fun handleDirtyData(){
+
+        // NOTES
+
+        // We need to handle permanently deleted notes first since they could also be dirty
+        val permanentlyDeletedNotes: List<NoteModel> = databaseHelper.getAllNotes(onlyPermanentlyDeleted = true)
+
+        for(permanentlyDeletedNote: NoteModel in permanentlyDeletedNotes){
+            deleteOneNote(permanentlyDeletedNote.id)
+        }
+
+        // Now we can handle dirty notes
+        val dirtyNotes: List<NoteModel> = databaseHelper.getAllNotes(onlyDirty = true)
+
+        for(dirtyNote: NoteModel in dirtyNotes){
+            updateNote(dirtyNote.id, dirtyNote.title, dirtyNote.spannableStringToText(), dirtyNote.getLastModifiedDate(), dirtyNote.getDeletionDate(), dirtyNote.folderID)
+        }
+
+        // FOLDERS
+        // We need to handle permanently deleted notes first since they could also be dirty
+        val permanentlyDeletedFolders: List<FolderModel> = databaseHelper.getAllFolders(onlyPermanentlyDeleted = true)
+
+        for(permanentlyDeletedFolder: FolderModel in permanentlyDeletedFolders){
+            deleteOneFolder(permanentlyDeletedFolder.id)
+        }
+
+        // Now we can handle dirty folders
+        val dirtyFolders: List<FolderModel> = databaseHelper.getAllFolders(onlyDirty = true)
+
+        for(dirtyFolder: FolderModel in dirtyFolders){
+            updateFolder(dirtyFolder.id, dirtyFolder.title, dirtyFolder.getLastModifiedDate(), dirtyFolder.getDeletionDate())
+        }
+
+    }
 }
