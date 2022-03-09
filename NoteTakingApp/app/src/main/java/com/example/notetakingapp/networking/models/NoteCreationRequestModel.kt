@@ -6,7 +6,8 @@ import kotlinx.serialization.Serializable
 data class NoteCreationRequestModel(
     val id: Long,
     val title: String,
-    val content: String,
+    val contentRich: String,
+    val contentPlain: String,
     val dateCreated: String,
     val dateModified: String,
     val dateDeleted: String,

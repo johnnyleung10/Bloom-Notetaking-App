@@ -14,7 +14,9 @@ class NoteResource(val service: NoteService) {
     }
 
     @PostMapping
-    fun post(@RequestBody note: Note) {
+    fun post(@RequestBody note: Note): Note {
         service.post(note)
+        // TODO: check if insert was successful!
+        return note
     }
 }

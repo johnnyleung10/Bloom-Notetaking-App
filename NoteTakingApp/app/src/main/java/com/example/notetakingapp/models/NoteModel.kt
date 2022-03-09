@@ -59,7 +59,7 @@ class NoteModel(
     }
 
     fun toNoteCreationRequestModel(): NoteCreationRequestModel{
-        return NoteCreationRequestModel(id, title, spannableStringToText(), getDateCreated(), getLastModifiedDate(), getDeletionDate(), folderID)
+        return NoteCreationRequestModel(id, title, spannableStringToText(), contents.toString(), getDateCreated(), getLastModifiedDate(), getDeletionDate(), folderID)
     }
 
 }

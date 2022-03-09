@@ -1,6 +1,5 @@
 package com.example.notetakingapp.utilities
 
-import android.content.Context
 import com.example.notetakingapp.models.FolderModel
 import com.example.notetakingapp.models.NoteModel
 import com.example.notetakingapp.models.sqlite.DatabaseHelper
@@ -10,7 +9,7 @@ import com.example.notetakingapp.networking.models.NoteUpdateRequestModel
 import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
 
-class DataSynchronizer(private val context: Context, private val databaseHelper: DatabaseHelper) {
+class DataSynchronizer(private val databaseHelper: DatabaseHelper) {
 
     private val apiService: ApiService = ApiService.create()
 
@@ -55,7 +54,7 @@ class DataSynchronizer(private val context: Context, private val databaseHelper:
      * UPDATING
      */
     fun updateNote(id: Long, title: String? = null, content: String? = null, dateModified: String? = null, dateDeleted: String? = null, folderId: Long? = null) {
-        val noteUpdateRequest = NoteUpdateRequestModel(id, title, content, dateModified, dateDeleted, folderId)
+        val noteUpdateRequest = NoteUpdateRequestModel(id, title, content, content, dateModified, dateDeleted, folderId)
         var isDirty = true
         runBlocking {
             val response = async { apiService.updateNote(noteUpdateRequest) }

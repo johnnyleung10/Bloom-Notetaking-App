@@ -23,7 +23,7 @@ class FileManager() {
     fun initManager(context: Context) {
         this.context = context
         databaseHelper = DatabaseHelper(context)
-        dataSynchronizer = DataSynchronizer(context, databaseHelper)
+        dataSynchronizer = DataSynchronizer(databaseHelper)
     }
 
     fun initFiles() {
