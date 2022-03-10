@@ -15,8 +15,7 @@ import com.example.notetakingapp.databinding.FragmentFoldersBinding
 import com.example.notetakingapp.viewmodels.FoldersViewModel
 import com.example.notetakingapp.utilities.FileManager
 
-class FoldersFragment : Fragment(),
-    NewFolderDialogFragment.NewFolderDialogListener {
+class FoldersFragment : Fragment(), NewFolderDialogFragment.NewFolderDialogListener {
 
     private lateinit var foldersViewModel: FoldersViewModel
     private var _binding: FragmentFoldersBinding? = null
@@ -189,7 +188,8 @@ class FoldersFragment : Fragment(),
         foldersViewModel.setFolders(fm.folderList)
     }
 
-    private fun renameFolder(position: Int, title:String, ){
+    private fun renameFolder(position: Int, title: String){
+        if (position == -1) return
         fm.editFolder(adapter.folderCellList[position].folderId, title)
     }
 

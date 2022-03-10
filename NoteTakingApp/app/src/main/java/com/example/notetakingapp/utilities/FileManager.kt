@@ -100,7 +100,7 @@ class FileManager() {
             currNotes.add(note.id)
         }
         for (note in currNotes) {
-            moveNote(note, UNCATEGORIZED_FOLDER)
+            moveNote(note, RECENTLY_DELETED_FOLDER)
         }
 
         // Remove from database
@@ -166,7 +166,7 @@ class FileManager() {
         if (note != null) {
             if (!folderList[RECENTLY_DELETED_FOLDER]?.noteList?.contains(note)!!) return false
             note.restoreFileDate()
-            moveNote(noteID, note.folderID) // Restore to original folder
+            moveNote(noteID, 1) // Restore to original folder
         }
         return true
     }

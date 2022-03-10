@@ -105,8 +105,9 @@ class FoldersRecyclerViewAdapter(var folderCellList: ArrayList<FolderCellViewMod
         init {
             itemView.setOnClickListener(this)
 
-            folderTitle.setOnFocusChangeListener{ _, _ ->
-                onFolderRenamed(adapterPosition, folderTitle.text.toString())
+            folderTitle.setOnFocusChangeListener{ _, hasFocus ->
+                if (!hasFocus)
+                    onFolderRenamed(adapterPosition, folderTitle.text.toString())
             }
 
             checkbox.setOnClickListener {
@@ -124,5 +125,11 @@ class FoldersRecyclerViewAdapter(var folderCellList: ArrayList<FolderCellViewMod
             val position = adapterPosition
             onItemClicked(position)
         }
+
+//        fun navigation(){
+//            if (editMode)
+//                itemView.setOnClickListener(null)
+//            else itemView.setOnClickListener(this)
+//        }
     }
 }

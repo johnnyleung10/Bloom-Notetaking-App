@@ -39,7 +39,8 @@ class NotesRecyclerViewAdapter(var noteList: ArrayList<NoteCellViewModel>, priva
         if (!editMode) {
             holder.checkbox.isChecked = false
             customCheck = true
-        }
+        } else
+            holder.checkbox.isChecked = checked.value?.contains(position) == true
 
         holder.checkbox.isVisible = editMode
 
@@ -61,10 +62,9 @@ class NotesRecyclerViewAdapter(var noteList: ArrayList<NoteCellViewModel>, priva
         selectAll = select
 
         val newChecked = ArrayList<Int>()
-        if (selectAll){
-            for(i in 2 until noteList.size)
-                newChecked.add(i)
-        }
+        if (selectAll)
+            for(i in 0 until noteList.size) newChecked.add(i)
+
         checked.value = newChecked
         customCheck = false
         this.notifyDataSetChanged()
