@@ -106,6 +106,9 @@ class DatabaseHelper(private val context: Context) :
             queryString = queryString.plus(" WHERE " + FolderEntry.COLUMN_NAME_IS_DIRTY + "=TRUE")
         } else if(onlyPermanentlyDeleted){
             queryString = queryString.plus(" WHERE " + FolderEntry.COLUMN_NAME_IS_PERMANENTLY_DELETED + "=TRUE")
+        } else {
+            // We only want folders that aren't deleted!
+            queryString = queryString.plus(" WHERE " + FolderEntry.COLUMN_NAME_IS_PERMANENTLY_DELETED + "=FALSE")
         }
         val dbRead = this.readableDatabase
 
@@ -135,6 +138,9 @@ class DatabaseHelper(private val context: Context) :
             queryString = queryString.plus(" WHERE " + NoteEntry.COLUMN_NAME_IS_DIRTY + "=TRUE")
         } else if(onlyPermanentlyDeleted){
             queryString = queryString.plus(" WHERE " + NoteEntry.COLUMN_NAME_IS_PERMANENTLY_DELETED + "=TRUE")
+        } else {
+            // We only want notes that aren't deleted!
+            queryString = queryString.plus(" WHERE " + NoteEntry.COLUMN_NAME_IS_PERMANENTLY_DELETED + "=FALSE")
         }
 
         val dbRead = this.readableDatabase
