@@ -21,9 +21,8 @@ class NoteService(private val db: NoteRepository){
         return null
     }
 
-    fun insertOrUpdateNote(note: Note): Boolean {
-        db.save(note).id
-        return true
+    fun insertOrUpdateNote(note: Note) {
+        db.save(note)
     }
 
     fun delete(noteId: Long) : Boolean {
