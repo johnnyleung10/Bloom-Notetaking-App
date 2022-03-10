@@ -1,6 +1,7 @@
 package com.example.notetakingapp.models
 
 import android.content.Context
+import com.example.notetakingapp.networking.models.FolderCreationRequestModel
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -27,5 +28,9 @@ class FolderModel(
             val dateDeletedLCT = LocalDateTime.parse(dateDeleted, isoFormat)
             this.deletionDate = dateDeletedLCT
         }
+    }
+
+    fun toFolderCreationRequestModel(): FolderCreationRequestModel {
+        return FolderCreationRequestModel(id, title, getDateCreated(), getLastModifiedDate(), getDeletionDate())
     }
 }

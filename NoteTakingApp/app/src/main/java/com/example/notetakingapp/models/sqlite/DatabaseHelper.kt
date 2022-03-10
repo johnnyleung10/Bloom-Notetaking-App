@@ -22,6 +22,8 @@ private const val SQL_CREATE_NOTE_ENTRIES =
             "${DatabaseHelper.DatabaseContract.NoteEntry.COLUMN_NAME_DATE_MODIFIED} TEXT," +
             "${DatabaseHelper.DatabaseContract.NoteEntry.COLUMN_NAME_DATE_DELETED} TEXT," +
             "${DatabaseHelper.DatabaseContract.NoteEntry.COLUMN_NAME_FOLDER_ID} INTEGER," +
+            "${DatabaseHelper.DatabaseContract.NoteEntry.COLUMN_NAME_IS_DIRTY} BOOLEAN DEFAULT FALSE," +
+            "${DatabaseHelper.DatabaseContract.NoteEntry.COLUMN_NAME_IS_PERMANENTLY_DELETED} BOOLEAN DEFAULT FALSE," +
             "FOREIGN KEY ("+DatabaseHelper.DatabaseContract.NoteEntry.COLUMN_NAME_FOLDER_ID+") REFERENCES "+DatabaseHelper.DatabaseContract.FolderEntry.TABLE_NAME+"("+BaseColumns._ID+"))"
 
 
@@ -31,17 +33,22 @@ private const val SQL_CREATE_FOLDER_ENTRIES =
             "${DatabaseHelper.DatabaseContract.FolderEntry.COLUMN_NAME_TITLE} TEXT," +
             "${DatabaseHelper.DatabaseContract.FolderEntry.COLUMN_NAME_DATE_CREATED} TEXT," +
             "${DatabaseHelper.DatabaseContract.FolderEntry.COLUMN_NAME_DATE_MODIFIED} TEXT," +
-            "${DatabaseHelper.DatabaseContract.FolderEntry.COLUMN_NAME_DATE_DELETED} TEXT)"
+            "${DatabaseHelper.DatabaseContract.FolderEntry.COLUMN_NAME_DATE_DELETED} TEXT," +
+            "${DatabaseHelper.DatabaseContract.FolderEntry.COLUMN_NAME_IS_DIRTY} BOOLEAN DEFAULT FALSE," +
+            "${DatabaseHelper.DatabaseContract.NoteEntry.COLUMN_NAME_IS_PERMANENTLY_DELETED} BOOLEAN DEFAULT FALSE)"
 
-private const val SQL_DELETE_NOTE_ENTRIES = "DROP TABLE IF EXISTS ${DatabaseHelper.DatabaseContract.NoteEntry.TABLE_NAME}"
+            private const val SQL_DELETE_NOTE_ENTRIES = "DROP TABLE IF EXISTS ${DatabaseHelper.DatabaseContract.NoteEntry.TABLE_NAME}"
 private const val SQL_DELETE_FOLDER_ENTRIES = "DROP TABLE IF EXISTS ${DatabaseHelper.DatabaseContract.FolderEntry.TABLE_NAME}"
 
 
 class DatabaseHelper(private val context: Context) :
     SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 
-    // INSERTING
-    fun insertNote(note: NoteModel): Long {
+    /**
+     * INSERTING
+     */
+    fun insertNote(note: NoteModel, isDirty:Boolean = false): Long {
+
         val values = ContentValues().apply {
             put(NoteEntry.COLUMN_NAME_TITLE, note.title)
             put(NoteEntry.COLUMN_NAME_CONTENTS_RICH, note.spannableStringToText())
@@ -50,6 +57,7 @@ class DatabaseHelper(private val context: Context) :
             put(NoteEntry.COLUMN_NAME_DATE_MODIFIED, note.getLastModifiedDate())
             put(NoteEntry.COLUMN_NAME_DATE_DELETED, note.getDeletionDate())
             put(NoteEntry.COLUMN_NAME_FOLDER_ID, note.folderID)
+            put(NoteEntry.COLUMN_NAME_IS_DIRTY, isDirty)
         }
         val dbWrite = this.writableDatabase
         val id = dbWrite.insert(NoteEntry.TABLE_NAME, null, values)
@@ -58,12 +66,13 @@ class DatabaseHelper(private val context: Context) :
         return id
     }
 
-    fun insertFolder(folder: FolderModel): Long {
+    fun insertFolder(folder: FolderModel, isDirty:Boolean = false): Long {
         val values = ContentValues().apply {
             put(FolderEntry.COLUMN_NAME_TITLE, folder.title)
             put(FolderEntry.COLUMN_NAME_DATE_CREATED, folder.getDateCreated())
             put(FolderEntry.COLUMN_NAME_DATE_MODIFIED, folder.getLastModifiedDate())
             put(FolderEntry.COLUMN_NAME_DATE_DELETED, folder.getDeletionDate())
+            put(FolderEntry.COLUMN_NAME_IS_DIRTY, isDirty)
         }
         val dbWrite = this.writableDatabase
         val id = dbWrite.insert(FolderEntry.TABLE_NAME, null, values)
@@ -90,9 +99,17 @@ class DatabaseHelper(private val context: Context) :
     }
 
     // QUERYING
-    fun getAllFolders(): List<FolderModel> {
+    fun getAllFolders(onlyDirty: Boolean = false, onlyPermanentlyDeleted: Boolean = false): List<FolderModel> {
         val retList : ArrayList<FolderModel> = arrayListOf()
-        val queryString = "SELECT * FROM " + FolderEntry.TABLE_NAME
+        var queryString = "SELECT * FROM " + FolderEntry.TABLE_NAME
+        if (onlyDirty) {
+            queryString = queryString.plus(" WHERE " + FolderEntry.COLUMN_NAME_IS_DIRTY + "=TRUE")
+        } else if(onlyPermanentlyDeleted){
+            queryString = queryString.plus(" WHERE " + FolderEntry.COLUMN_NAME_IS_PERMANENTLY_DELETED + "=TRUE")
+        } else {
+            // We only want folders that aren't deleted!
+            queryString = queryString.plus(" WHERE " + FolderEntry.COLUMN_NAME_IS_PERMANENTLY_DELETED + "=FALSE")
+        }
         val dbRead = this.readableDatabase
 
        val cursor = dbRead.rawQuery(queryString, null)
@@ -114,9 +131,18 @@ class DatabaseHelper(private val context: Context) :
         return retList
     }
 
-    fun getAllNotes(): List<NoteModel> {
+    fun getAllNotes(onlyDirty: Boolean = false, onlyPermanentlyDeleted: Boolean = false): List<NoteModel> {
         val retList : ArrayList<NoteModel> = arrayListOf()
-        val queryString = "SELECT * FROM " + NoteEntry.TABLE_NAME
+        var queryString = "SELECT * FROM " + NoteEntry.TABLE_NAME
+        if (onlyDirty) {
+            queryString = queryString.plus(" WHERE " + NoteEntry.COLUMN_NAME_IS_DIRTY + "=TRUE")
+        } else if(onlyPermanentlyDeleted){
+            queryString = queryString.plus(" WHERE " + NoteEntry.COLUMN_NAME_IS_PERMANENTLY_DELETED + "=TRUE")
+        } else {
+            // We only want notes that aren't deleted!
+            queryString = queryString.plus(" WHERE " + NoteEntry.COLUMN_NAME_IS_PERMANENTLY_DELETED + "=FALSE")
+        }
+
         val dbRead = this.readableDatabase
 
         val cursor = dbRead.rawQuery(queryString, null)
@@ -224,41 +250,38 @@ class DatabaseHelper(private val context: Context) :
         return false
     }
 
-    // UPDATING
-    fun updateNote(id: Long, title: String? = null, content: String? = null, dateModified: String? = null, dateDeleted: String? = null, folderId: Int? = null) {
+    /**
+     * UPDATING
+     */
+    fun updateNote(note: NoteModel, isDirty:Boolean = false, isPermanentlyDeleted: Boolean = false){
+
         val dbWrite = this.writableDatabase
         val values = ContentValues().apply {
-            title?.let { put(NoteEntry.COLUMN_NAME_TITLE, title) }
-            content?.let { put(NoteEntry.COLUMN_NAME_CONTENTS_RICH, content) }
-            content?.let { put(NoteEntry.COLUMN_NAME_CONTENTS_PLAIN, Html.fromHtml(content).toString()) }
-            dateModified?.let {
-                put(
-                    NoteEntry.COLUMN_NAME_DATE_MODIFIED,
-                    dateModified
-                )
-            }
-            dateDeleted?.let { put(NoteEntry.COLUMN_NAME_DATE_DELETED, dateDeleted) }
-            folderId?.let { put(NoteEntry.COLUMN_NAME_FOLDER_ID, folderId) }
+            put(NoteEntry.COLUMN_NAME_TITLE, note.title)
+            put(NoteEntry.COLUMN_NAME_CONTENTS_RICH, note.spannableStringToText())
+            put(NoteEntry.COLUMN_NAME_CONTENTS_PLAIN, note.contents.toString())
+            put(NoteEntry.COLUMN_NAME_DATE_MODIFIED, note.getLastModifiedDate())
+            put(NoteEntry.COLUMN_NAME_DATE_DELETED, note.getDeletionDate())
+            put(NoteEntry.COLUMN_NAME_FOLDER_ID, note.folderID)
+            put(NoteEntry.COLUMN_NAME_IS_DIRTY, isDirty)
+            put(NoteEntry.COLUMN_NAME_IS_PERMANENTLY_DELETED, isPermanentlyDeleted)
         }
         dbWrite.update(NoteEntry.TABLE_NAME, values, BaseColumns._ID + " = ?",
-            arrayOf(id.toString()))
+            arrayOf(note.id.toString()))
         dbWrite.close()
     }
 
-    fun updateFolder(id: Long, title: String? = null, dateModified: String? = null, dateDeleted: String? = null) {
+    fun updateFolder(folder: FolderModel, isDirty:Boolean = false, isPermanentlyDeleted: Boolean = false) {
         val dbWrite = this.writableDatabase
         val values = ContentValues().apply {
-            title?.let { put(FolderEntry.COLUMN_NAME_TITLE, title) }
-            dateModified?.let {
-                put(
-                    FolderEntry.COLUMN_NAME_DATE_MODIFIED,
-                    dateModified
-                )
-            }
-            dateDeleted?.let { put(FolderEntry.COLUMN_NAME_DATE_DELETED, dateDeleted) }
+            put(FolderEntry.COLUMN_NAME_TITLE, folder.title)
+            put(FolderEntry.COLUMN_NAME_DATE_MODIFIED, folder.getLastModifiedDate())
+            put(FolderEntry.COLUMN_NAME_DATE_DELETED, folder.getDeletionDate())
+            put(FolderEntry.COLUMN_NAME_IS_DIRTY, isDirty)
+            put(FolderEntry.COLUMN_NAME_IS_PERMANENTLY_DELETED, isPermanentlyDeleted)
         }
         dbWrite.update(FolderEntry.TABLE_NAME, values, BaseColumns._ID + " = ?",
-            arrayOf(id.toString()))
+            arrayOf(folder.id.toString()))
         dbWrite.close()
     }
 
@@ -295,6 +318,8 @@ class DatabaseHelper(private val context: Context) :
             const val COLUMN_NAME_DATE_CREATED = "date_created"
             const val COLUMN_NAME_DATE_MODIFIED = "date_modified"
             const val COLUMN_NAME_DATE_DELETED = "date_deleted"
+            const val COLUMN_NAME_IS_DIRTY = "is_dirty"
+            const val COLUMN_NAME_IS_PERMANENTLY_DELETED = "is_permanently_deleted"
         }
 
         object FolderEntry : BaseColumns {
@@ -303,6 +328,8 @@ class DatabaseHelper(private val context: Context) :
             const val COLUMN_NAME_DATE_CREATED = "date_created"
             const val COLUMN_NAME_DATE_MODIFIED = "date_modified"
             const val COLUMN_NAME_DATE_DELETED = "date_deleted"
+            const val COLUMN_NAME_IS_DIRTY = "is_dirty"
+            const val COLUMN_NAME_IS_PERMANENTLY_DELETED = "is_permanently_deleted"
         }
     }
 

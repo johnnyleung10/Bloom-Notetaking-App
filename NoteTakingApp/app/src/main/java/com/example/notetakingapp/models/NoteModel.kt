@@ -4,7 +4,7 @@ import android.content.Context
 import android.text.Html
 import android.text.SpannableStringBuilder
 import androidx.core.text.toHtml
-import com.example.notetakingapp.models.sqlite.DatabaseHelper
+import com.example.notetakingapp.networking.models.NoteCreationRequestModel
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -47,4 +47,19 @@ class NoteModel(
     fun spannableStringToText(): String {
         return contents.toHtml()
     }
+
+
+    /**
+     * Restore note from recently deleted
+     */
+    fun restoreNote() {
+        TODO("Implement later")
+//        currFolder = "Recently Deleted"  // Bring back to original folder
+//        deleteFile()
+    }
+
+    fun toNoteCreationRequestModel(): NoteCreationRequestModel{
+        return NoteCreationRequestModel(id, title, spannableStringToText(), contents.toString(), getDateCreated(), getLastModifiedDate(), getDeletionDate(), folderID)
+    }
+
 }

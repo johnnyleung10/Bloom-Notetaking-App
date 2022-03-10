@@ -18,6 +18,8 @@ import com.example.notetakingapp.models.FolderModel
 import com.example.notetakingapp.models.NoteModel
 import com.example.notetakingapp.viewmodels.NotesViewModel
 import com.example.notetakingapp.utilities.FileManager
+import com.example.notetakingapp.viewmodels.FoldersViewModel
+import kotlinx.coroutines.runBlocking
 
 class NotesFragment : Fragment(), MoveNoteDialogFragment.MoveNoteDialogListener {
 

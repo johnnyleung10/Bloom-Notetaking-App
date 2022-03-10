@@ -10,6 +10,7 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.notetakingapp.databinding.ActivityMainBinding
+import com.example.notetakingapp.utilities.DataSynchronizer
 import com.example.notetakingapp.utilities.FileManager
 
 class MainActivity : AppCompatActivity() {
@@ -23,6 +24,8 @@ class MainActivity : AppCompatActivity() {
         // Instantiate file manager
         val fm = FileManager.instance
         fm?.initManager(this)
+        // Handle the dirty data first!
+        fm?.dataSynchronizer?.handleDirtyData()
         fm?.initFiles()
 
         // Hide Action Bar

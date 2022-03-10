@@ -15,6 +15,7 @@ private const val UNIDENTIFIED_FOLDER : String = "Unidentified Folder"
 class FileManager() {
     private lateinit var context : Context
     private lateinit var databaseHelper : DatabaseHelper
+    lateinit var dataSynchronizer: DataSynchronizer
 
     val folderList = HashMap<Long, FolderModel>()
     val allNotes = HashMap<Long, NoteModel>()
@@ -22,6 +23,7 @@ class FileManager() {
     fun initManager(context: Context) {
         this.context = context
         databaseHelper = DatabaseHelper(context)
+        dataSynchronizer = DataSynchronizer(databaseHelper)
     }
 
     /**
@@ -65,7 +67,7 @@ class FileManager() {
      */
     fun createNewFolder(name : String) : FolderModel {
         val newFolder = FolderModel(name, context)
-        databaseHelper.insertFolder(newFolder)
+        dataSynchronizer.insertFolder(newFolder)
         folderList[newFolder.id] = newFolder
         return newFolder
     }
@@ -79,19 +81,23 @@ class FileManager() {
             return
         }
 
-        title?.let { folderList[folderID]?.title = title }
-        folderList[folderID]?.updateModifiedDate()
+        val folder = folderList[folderID]
 
-        // Update the database
-        databaseHelper.updateFolder(folderID, title = title,
-            dateModified = folderList[folderID]?.getLastModifiedDate())
+        title?.let { folder?.title = title }
+        folder?.updateModifiedDate()
+
+        if(folder != null){
+            dataSynchronizer.updateFolder(folder)
+        }
     }
 
     /**
      * Delete folder specified by folderID
      */
     fun deleteFolder(folderID : Long) : Boolean {
-        if (folderList[folderID] == null) return false
+        val folder = folderList[folderID]
+
+        if (folder == null) return false
         if (folderID == UNCATEGORIZED_FOLDER || folderID == RECENTLY_DELETED_FOLDER) return false
 
         // Move notes to uncategorized
@@ -104,7 +110,10 @@ class FileManager() {
         }
 
         // Remove from database
-        databaseHelper.deleteOneFolder(id = folderID)
+        if(folder != null){
+            dataSynchronizer.deleteOneFolder(folder)
+        }
+
         folderList.remove(folderID)
 
         return true
@@ -128,7 +137,7 @@ class FileManager() {
         folderList[folderID]?.noteList?.add(newNote)
 
         // Update in database
-        databaseHelper.insertNote(newNote)
+        dataSynchronizer.insertNote(newNote)
         allNotes[newNote.id] = newNote
         return newNote
     }
@@ -145,8 +154,9 @@ class FileManager() {
         note?.updateModifiedDate()
 
         // Update the database
-        databaseHelper.updateNote(noteID, title = title, content = note?.spannableStringToText(),
-            dateModified = note?.getLastModifiedDate())
+        if(note != null){
+            dataSynchronizer.updateNote(note)
+        }
     }
 
     /**
@@ -182,8 +192,11 @@ class FileManager() {
         val note = allNotes[noteID]
         if (!folderList[RECENTLY_DELETED_FOLDER]?.noteList?.contains(note)!!) return false
         folderList[RECENTLY_DELETED_FOLDER]?.noteList?.remove(note)
+
         allNotes.remove(noteID)
-        databaseHelper.deleteOneNote(noteID)
+        if(note != null){
+            dataSynchronizer.deleteOneNote(note)
+        }
 
         return true
     }
@@ -210,8 +223,7 @@ class FileManager() {
 
         // Update in database
         if (note != null) {
-            databaseHelper.updateNote(note.id, folderId = folderID.toInt(),
-                dateModified = note.getLastModifiedDate(), dateDeleted = note.getDeletionDate())
+            dataSynchronizer.updateNote(note)
         }
     }
 

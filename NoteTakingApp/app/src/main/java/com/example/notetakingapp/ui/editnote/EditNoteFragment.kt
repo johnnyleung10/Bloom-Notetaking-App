@@ -63,26 +63,6 @@ class EditNoteFragment : Fragment() {
             editNoteContents.setText(note.contents)
         }
 
-        // Note title listeners
-        editNoteTitle.setOnFocusChangeListener { v, hasFocus ->
-            note!!.title = editNoteTitle.text.toString()
-
-            if (note.title == "") note.title = "New Note"
-
-            manager.editNote(noteID, title = note.title)
-        }
-
-        editNoteTitle.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable?) {
-                note!!.title = editNoteTitle.text.toString() // No formatting
-                manager.editNote(noteID, title = note.title)
-            }
-
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-        })
-
         // BUTTONS
         boldButton.setOnClickListener {
             // Bold selected
@@ -223,12 +203,6 @@ class EditNoteFragment : Fragment() {
             }
         }
 
-        // Note contents listeners
-        editNoteContents.setOnFocusChangeListener { v, hasFocus ->
-            note!!.contents = SpannableStringBuilder(editNoteContents.text)
-            manager.editNote(noteID, contents = note.contents)
-        }
-
         editNoteContents.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
                 lastCursorPosition = editNoteContents.selectionStart
@@ -277,6 +251,16 @@ class EditNoteFragment : Fragment() {
         })
 
         return root
+    }
+
+    override fun onPause() {
+        super.onPause()
+        val manager = FileManager.instance
+        val note = manager?.getNote(noteID)
+        note!!.title = binding.editNoteTitle.text.toString()
+        if (note.title == "") note.title = "New Note"
+        note!!.contents = SpannableStringBuilder(binding.editNoteContents.text)
+        manager.editNote(noteID, title = note.title, contents = note.contents)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
