@@ -6,10 +6,9 @@ import java.time.format.DateTimeFormatter
 
 abstract class FileModel(
     var title : String,
+    var id: Long = -1,
     val context: Context,
 ) {
-    var id : Long = -1
-        internal set
 
     // Dates
     private val isoFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS")

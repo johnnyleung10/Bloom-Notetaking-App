@@ -10,15 +10,16 @@ import java.time.format.DateTimeFormatter
 
 class NoteModel(
     title : String,
+    id: Long = -1,
     context: Context
-) : FileModel(title, context) {
+) : FileModel(title, id, context) {
 
     var contents : SpannableStringBuilder = SpannableStringBuilder("")
     var currFolder : String = ""
     var folderID : Long = 1
 
     constructor(title: String, context: Context, id: Long, folderID : Long, contents : String, dateCreated : String,
-                dateModified : String, dateDeleted : String) : this(title, context) {
+                dateModified : String, dateDeleted : String) : this(title, id, context) {
         this.id = id
         this.folderID = folderID
 

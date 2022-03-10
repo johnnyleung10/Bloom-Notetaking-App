@@ -7,15 +7,16 @@ import java.time.format.DateTimeFormatter
 
 class FolderModel(
     title: String,
+    id: Long,
     context: Context
-) : FileModel(title, context) {
+) : FileModel(title, id, context) {
 
     // ID = 1 for uncategorized, ID = 2 for recently deleted
 
     val noteList = ArrayList<NoteModel>()
 
     constructor(title: String, context: Context, id: Long, dateCreated : String,
-                dateModified : String, dateDeleted : String) : this(title, context) {
+                dateModified : String, dateDeleted : String) : this(title, id, context) {
         this.id = id
 
         // Handle dates

@@ -22,7 +22,7 @@ class NoteService(private val db: NoteRepository){
     }
 
     fun insertOrUpdateNote(note: Note): Boolean {
-        db.save(note).id
+        db.save(note)
         return true
     }
 
