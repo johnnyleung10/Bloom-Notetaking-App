@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.core.view.isVisible
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -14,8 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.notetakingapp.R
 import com.example.notetakingapp.databinding.FragmentNotesBinding
 import com.example.notetakingapp.models.FolderModel
-import com.example.notetakingapp.networking.ApiService
-import com.example.notetakingapp.ui.folders.FoldersRecyclerViewAdapter
+import com.example.notetakingapp.models.NoteModel
 import com.example.notetakingapp.viewmodels.NotesViewModel
 import com.example.notetakingapp.utilities.FileManager
 import com.example.notetakingapp.viewmodels.FoldersViewModel
@@ -107,8 +107,11 @@ class NotesFragment : Fragment(), MoveNoteDialogFragment.MoveNoteDialogListener 
         val spinner: Spinner = binding.sortBy
         val sortOrder: ImageButton = binding.sortOrder
 
-        if (folderId == 2.toLong())
+        if (folderId == 2.toLong()){
             newNoteButton.isVisible = false
+            moveNote.text = "Restore"
+            moveNote.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.restore, 0, 0)
+        }
         newNoteButton.setOnClickListener{
             newNote()
         }
@@ -117,13 +120,14 @@ class NotesFragment : Fragment(), MoveNoteDialogFragment.MoveNoteDialogListener 
             editNotes()
         }
 
-        // TODO: permanent delete for Recently Deleted
         delete.setOnClickListener{
-            deleteNotes()
+            if (folderId == 2.toLong()) permanentlyDeleteNotes()
+            else deleteNotes()
         }
 
-        moveNote.setOnClickListener { _ ->
-            moveNote()
+        moveNote.setOnClickListener {
+            if (folderId == 2.toLong()) restoreNote()
+            else moveNote()
         }
 
         selectAll.setOnClickListener{
@@ -133,20 +137,57 @@ class NotesFragment : Fragment(), MoveNoteDialogFragment.MoveNoteDialogListener 
         deselectAll.setOnClickListener{
             adapter.selectAll(false)
         }
-        
-        // TODO: reverse sorted results
-        sortOrder.setOnClickListener{}
 
-        // TODO: return search results
-        search.text.clear()
+        sortOrder.setOnClickListener{
+            search.text.clear()
 
-        // TODO: return sort results
+            var column = "date_modified"
+            var order = true
+
+            if (spinner.selectedItemPosition == 0) column = "title"
+            else if (spinner.selectedItemPosition == 1) column = "date_created"
+            if (sortOrder.contentDescription == "true"){
+                order = false
+                sortOrder.contentDescription = "false"
+            } else sortOrder.contentDescription = "true"
+
+            fm.sortNotes(column, folderId, order)
+            notesViewModel.setNotes(folder.noteList)
+        }
+
+        search.addTextChangedListener {
+            val noteIds = fm.searchNotes(search.text.toString(), folderId)
+            val results : ArrayList<NoteModel> = ArrayList()
+
+            for (i in folder.noteList)
+                if (i.id in noteIds) results.add(i)
+
+            notesViewModel.setNotes(results)
+        }
+
         ArrayAdapter.createFromResource(
             requireContext(), R.array.sort_by, R.layout.dropdown
         ).also { adapter ->
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             spinner.adapter = adapter
             spinner.setSelection(2)
+        }
+
+        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
+
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                search.text.clear()
+                var column = "date_modified"
+                var order = true
+
+                if (position == 0) column = "title"
+                else if (position == 1) column = "date_created"
+                if (sortOrder.contentDescription == "false") order = false
+
+                fm.sortNotes(column, folderId, order)
+                notesViewModel.setNotes(folder.noteList)
+            }
         }
 
         adapter.checked.observe(viewLifecycleOwner) {
@@ -172,26 +213,24 @@ class NotesFragment : Fragment(), MoveNoteDialogFragment.MoveNoteDialogListener 
         _binding = null
     }
 
+    private fun updateView(){
+        adapter.selectAll(false)
+        notesViewModel.setNotes(folder.noteList)
+    }
+
     private fun onNoteClick(position: Int) {
         val noteId = notesViewModel.noteCells.value!![position].noteId
-        val action =
-            NotesFragmentDirections.actionNavigationNotesToFragmentEditNote(
-                noteId
-            )
+        val action = NotesFragmentDirections.actionNavigationNotesToFragmentEditNote(noteId)
         NavHostFragment.findNavController(this).navigate(action)
     }
 
     private fun newNote() {
         val manager = FileManager.instance
         val newNote = manager?.createNewNote("New Note", folderId)
-        val action =
-            NotesFragmentDirections.actionNavigationNotesToFragmentEditNote(
-                newNote?.id!!
-            )
+        val action = NotesFragmentDirections.actionNavigationNotesToFragmentEditNote(newNote?.id!!)
         NavHostFragment.findNavController(this).navigate(action)
 
-        val folder = manager.folderList[notesViewModel.folderID]
-        notesViewModel.setNotes(folder!!.noteList)
+        notesViewModel.setNotes(folder.noteList)
     }
 
     private fun editNotes(){
@@ -199,38 +238,34 @@ class NotesFragment : Fragment(), MoveNoteDialogFragment.MoveNoteDialogListener 
         val visible = binding.actionButtons.visibility
         if (visible == View.VISIBLE)
             binding.actionButtons.visibility = View.GONE
-        else
-            binding.actionButtons.visibility = View.VISIBLE
+        else binding.actionButtons.visibility = View.VISIBLE
         adapter.checked.value = ArrayList()
     }
 
     private fun deleteNotes(){
-        for (i in adapter.checked.value!!)
-            fm.deleteNote(adapter.noteList[i].noteId)
-        // Update the view model!
-        adapter.selectAll(false)
-        notesViewModel.setNotes(folder.noteList)
+        for (i in adapter.checked.value!!) fm.deleteNote(i)
+        updateView()
+    }
+
+    private fun permanentlyDeleteNotes(){
+        for (i in adapter.checked.value!!) fm.permanentlyDeleteNote(i)
+        updateView()
+    }
+
+    private fun restoreNote(){
+        for (i in adapter.checked.value!!) fm.restoreNote(i)
+        updateView()
+    }
+
+    /* MoveNoteDialogListener */
+    override fun onMoveNote(dialog: DialogFragment, newFolderId: Long) {
+        for (i in adapter.checked.value!!) fm.moveNote(i, newFolderId)
+        updateView()
     }
 
     private fun moveNote() {
         val dialogFragment = MoveNoteDialogFragment(fm.folderList.values.toTypedArray())
         dialogFragment.show(requireFragmentManager().beginTransaction(), "move_note")
         dialogFragment.setTargetFragment(this, 1)
-    }
-
-    /* MoveNoteDialogListener */
-    override fun onMoveNote(dialog: DialogFragment, newFolderId: Long) {
-        if(adapter.checked.value?.size != 1){
-            return
-        }
-        val notePosition = adapter.checked.value!![0]
-        val noteId = adapter.noteList[notePosition].noteId
-
-        fm.moveNote(noteId, newFolderId)
-
-        // Update the view model!
-        adapter.selectAll(false)
-        val folder = fm.folderList[notesViewModel.folderID]
-        notesViewModel.setNotes(folder!!.noteList)
     }
 }
