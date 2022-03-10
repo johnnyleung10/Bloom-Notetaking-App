@@ -9,6 +9,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.notetakingapp.databinding.FragmentEditNoteBinding
@@ -226,6 +227,7 @@ class EditNoteFragment : Fragment() {
             }
         }
         underlineButton.setOnClickListener {
+            addSpanToText(editNoteContents)
             underlineFlag = !underlineFlag
         }
 
@@ -302,4 +304,81 @@ class EditNoteFragment : Fragment() {
         // TODO: Use the ViewModel
     }
 
+
+    private fun addSpanToText(editNoteContents : EditText) {
+        // Add span to selected
+        val str: Spannable = editNoteContents.text
+
+        val selStart = editNoteContents.selectionStart
+        val selEnd = editNoteContents.selectionEnd
+        val range = selEnd - selStart
+        if (selStart < selEnd) {
+            var spanAll = false
+            val spans = str.getSpans(selStart, selEnd, StyleSpan::class.java)
+            Log.d("SPAN_CHAR", spans.size.toString())
+
+            // Check to see if add span or remove span
+            if (spans.size < range) { spanAll = true }
+            else {
+                var i = selStart
+                for (j in selStart + 1 until selEnd + 1) {
+                    val thisSpan = str.getSpans(i, j, StyleSpan::class.java)
+                    Log.d("SPAN_CHAR", thisSpan.size.toString())
+                    for (k in thisSpan.indices) {
+                        Log.d("SPAN_CHAR", thisSpan[k].style.toString())
+                        if (thisSpan[k].style == Typeface.BOLD) break
+                        if (k == thisSpan.lastIndex) spanAll = true
+                    }
+                    if (spanAll) break
+                    i = j
+                }
+            }
+            //.d("STYLE", selStart.toString() + " " +selEnd + " " +spans.size)
+//            if (!spanAll && spans.size >= selEnd - selStart) {
+//                var i = selStart
+//                for (j in selStart + 1 until selEnd + 1) {
+//                    val thisSpan = str.getSpans(i, j, StyleSpan::class.java)
+//                    if (thisSpan.isNotEmpty()) {
+//                        if (thisSpan[0].style == Typeface.BOLD) {
+//                            str.removeSpan(thisSpan[0])
+//                        } else if (thisSpan[0].style == Typeface.BOLD_ITALIC) {
+//                            str.removeSpan(thisSpan[0])
+//                            str.setSpan(
+//                                StyleSpan(Typeface.ITALIC),
+//                                i,
+//                                j,
+//                                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+//                            )
+//                        }
+//                    }
+//                    i = j
+//                }
+//            } else {
+//                var i = selStart
+//                for (j in selStart + 1 until selEnd + 1) {
+//                    //Log.d("Span", "$i $j")
+//                    val thisSpan = str.getSpans(i, j, StyleSpan::class.java)
+//                    if (thisSpan.isEmpty()) {
+//                        str.setSpan(
+//                            StyleSpan(Typeface.BOLD),
+//                            i,
+//                            j,
+//                            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+//                        )
+//                    } else if (thisSpan[0].style == Typeface.ITALIC) {
+//                        str.removeSpan(thisSpan[0])
+//                        str.setSpan(
+//                            StyleSpan(Typeface.BOLD_ITALIC),
+//                            i,
+//                            j,
+//                            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+//                        )
+//                    }
+//                    i = j
+//                }
+//            }
+        } else {
+            //spanFlag = !spanFlag
+        }
+    }
 }
