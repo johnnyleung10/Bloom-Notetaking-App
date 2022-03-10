@@ -22,7 +22,7 @@ class FolderService(private val db: FolderRepository){
     }
 
     fun post(folder: Folder) {
-        db.save(folder)
+        db.save(folder).id
     }
 
     fun delete(folderId: Long) : Boolean {

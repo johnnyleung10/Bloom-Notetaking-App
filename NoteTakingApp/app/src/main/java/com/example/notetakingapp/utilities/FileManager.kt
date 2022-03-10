@@ -40,8 +40,8 @@ class FileManager() {
     private fun initFolders() {
         if (databaseHelper.getNumberOfFolders() == 0) {
             // Create default folders
-            createNewFolder("Uncategorized", 1)
-            createNewFolder("Recently Deleted", 2)
+            createNewFolder("Uncategorized")
+            createNewFolder("Recently Deleted")
         } else {
             for (folder in databaseHelper.getAllFolders()) {
                 folderList[folder.id] = folder
@@ -65,8 +65,8 @@ class FileManager() {
     /**
      * Creates a new folder and adds it to folderList
      */
-    fun createNewFolder(name : String, id: Long = -1) : FolderModel {
-        val newFolder = FolderModel(name, id, context)
+    fun createNewFolder(name : String) : FolderModel {
+        val newFolder = FolderModel(name, context)
         dataSynchronizer.insertFolder(newFolder)
         folderList[newFolder.id] = newFolder
         return newFolder
@@ -121,9 +121,9 @@ class FileManager() {
     /**
      * Creates a new note inside the specified folder
      */
-    fun createNewNote(name : String, folderID : Long, id: Long = -1) : NoteModel {
+    fun createNewNote(name : String, folderID : Long) : NoteModel {
         // Create note and assign it to folder
-        val newNote = NoteModel(name, id, context)
+        val newNote = NoteModel(name, context)
         newNote.folderID = folderID
         newNote.currFolder = folderList[folderID]?.title ?: UNIDENTIFIED_FOLDER
         folderList[folderID]?.noteList?.add(newNote)
