@@ -83,12 +83,12 @@ class ApiServiceImpl(
         }
     }
 
-    override suspend fun deleteNote(noteDeletionRequest: NoteDeletionRequestModel): EmptyResponseModel? {
+    override suspend fun deleteNote(noteId: Long): EmptyResponseModel? {
         return try {
 
             client.delete<EmptyResponseModel> {
                 url(ApiRoutes.NOTES)
-                body = noteDeletionRequest
+                parameter("noteId", noteId)
             }
         } catch (ex: RedirectResponseException) {
             // 3xx - responses
@@ -181,12 +181,12 @@ class ApiServiceImpl(
         }
     }
 
-    override suspend fun deleteFolder(folderDeletionRequestModel: FolderDeletionRequestModel): EmptyResponseModel? {
+    override suspend fun deleteFolder(folderId: Long): EmptyResponseModel? {
         return try {
 
             client.delete<EmptyResponseModel> {
-                url(ApiRoutes.NOTES)
-                body = folderDeletionRequestModel
+                url(ApiRoutes.FOLDERS)
+                parameter("folderId", folderId)
             }
         } catch (ex: RedirectResponseException) {
             // 3xx - responses

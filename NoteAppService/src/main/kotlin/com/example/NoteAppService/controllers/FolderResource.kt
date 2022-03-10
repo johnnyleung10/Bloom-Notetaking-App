@@ -30,15 +30,14 @@ class FolderResource(val service: FolderService) {
 
     @PostMapping
     fun post(@RequestBody folder: Folder): EmptyResponse {
-        service.post(folder)
+        service.insertOrUpdate(folder)
         return EmptyResponse()
     }
 
     //this is just a testing of put. It needs to be rewritten
     @PutMapping
-    fun put(@RequestParam folderId: Long, @RequestParam(required = false) title: String?,
-            @RequestParam(required = false) dateModified: String?, @RequestParam(required = false) dateDeleted: String?) : EmptyResponse {
-        service.put(folderId, title=title,  dateModified=dateModified, dateDeleted=dateDeleted)
+    fun put(@RequestBody folder: Folder) : EmptyResponse {
+        service.insertOrUpdate(folder)
         return EmptyResponse()
     }
 
@@ -49,7 +48,8 @@ class FolderResource(val service: FolderService) {
 
     //      this is just a testing of delete by id. It needs to be rewritten
     @DeleteMapping
-    fun delete(@RequestParam folderId: Long) : Boolean {
-        return service.delete(folderId)
+    fun delete(@RequestParam folderId: Long) : EmptyResponse {
+        service.delete(folderId)
+        return EmptyResponse()
     }
 }

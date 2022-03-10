@@ -81,18 +81,23 @@ class FileManager() {
             return
         }
 
-        title?.let { folderList[folderID]?.title = title }
-        folderList[folderID]?.updateModifiedDate()
+        val folder = folderList[folderID]
 
-        dataSynchronizer.updateFolder(folderID, title = title,
-            dateModified = folderList[folderID]?.getLastModifiedDate())
+        title?.let { folder?.title = title }
+        folder?.updateModifiedDate()
+
+        if(folder != null){
+            dataSynchronizer.updateFolder(folder)
+        }
     }
 
     /**
      * Delete folder specified by folderID
      */
     fun deleteFolder(folderID : Long) : Boolean {
-        if (folderList[folderID] == null) return false
+        val folder = folderList[folderID]
+
+        if (folder == null) return false
         if (folderID == UNCATEGORIZED_FOLDER || folderID == RECENTLY_DELETED_FOLDER) return false
 
         // Move notes to uncategorized
@@ -105,7 +110,10 @@ class FileManager() {
         }
 
         // Remove from database
-        dataSynchronizer.deleteOneFolder(id = folderID)
+        if(folder != null){
+            dataSynchronizer.deleteOneFolder(folder)
+        }
+
         folderList.remove(folderID)
 
         return true
@@ -146,8 +154,9 @@ class FileManager() {
         note?.updateModifiedDate()
 
         // Update the database
-        dataSynchronizer.updateNote(noteID, title = title, content = note?.spannableStringToText(),
-            dateModified = note?.getLastModifiedDate())
+        if(note != null){
+            dataSynchronizer.updateNote(note)
+        }
     }
 
     /**
@@ -185,7 +194,9 @@ class FileManager() {
         folderList[RECENTLY_DELETED_FOLDER]?.noteList?.remove(note)
 
         allNotes.remove(noteID)
-        dataSynchronizer.deleteOneNote(noteID)
+        if(note != null){
+            dataSynchronizer.deleteOneNote(note)
+        }
 
         return true
     }
@@ -212,8 +223,7 @@ class FileManager() {
 
         // Update in database
         if (note != null) {
-            dataSynchronizer.updateNote(note.id, folderId = folderID,
-                dateModified = note.getLastModifiedDate(), dateDeleted = note.getDeletionDate())
+            dataSynchronizer.updateNote(note)
         }
     }
 

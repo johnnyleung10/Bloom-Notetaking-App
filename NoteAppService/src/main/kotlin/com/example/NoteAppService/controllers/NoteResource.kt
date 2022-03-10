@@ -38,7 +38,8 @@ class NoteResource(val service: NoteService) {
 //    }
 
     @DeleteMapping
-    fun delete(@RequestParam noteId: Long) : Boolean {
-        return service.delete(noteId)
+    fun delete(@RequestParam noteId: Long) : EmptyResponse {
+        service.delete(noteId)
+        return EmptyResponse()
     }
 }

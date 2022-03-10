@@ -203,12 +203,6 @@ class EditNoteFragment : Fragment() {
             }
         }
 
-        // Note contents listeners
-        editNoteContents.setOnFocusChangeListener { v, hasFocus ->
-            note!!.contents = SpannableStringBuilder(editNoteContents.text)
-            manager.editNote(noteID, contents = note.contents)
-        }
-
         editNoteContents.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
                 lastCursorPosition = editNoteContents.selectionStart
@@ -265,8 +259,8 @@ class EditNoteFragment : Fragment() {
         val note = manager?.getNote(noteID)
         note!!.title = binding.editNoteTitle.text.toString()
         if (note.title == "") note.title = "New Note"
-        manager.editNote(noteID, title = note.title)
-
+        note!!.contents = SpannableStringBuilder(binding.editNoteContents.text)
+        manager.editNote(noteID, title = note.title, contents = note.contents)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {

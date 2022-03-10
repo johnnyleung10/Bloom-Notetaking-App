@@ -247,45 +247,35 @@ class DatabaseHelper(private val context: Context) :
     /**
      * UPDATING
      */
-    fun updateNote(id: Long, title: String? = null, content: String? = null, dateModified: String? = null, dateDeleted: String? = null, folderId: Int? = null, isDirty:Boolean = false, isPermanentlyDeleted: Boolean = false){
+    fun updateNote(note: NoteModel, isDirty:Boolean = false, isPermanentlyDeleted: Boolean = false){
 
         val dbWrite = this.writableDatabase
         val values = ContentValues().apply {
-            title?.let { put(NoteEntry.COLUMN_NAME_TITLE, title) }
-            content?.let { put(NoteEntry.COLUMN_NAME_CONTENTS_RICH, content) }
-            content?.let { put(NoteEntry.COLUMN_NAME_CONTENTS_PLAIN, Html.fromHtml(content).toString()) }
-            dateModified?.let {
-                put(
-                    NoteEntry.COLUMN_NAME_DATE_MODIFIED,
-                    dateModified
-                )
-            }
-            dateDeleted?.let { put(NoteEntry.COLUMN_NAME_DATE_DELETED, dateDeleted) }
-            folderId?.let { put(NoteEntry.COLUMN_NAME_FOLDER_ID, folderId) }
+            put(NoteEntry.COLUMN_NAME_TITLE, note.title)
+            put(NoteEntry.COLUMN_NAME_CONTENTS_RICH, note.spannableStringToText())
+            put(NoteEntry.COLUMN_NAME_CONTENTS_PLAIN, note.contents.toString())
+            put(NoteEntry.COLUMN_NAME_DATE_MODIFIED, note.getLastModifiedDate())
+            put(NoteEntry.COLUMN_NAME_DATE_DELETED, note.getDeletionDate())
+            put(NoteEntry.COLUMN_NAME_FOLDER_ID, note.folderID)
             put(NoteEntry.COLUMN_NAME_IS_DIRTY, isDirty)
             put(NoteEntry.COLUMN_NAME_IS_PERMANENTLY_DELETED, isPermanentlyDeleted)
         }
         dbWrite.update(NoteEntry.TABLE_NAME, values, BaseColumns._ID + " = ?",
-            arrayOf(id.toString()))
+            arrayOf(note.id.toString()))
         dbWrite.close()
     }
 
-    fun updateFolder(id: Long, title: String? = null, dateModified: String? = null, dateDeleted: String? = null, isDirty:Boolean = false, isPermanentlyDeleted: Boolean = false) {
+    fun updateFolder(folder: FolderModel, isDirty:Boolean = false, isPermanentlyDeleted: Boolean = false) {
         val dbWrite = this.writableDatabase
         val values = ContentValues().apply {
-            title?.let { put(FolderEntry.COLUMN_NAME_TITLE, title) }
-            dateModified?.let {
-                put(
-                    FolderEntry.COLUMN_NAME_DATE_MODIFIED,
-                    dateModified
-                )
-            }
-            dateDeleted?.let { put(FolderEntry.COLUMN_NAME_DATE_DELETED, dateDeleted) }
+            put(FolderEntry.COLUMN_NAME_TITLE, folder.title)
+            put(FolderEntry.COLUMN_NAME_DATE_MODIFIED, folder.getLastModifiedDate())
+            put(FolderEntry.COLUMN_NAME_DATE_DELETED, folder.getDeletionDate())
             put(FolderEntry.COLUMN_NAME_IS_DIRTY, isDirty)
             put(FolderEntry.COLUMN_NAME_IS_PERMANENTLY_DELETED, isPermanentlyDeleted)
         }
         dbWrite.update(FolderEntry.TABLE_NAME, values, BaseColumns._ID + " = ?",
-            arrayOf(id.toString()))
+            arrayOf(folder.id.toString()))
         dbWrite.close()
     }
 

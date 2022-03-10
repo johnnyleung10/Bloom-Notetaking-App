@@ -21,7 +21,7 @@ class FolderService(private val db: FolderRepository){
         return null
     }
 
-    fun post(folder: Folder) {
+    fun insertOrUpdate(folder: Folder) {
         db.save(folder)
     }
 
