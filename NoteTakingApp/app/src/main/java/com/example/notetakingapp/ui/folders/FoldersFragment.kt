@@ -128,7 +128,7 @@ class FoldersFragment : Fragment(), NewFolderDialogFragment.NewFolderDialogListe
                 deselectAll.isEnabled = true
                 deleteFolderButton.isEnabled = true
             }
-            if (size != adapter.itemCount)
+            if (size != adapter.itemCount - 2)
                 selectAll.isEnabled = true
         }
     }
@@ -140,20 +140,14 @@ class FoldersFragment : Fragment(), NewFolderDialogFragment.NewFolderDialogListe
 
     private fun onFolderClick(position: Int) {
         val folderCellViewModel = foldersViewModel.folderCells.value!![position]
-        val action =
-            FoldersFragmentDirections.actionNavigationFoldersToNavigationNotes(
-                folderCellViewModel.folderId
-            )
+        val action = FoldersFragmentDirections.actionNavigationFoldersToNavigationNotes(folderCellViewModel.folderId)
         NavHostFragment.findNavController(this).navigate(action)
     }
 
     private fun newNote() {
         val manager = FileManager.instance
         val newNote = manager?.createNewNote("New Note", 1)
-        val action =
-            FoldersFragmentDirections.actionNavigationFoldersToFragmentEditNote(
-                newNote?.id!!
-            )
+        val action = FoldersFragmentDirections.actionNavigationFoldersToFragmentEditNote(newNote?.id!!)
         NavHostFragment.findNavController(this).navigate(action)
     }
 
@@ -174,9 +168,7 @@ class FoldersFragment : Fragment(), NewFolderDialogFragment.NewFolderDialogListe
     }
 
     private fun deleteFolders(){
-        for (i in adapter.checked.value!!)
-            fm.deleteFolder(adapter.folderCellList[i].folderId)
-        // Update the view model!
+        for (i in adapter.checked.value!!) fm.deleteFolder(i)
         adapter.selectAll(false)
         foldersViewModel.setFolders(fm.folderList)
     }
@@ -184,7 +176,6 @@ class FoldersFragment : Fragment(), NewFolderDialogFragment.NewFolderDialogListe
     /* NewFolderDialogListener */
     override fun onCreateNewFolder(dialog: DialogFragment, newFolderName: String) {
         fm.createNewFolder(newFolderName)
-        // Update the view model!
         foldersViewModel.setFolders(fm.folderList)
     }
 

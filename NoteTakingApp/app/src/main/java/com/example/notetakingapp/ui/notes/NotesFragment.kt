@@ -151,11 +151,6 @@ class NotesFragment : Fragment(), MoveNoteDialogFragment.MoveNoteDialogListener 
 
             fm.sortNotes(column, folderId, order)
             notesViewModel.setNotes(folder.noteList)
-
-            val newChecked: ArrayList<Int> = ArrayList()
-            for (i in adapter.checked.value!!)
-                newChecked.add(folder.noteList.size - 1 - i)
-            adapter.checked.value = newChecked
         }
 
         search.addTextChangedListener {
@@ -223,20 +218,14 @@ class NotesFragment : Fragment(), MoveNoteDialogFragment.MoveNoteDialogListener 
 
     private fun onNoteClick(position: Int) {
         val noteId = notesViewModel.noteCells.value!![position].noteId
-        val action =
-            NotesFragmentDirections.actionNavigationNotesToFragmentEditNote(
-                noteId
-            )
+        val action = NotesFragmentDirections.actionNavigationNotesToFragmentEditNote(noteId)
         NavHostFragment.findNavController(this).navigate(action)
     }
 
     private fun newNote() {
         val manager = FileManager.instance
         val newNote = manager?.createNewNote("New Note", folderId)
-        val action =
-            NotesFragmentDirections.actionNavigationNotesToFragmentEditNote(
-                newNote?.id!!
-            )
+        val action = NotesFragmentDirections.actionNavigationNotesToFragmentEditNote(newNote?.id!!)
         NavHostFragment.findNavController(this).navigate(action)
 
         notesViewModel.setNotes(folder.noteList)
@@ -247,33 +236,28 @@ class NotesFragment : Fragment(), MoveNoteDialogFragment.MoveNoteDialogListener 
         val visible = binding.actionButtons.visibility
         if (visible == View.VISIBLE)
             binding.actionButtons.visibility = View.GONE
-        else
-            binding.actionButtons.visibility = View.VISIBLE
+        else binding.actionButtons.visibility = View.VISIBLE
         adapter.checked.value = ArrayList()
     }
 
     private fun deleteNotes(){
-        for (i in adapter.checked.value!!)
-            fm.deleteNote(adapter.noteList[i].noteId)
+        for (i in adapter.checked.value!!) fm.deleteNote(i)
         updateView()
     }
 
     private fun permanentlyDeleteNotes(){
-        for (i in adapter.checked.value!!)
-            fm.permanentlyDeleteNote(adapter.noteList[i].noteId)
+        for (i in adapter.checked.value!!) fm.permanentlyDeleteNote(i)
         updateView()
     }
 
     private fun restoreNote(){
-        for (i in adapter.checked.value!!)
-            fm.restoreNote(adapter.noteList[i].noteId)
+        for (i in adapter.checked.value!!) fm.restoreNote(i)
         updateView()
     }
 
     /* MoveNoteDialogListener */
     override fun onMoveNote(dialog: DialogFragment, newFolderId: Long) {
-        for (i in adapter.checked.value!!)
-            fm.moveNote(adapter.noteList[i].noteId, newFolderId)
+        for (i in adapter.checked.value!!) fm.moveNote(i, newFolderId)
         updateView()
     }
 

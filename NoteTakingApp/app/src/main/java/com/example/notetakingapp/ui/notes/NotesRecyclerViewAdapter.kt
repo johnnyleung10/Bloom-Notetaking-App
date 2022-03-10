@@ -16,9 +16,7 @@ import com.example.notetakingapp.models.NoteCellViewModel
 class NotesRecyclerViewAdapter(var noteList: ArrayList<NoteCellViewModel>, private val onNoteClicked: (position: Int) -> Unit, var folderId: Long) : RecyclerView.Adapter<NotesRecyclerViewAdapter.ViewHolder>() {
 
     private var editMode: Boolean = false
-    private var selectAll: Boolean = false
-    private var customCheck: Boolean = true
-    var checked : MutableLiveData<MutableList<Int>> = MutableLiveData<MutableList<Int>>()
+    var checked : MutableLiveData<MutableList<Long>> = MutableLiveData<MutableList<Long>>()
 
     init {
         checked.value = ArrayList()
@@ -32,21 +30,10 @@ class NotesRecyclerViewAdapter(var noteList: ArrayList<NoteCellViewModel>, priva
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-
         val noteCellViewModel = noteList[position]
         holder.noteTitle.text = noteCellViewModel.title
-
-        if (!editMode) {
-            holder.checkbox.isChecked = false
-            customCheck = true
-        } else
-            holder.checkbox.isChecked = checked.value?.contains(position) == true
-
+        holder.checkbox.isChecked = checked.value?.contains(noteCellViewModel.noteId) == true
         holder.checkbox.isVisible = editMode
-
-        if (!customCheck && editMode)
-            holder.checkbox.isChecked = selectAll
-
     }
 
     override fun getItemCount(): Int {
@@ -59,14 +46,12 @@ class NotesRecyclerViewAdapter(var noteList: ArrayList<NoteCellViewModel>, priva
     }
 
     fun selectAll(select: Boolean){
-        selectAll = select
+        if (select) {
+            for (i in noteList)
+                if (checked.value?.contains(i.noteId) == false) checked.value?.add(i.noteId)
+        } else for(i in noteList) checked.value?.remove(i.noteId)
 
-        val newChecked = ArrayList<Int>()
-        if (selectAll)
-            for(i in 0 until noteList.size) newChecked.add(i)
-
-        checked.value = newChecked
-        customCheck = false
+        checked.value = checked.value
         this.notifyDataSetChanged()
     }
 
@@ -91,20 +76,17 @@ class NotesRecyclerViewAdapter(var noteList: ArrayList<NoteCellViewModel>, priva
                 noteTitle.setTextColor(ColorStateList.valueOf(Color.LTGRAY))
 
             checkbox.setOnClickListener {
-                if (checked.value?.contains(adapterPosition) == true)
-                    checked.value?.remove(adapterPosition)
-                else
-                    checked.value?.add(adapterPosition)
+                val id = noteList[adapterPosition].noteId
+                if (checked.value?.contains(id) == true) checked.value?.remove(id)
+                else checked.value?.add(id)
 
                 checked.value = checked.value
-                customCheck = true
             }
         }
 
         override fun onClick(v: View) {
             val position = adapterPosition
-            if (folderId != 2.toLong())
-                onItemClicked(position)
+            if (folderId != 2.toLong()) onItemClicked(position)
         }
     }
 }

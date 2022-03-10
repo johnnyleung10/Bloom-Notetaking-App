@@ -14,13 +14,12 @@ import android.widget.CheckBox
 import android.widget.EditText
 import androidx.lifecycle.MutableLiveData
 import com.example.notetakingapp.R
+import kotlin.math.roundToInt
 
 class FoldersRecyclerViewAdapter(var folderCellList: ArrayList<FolderCellViewModel>, private val onFolderClicked: (position: Int) -> Unit, private val onFolderRenamed: (position: Int, newTitle: String) -> Unit) : RecyclerView.Adapter<FoldersRecyclerViewAdapter.ViewHolder>() {
 
     private var editMode: Boolean = false
-    private var selectAll: Boolean = false
-    private var customCheck: Boolean = true
-    var checked : MutableLiveData<MutableList<Int>> = MutableLiveData<MutableList<Int>>()
+    var checked : MutableLiveData<MutableList<Long>> = MutableLiveData<MutableList<Long>>()
 
     init {
         checked.value = ArrayList()
@@ -42,26 +41,18 @@ class FoldersRecyclerViewAdapter(var folderCellList: ArrayList<FolderCellViewMod
         holder.notesInFolderCount.text = "(${folderCellViewModel.noteCount})"
         holder.notesInFolderCount.isVisible = !editMode
 
-        if (position == 0 || position == 1) {
+        if (!editMode || folderCellViewModel.folderId == 1.toLong() || folderCellViewModel.folderId == 2.toLong()) {
             holder.folderTitle.inputType = InputType.TYPE_NULL
-            return
-        }
-        if (!editMode) {
-            holder.folderTitle.inputType = InputType.TYPE_NULL
-            holder.folderTitle.width = holder.folderTitle.text.length * 50
+            holder.folderTitle.width = (holder.folderTitle.paint.measureText(holder.folderTitle.text.toString())).roundToInt() + 40
             holder.folderTitle.backgroundTintList = ColorStateList.valueOf(Color.TRANSPARENT)
-            holder.checkbox.isChecked = false
-            customCheck = true
+            holder.checkbox.isVisible = false
         } else{
             holder.folderTitle.width = 1200
             holder.folderTitle.inputType = InputType.TYPE_CLASS_TEXT
             holder.folderTitle.backgroundTintList = ColorStateList.valueOf(Color.LTGRAY)
-
-            if (!customCheck)
-                holder.checkbox.isChecked = selectAll
+            holder.checkbox.isChecked = checked.value?.contains(folderCellViewModel.folderId) == true
+            holder.checkbox.isVisible = true
         }
-
-        holder.checkbox.isVisible = editMode
     }
 
     override fun getItemCount(): Int {
@@ -74,15 +65,14 @@ class FoldersRecyclerViewAdapter(var folderCellList: ArrayList<FolderCellViewMod
     }
 
     fun selectAll(select: Boolean){
-        selectAll = select
+        if (select) {
+            for (i in folderCellList)
+                if (checked.value?.contains(i.folderId) == false) checked.value?.add(i.folderId)
+        } else for (i in folderCellList) checked.value?.remove(i.folderId)
+        checked.value?.remove(1.toLong())
+        checked.value?.remove(2.toLong())
 
-        val newChecked = ArrayList<Int>()
-        if (selectAll){
-            for(i in 2 until folderCellList.size)
-                newChecked.add(i)
-        }
-        checked.value = newChecked
-        customCheck = false
+        checked.value = checked.value
         this.notifyDataSetChanged()
     }
 
@@ -95,7 +85,7 @@ class FoldersRecyclerViewAdapter(var folderCellList: ArrayList<FolderCellViewMod
     inner class ViewHolder(
         ItemView: View,
         private val onItemClicked: (position: Int) -> Unit,
-        private val onFolderRenamed: (position: Int, newTitle: String, ) -> Unit
+        private val onFolderRenamed: (position: Int, newTitle: String) -> Unit
     ) : RecyclerView.ViewHolder(ItemView), View.OnClickListener {
 
         val folderTitle: EditText = itemView.findViewById(R.id.folderTitle)
@@ -110,14 +100,17 @@ class FoldersRecyclerViewAdapter(var folderCellList: ArrayList<FolderCellViewMod
                     onFolderRenamed(adapterPosition, folderTitle.text.toString())
             }
 
+//            folderTitle.addTextChangedListener{
+//                println("CALLED")
+//                onFolderRenamed(adapterPosition, folderTitle.text.toString())
+//            }
+
             checkbox.setOnClickListener {
-                if (checked.value?.contains(adapterPosition) == true)
-                    checked.value?.remove(adapterPosition)
-                else
-                    checked.value?.add(adapterPosition)
+                val id = folderCellList[adapterPosition].folderId
+                if (checked.value?.contains(id) == true) checked.value?.remove(id)
+                else checked.value?.add(id)
 
                 checked.value = checked.value
-                customCheck = true
             }
         }
 
