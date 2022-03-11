@@ -254,6 +254,23 @@ class FileManager() {
     }
 
     /**
+     * Sort notes by columnName in specified folder
+     */
+    fun sortFolders(columnName : String, descending: Boolean? = false) : List<Long> {
+        val ret = ArrayList<Long>()
+        ret.add(UNCATEGORIZED_FOLDER)
+        ret.add(RECENTLY_DELETED_FOLDER)
+        val newOrder = databaseHelper.getSortedFolders(columnName, descending)
+        for (folderID : Long in newOrder) {
+            if (folderID != UNCATEGORIZED_FOLDER && folderID != RECENTLY_DELETED_FOLDER) {
+                ret.add(folderID)
+            }
+
+        }
+        return ret
+    }
+
+    /**
      * Search folders by title. Returns a list of folderIDs that match search criteria
      */
     fun searchFolders(searchTerm : String) : List<Long> {

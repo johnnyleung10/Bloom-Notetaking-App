@@ -390,6 +390,43 @@ internal class FileManagerTest {
     }
 
     @Test
+    fun sortFolders() {
+        cleanupManager()
+
+        val appContext = InstrumentationRegistry.getInstrumentation().targetContext
+        val manager : FileManager? = FileManager.instance
+        manager?.initManager(appContext)
+        manager?.initFiles()
+
+        // Make folders
+        val folder1 = manager?.createNewFolder("B Note")
+        val folder2 = manager?.createNewFolder("A Note")
+        val folder3 = manager?.createNewFolder("C Note")
+
+        // Test sort by title
+        var ordered = manager?.sortFolders(DatabaseHelper.DatabaseContract.NoteEntry.COLUMN_NAME_TITLE) // ASC
+        if (manager != null) {
+            Assert.assertEquals(folder2?.id, ordered?.get(2))
+            Assert.assertEquals(folder1?.id, ordered?.get(3))
+            Assert.assertEquals(folder3?.id, ordered?.get(4))
+        }
+        ordered = manager?.sortFolders(DatabaseHelper.DatabaseContract.NoteEntry.COLUMN_NAME_TITLE, true) // DESC
+        if (manager != null) {
+            Assert.assertEquals(folder3?.id, ordered?.get(2))
+            Assert.assertEquals(folder1?.id, ordered?.get(3))
+            Assert.assertEquals(folder2?.id, ordered?.get(4))
+        }
+
+        // Sort by creationDate
+        ordered = manager?.sortFolders(DatabaseHelper.DatabaseContract.NoteEntry.COLUMN_NAME_DATE_CREATED) // ASC
+        if (manager != null) {
+            Assert.assertEquals(folder1?.id, ordered?.get(2))
+            Assert.assertEquals(folder2?.id, ordered?.get(3))
+            Assert.assertEquals(folder3?.id, ordered?.get(4))
+        }
+    }
+
+    @Test
     fun searchFolders() {
         cleanupManager()
 

@@ -236,6 +236,27 @@ class DatabaseHelper(private val context: Context) :
         return retList
     }
 
+    fun getSortedFolders(columnName: String, descending: Boolean? = false): List<Long>  {
+        val retList : ArrayList<Long> = arrayListOf()
+        var queryString = "SELECT * FROM " + FolderEntry.TABLE_NAME + " ORDER BY " + columnName
+        if (descending == true) queryString += " DESC" // Descending
+        val dbRead = this.readableDatabase
+
+        val cursor = dbRead.rawQuery(queryString, null)
+
+        if (cursor.moveToFirst()) {
+            do {
+                val id = cursor.getInt(0)
+
+                retList.add(id.toLong())
+            } while (cursor.moveToNext())
+        }
+
+        dbRead.close()
+        cursor.close()
+        return retList
+    }
+
     // DELETING
     fun deleteOneNote(id: Long) : Boolean {
         val queryString = "DELETE FROM " + NoteEntry.TABLE_NAME + " WHERE " + BaseColumns._ID + " = " + id
