@@ -414,7 +414,7 @@ internal class FileManagerTest {
         }
         resultList = manager?.searchFolders("C")
         if (manager != null) {
-            Assert.assertEquals(2, resultList?.size)
+            Assert.assertEquals(3, resultList?.size)
         }
         resultList = manager?.searchFolders("Folder")
         if (manager != null) {
