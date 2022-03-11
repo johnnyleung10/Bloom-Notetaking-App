@@ -5,6 +5,7 @@ import io.ktor.client.*
 import io.ktor.client.features.*
 import io.ktor.client.request.*
 import java.net.ConnectException
+import java.net.SocketTimeoutException
 
 class ApiServiceImpl(
     private val client: HttpClient
@@ -29,6 +30,9 @@ class ApiServiceImpl(
             emptyList()
         } catch (ex: ConnectException) {
             println("Error: ConnectException")
+            emptyList()
+        } catch (ex: SocketTimeoutException){
+            println("Error: Socket Timeout Connection")
             emptyList()
         }
     }
@@ -55,6 +59,9 @@ class ApiServiceImpl(
         } catch (ex: ConnectException) {
             println("Error: ConnectException")
             null
+        } catch (ex: SocketTimeoutException){
+            println("Error: Socket Timeout Connection")
+            null
         }
     }
 
@@ -79,6 +86,9 @@ class ApiServiceImpl(
             null
         } catch (ex: ConnectException) {
             println("Error: ConnectException")
+            null
+        } catch (ex: SocketTimeoutException){
+            println("Error: Socket Timeout Connection")
             null
         }
     }
@@ -105,6 +115,9 @@ class ApiServiceImpl(
         } catch (ex: ConnectException) {
             println("Error: ConnectException")
             null
+        } catch (ex: SocketTimeoutException){
+            println("Error: Socket Timeout Connection")
+            null
         }
     }
 
@@ -127,6 +140,9 @@ class ApiServiceImpl(
             emptyList()
         } catch (ex: ConnectException) {
             println("Error: ConnectException")
+            emptyList()
+        } catch (ex: SocketTimeoutException){
+            println("Error: Socket Timeout Connection")
             emptyList()
         }
     }
@@ -153,6 +169,9 @@ class ApiServiceImpl(
         } catch (ex: ConnectException) {
             println("Error: ConnectException")
             null
+        } catch (ex: SocketTimeoutException){
+            println("Error: Socket Timeout Connection")
+            null
         }
     }
 
@@ -177,6 +196,9 @@ class ApiServiceImpl(
             null
         } catch (ex: ConnectException) {
             println("Error: ConnectException")
+            null
+        } catch (ex: SocketTimeoutException){
+            println("Error: Socket Timeout Connection")
             null
         }
     }
@@ -203,6 +225,9 @@ class ApiServiceImpl(
         } catch (ex: ConnectException) {
             println("Error: ConnectException")
             null
+        } catch (ex: SocketTimeoutException){
+            println("Error: Socket Timeout Connection")
+            null
         }
     }
 
@@ -225,6 +250,9 @@ class ApiServiceImpl(
             emptyList()
         } catch (ex: ConnectException) {
             println("Error: ConnectException")
+            emptyList()
+        } catch (ex: SocketTimeoutException){
+            println("Error: Socket Timeout Connection")
             emptyList()
         }
     }
