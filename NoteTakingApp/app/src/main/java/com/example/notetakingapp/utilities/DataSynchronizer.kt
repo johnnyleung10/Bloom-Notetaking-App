@@ -29,7 +29,7 @@ class DataSynchronizer(private val databaseHelper: DatabaseHelper) {
         }
 
         if(isDirty){
-            databaseHelper.insertNote(note, isDirty)
+            databaseHelper.updateNote(note, isDirty)
         }
     }
 

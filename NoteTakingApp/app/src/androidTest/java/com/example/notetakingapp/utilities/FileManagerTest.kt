@@ -292,6 +292,32 @@ internal class FileManagerTest {
     }
 
     @Test
+    fun restoreNote2() {
+        cleanupManager()
+
+        val appContext = InstrumentationRegistry.getInstrumentation().targetContext
+        val manager : FileManager? = FileManager.instance
+        manager?.initManager(appContext)
+        manager?.initFiles()
+
+        // Delete a folder and try restoring the note
+        val folder2 = manager?.createNewFolder("New Folder 2")
+        val note2 = manager?.createNewNote("New note 1", folder2!!.id)
+
+        if (folder2 != null) {
+            manager.deleteFolder(folder2.id) // Delete folder2
+            Assert.assertEquals(1, manager.folderList[2]?.noteList?.size)
+            if (note2 != null) {
+                manager.restoreNote(note2.id)
+            }
+            Assert.assertEquals("", note2?.getDeletionDate())
+            Assert.assertEquals(false, manager.folderList.containsKey(folder2.id))
+            Assert.assertEquals(1, manager.folderList[1]?.noteList?.size)
+        }
+    }
+
+
+    @Test
     fun sortNotes() {
         cleanupManager()
 
