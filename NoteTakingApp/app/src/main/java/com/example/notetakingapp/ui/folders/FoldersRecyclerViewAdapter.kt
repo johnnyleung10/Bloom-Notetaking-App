@@ -19,6 +19,7 @@ import kotlin.math.roundToInt
 class FoldersRecyclerViewAdapter(var folderCellList: ArrayList<FolderCellViewModel>, private val onFolderClicked: (position: Int) -> Unit, private val onFolderRenamed: (position: Int, newTitle: String) -> Unit) : RecyclerView.Adapter<FoldersRecyclerViewAdapter.ViewHolder>() {
 
     private var editMode: Boolean = false
+    private var index = -1
     var checked : MutableLiveData<MutableList<Long>> = MutableLiveData<MutableList<Long>>()
 
     init {
@@ -96,14 +97,12 @@ class FoldersRecyclerViewAdapter(var folderCellList: ArrayList<FolderCellViewMod
             itemView.setOnClickListener(this)
 
             folderTitle.setOnFocusChangeListener{ _, hasFocus ->
-                if (!hasFocus)
-                    onFolderRenamed(adapterPosition, folderTitle.text.toString())
+                if (adapterPosition != -1) index = adapterPosition
+                if (!hasFocus) {
+                    onFolderRenamed(index, folderTitle.text.toString())
+                    folderCellList[index].title = folderTitle.text.toString()
+                }
             }
-
-//            folderTitle.addTextChangedListener{
-//                println("CALLED")
-//                onFolderRenamed(adapterPosition, folderTitle.text.toString())
-//            }
 
             checkbox.setOnClickListener {
                 val id = folderCellList[adapterPosition].folderId
@@ -118,11 +117,5 @@ class FoldersRecyclerViewAdapter(var folderCellList: ArrayList<FolderCellViewMod
             val position = adapterPosition
             onItemClicked(position)
         }
-
-//        fun navigation(){
-//            if (editMode)
-//                itemView.setOnClickListener(null)
-//            else itemView.setOnClickListener(this)
-//        }
     }
 }

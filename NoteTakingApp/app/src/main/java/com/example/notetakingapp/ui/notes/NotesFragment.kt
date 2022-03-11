@@ -155,6 +155,7 @@ class NotesFragment : Fragment(), MoveNoteDialogFragment.MoveNoteDialogListener 
             notesViewModel.setNotes(folder.noteList)
         }
 
+        search.text.clear()
         search.addTextChangedListener {
             val noteIds = fm.searchNotes(search.text.toString(), folderId)
             val results : ArrayList<NoteModel> = ArrayList()

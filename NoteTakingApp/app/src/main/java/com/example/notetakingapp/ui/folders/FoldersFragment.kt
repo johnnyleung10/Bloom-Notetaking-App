@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -12,6 +13,7 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.notetakingapp.R
 import com.example.notetakingapp.databinding.FragmentFoldersBinding
+import com.example.notetakingapp.models.FolderModel
 import com.example.notetakingapp.viewmodels.FoldersViewModel
 import com.example.notetakingapp.utilities.FileManager
 
@@ -102,19 +104,63 @@ class FoldersFragment : Fragment(), NewFolderDialogFragment.NewFolderDialogListe
             adapter.selectAll(false)
         }
 
-        // TODO: reverse sorted results
-        sortOrder.setOnClickListener{}
+        sortOrder.setOnClickListener{
+            search.text.clear()
 
-        // TODO: return search results
+            var column = "date_modified"
+            var order = true
+
+            if (spinner.selectedItemPosition == 0) column = "title"
+            else if (spinner.selectedItemPosition == 1) column = "date_created"
+            if (sortOrder.contentDescription == "true"){
+                order = false
+                sortOrder.contentDescription = "false"
+            } else sortOrder.contentDescription = "true"
+
+            val newList = LinkedHashMap<Long, FolderModel>()
+            for (i in fm.sortFolders(column, order))
+                newList[i] = fm.folderList[i]!!
+
+            foldersViewModel.setFolders(newList)
+        }
+
         search.text.clear()
+        search.addTextChangedListener {
+            val folderIds = fm.searchFolders(search.text.toString())
+            val newList = HashMap<Long, FolderModel>()
+            for (i in fm.folderList.keys)
+                if (i in folderIds) newList[i] = fm.folderList[i]!!
 
-        //TODO: return sort results
+            foldersViewModel.setFolders(newList)
+        }
+
         ArrayAdapter.createFromResource(
             requireContext(), R.array.sort_by, R.layout.dropdown
         ).also { adapter ->
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             spinner.adapter = adapter
             spinner.setSelection(2)
+        }
+
+        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
+
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                search.text.clear()
+
+                var column = "date_modified"
+                var order = true
+
+                if (position == 0) column = "title"
+                else if (position == 1) column = "date_created"
+                if (sortOrder.contentDescription == "false") order = false
+
+                val newList = LinkedHashMap<Long, FolderModel>()
+                for (i in fm.sortFolders(column, order))
+                    newList[i] = fm.folderList[i]!!
+
+                foldersViewModel.setFolders(newList)
+            }
         }
 
         adapter.checked.observe(viewLifecycleOwner) {
@@ -128,7 +174,7 @@ class FoldersFragment : Fragment(), NewFolderDialogFragment.NewFolderDialogListe
                 deselectAll.isEnabled = true
                 deleteFolderButton.isEnabled = true
             }
-            if (size != adapter.itemCount - 2)
+            if (size != adapter.itemCount)
                 selectAll.isEnabled = true
         }
     }
@@ -183,33 +229,4 @@ class FoldersFragment : Fragment(), NewFolderDialogFragment.NewFolderDialogListe
         if (position == -1) return
         fm.editFolder(adapter.folderCellList[position].folderId, title)
     }
-
-//    Changed to in-place renaming
-//    private fun renameFolder() {
-//        if(adapter.checked.value?.size != 1){
-//            return
-//        }
-//        val folderPosition = adapter.checked.value!![0]
-//        val folderName = adapter.folderCellList[folderPosition].title
-//
-//        val dialogFragment = RenameFolderDialogFragment(folderName)
-//        dialogFragment.show(requireFragmentManager().beginTransaction(), "rename_folder")
-//        dialogFragment.setTargetFragment(this, 1)
-//    }
-
-//    /* RenameFolderDialogListener */
-//    override fun onRenameFolder(dialog: DialogFragment, newFolderName: String) {
-//        if(adapter.checked.value?.size != 1){
-//            return
-//        }
-//        val folderPosition = adapter.checked.value!![0]
-//        val folderId = adapter.folderCellList[folderPosition].folderId
-//
-//        fm.editFolder(folderId, newFolderName)
-//
-//        // Update the view model!
-//        adapter.selectAll(false)
-//        foldersViewModel.setFolders(fm.folderList)
-//    }
-
 }
