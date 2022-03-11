@@ -247,6 +247,13 @@ class FileManager() {
         return databaseHelper.searchNote(DatabaseHelper.DatabaseContract.NoteEntry.COLUMN_NAME_TITLE, searchTerm, folderID)
     }
 
+    /**
+     * Search folders by title. Returns a list of folderIDs that match search criteria
+     */
+    fun searchFolders(searchTerm : String) : List<Long> {
+        return databaseHelper.searchFolder(DatabaseHelper.DatabaseContract.FolderEntry.COLUMN_NAME_TITLE, searchTerm)
+    }
+
     companion object {
         @SuppressLint("StaticFieldLeak")
         private var ourInstance: FileManager? = null

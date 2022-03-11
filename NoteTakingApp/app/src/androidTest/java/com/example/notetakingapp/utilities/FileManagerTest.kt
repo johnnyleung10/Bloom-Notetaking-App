@@ -363,4 +363,37 @@ internal class FileManagerTest {
         }
     }
 
+    @Test
+    fun searchFolders() {
+        cleanupManager()
+
+        val appContext = InstrumentationRegistry.getInstrumentation().targetContext
+        val manager : FileManager? = FileManager.instance
+        manager?.initManager(appContext)
+        manager?.initFiles()
+
+        // Make folders
+        val folder1 = manager?.createNewFolder("B Folder")
+        val folder2 = manager?.createNewFolder("A Folder")
+        val folder3 = manager?.createNewFolder("C Folder")
+
+        // Search
+        var resultList = manager?.searchFolders("A")
+        if (manager != null) {
+            Assert.assertEquals(folder2?.id, resultList?.get(0))
+        }
+        resultList = manager?.searchFolders("B")
+        if (manager != null) {
+            Assert.assertEquals(folder1?.id, resultList?.get(0))
+        }
+        resultList = manager?.searchFolders("C")
+        if (manager != null) {
+            Assert.assertEquals(2, resultList?.size)
+        }
+        resultList = manager?.searchFolders("Folder")
+        if (manager != null) {
+            Assert.assertEquals(3, resultList?.size)
+        }
+    }
+
 }

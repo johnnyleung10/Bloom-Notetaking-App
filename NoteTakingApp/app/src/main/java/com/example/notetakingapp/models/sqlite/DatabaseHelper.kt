@@ -168,7 +168,7 @@ class DatabaseHelper(private val context: Context) :
         return retList
     }
 
-    fun searchNote(column: String, searchTerm: String, folderId: Long, ): List<Long> {
+    fun searchNote(column: String, searchTerm: String, folderId: Long): List<Long> {
         val retList : ArrayList<Long> = arrayListOf()
         val queryString = "SELECT * FROM " + NoteEntry.TABLE_NAME + " WHERE folder_Id=" + folderId + " AND " + column + " LIKE '%$searchTerm%'"
         val dbRead = this.readableDatabase
@@ -187,6 +187,25 @@ class DatabaseHelper(private val context: Context) :
 
 //                val note = NoteModel(title, context, id.toLong(), folderID, content, dateCreated,
 //                    dateModified, dateDeleted)
+                retList.add(id.toLong())
+            } while (cursor.moveToNext())
+        }
+
+        dbRead.close()
+        cursor.close()
+        return retList
+    }
+
+    fun searchFolder(column: String, searchTerm: String): List<Long> {
+        val retList : ArrayList<Long> = arrayListOf()
+        val queryString = "SELECT * FROM " + FolderEntry.TABLE_NAME + " WHERE " + column + " LIKE '%$searchTerm%'"
+        val dbRead = this.readableDatabase
+
+        val cursor = dbRead.rawQuery(queryString, null)
+
+        if (cursor.moveToFirst()) {
+            do {
+                val id = cursor.getInt(0)
                 retList.add(id.toLong())
             } while (cursor.moveToNext())
         }
