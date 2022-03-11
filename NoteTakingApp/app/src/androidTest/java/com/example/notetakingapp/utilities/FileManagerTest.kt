@@ -406,7 +406,7 @@ internal class FileManagerTest {
         // Search
         var resultList = manager?.searchFolders("A")
         if (manager != null) {
-            Assert.assertEquals(folder2?.id, resultList?.get(0))
+            Assert.assertEquals(2, resultList?.size)
         }
         resultList = manager?.searchFolders("B")
         if (manager != null) {
