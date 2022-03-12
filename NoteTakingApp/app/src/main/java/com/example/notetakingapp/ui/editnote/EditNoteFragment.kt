@@ -14,6 +14,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.notetakingapp.databinding.FragmentEditNoteBinding
 import com.example.notetakingapp.utilities.FileManager
+import java.lang.reflect.Type
 
 
 class EditNoteFragment : Fragment() {
@@ -89,145 +90,17 @@ class EditNoteFragment : Fragment() {
 
         // BUTTONS
         boldButton.setOnClickListener {
-            // Bold selected
-            val str: Spannable = editNoteContents.text
-
-            val selStart = editNoteContents.selectionStart
-            val selEnd = editNoteContents.selectionEnd
-            if (selStart < selEnd) {
-                var boldAll = false
-                val spans = str.getSpans(selStart, selEnd, StyleSpan::class.java)
-
-                // Check to see bold or unbold
-                for (i in spans.indices) {
-                    //("STYLE_SPAN", spans[i].style.toString())
-                    if (spans[i].style != Typeface.BOLD && spans[i].style != Typeface.BOLD_ITALIC) {
-                        boldAll = true
-                        break
-                    }
-                }
-                //.d("STYLE", selStart.toString() + " " +selEnd + " " +spans.size)
-                if (!boldAll && spans.size >= selEnd - selStart) {
-                    var i = selStart
-                    for (j in selStart + 1 until selEnd + 1) {
-                        val thisSpan = str.getSpans(i, j, StyleSpan::class.java)
-                        if (thisSpan.isNotEmpty()) {
-                            if (thisSpan[0].style == Typeface.BOLD) {
-                                str.removeSpan(thisSpan[0])
-                            } else if (thisSpan[0].style == Typeface.BOLD_ITALIC) {
-                                str.removeSpan(thisSpan[0])
-                                str.setSpan(
-                                    StyleSpan(Typeface.ITALIC),
-                                    i,
-                                    j,
-                                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-                                )
-                            }
-                        }
-                        i = j
-                    }
-                } else {
-                    var i = selStart
-                    for (j in selStart + 1 until selEnd + 1) {
-                        //Log.d("Span", "$i $j")
-                        val thisSpan = str.getSpans(i, j, StyleSpan::class.java)
-                        if (thisSpan.isEmpty()) {
-                            str.setSpan(
-                                StyleSpan(Typeface.BOLD),
-                                i,
-                                j,
-                                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-                            )
-                        } else if (thisSpan[0].style == Typeface.ITALIC) {
-                            str.removeSpan(thisSpan[0])
-                            str.setSpan(
-                                StyleSpan(Typeface.BOLD_ITALIC),
-                                i,
-                                j,
-                                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-                            )
-                        }
-                        i = j
-                    }
-                }
-            } else {
+            if (!addSpanToText(editNoteContents, Typeface.BOLD)) {
                 boldFlag = !boldFlag
             }
         }
         italicsButton.setOnClickListener {
-            // Italicize selected
-            val str: Spannable = editNoteContents.text
-
-            val selStart = editNoteContents.selectionStart
-            val selEnd = editNoteContents.selectionEnd
-            if (selStart < selEnd) {
-                var boldAll = false
-                val spans = str.getSpans(selStart, selEnd, StyleSpan::class.java)
-
-                // Check to see italicize or unitalicize
-                for (i in spans.indices) {
-                    //Log.d("STYLE", spans[i].style.toString())
-                    if (spans[i].style != Typeface.ITALIC && spans[i].style != Typeface.BOLD_ITALIC) {
-                        boldAll = true
-                        break
-                    }
-                }
-                //Log.d("STYLE", selStart.toString() + " " +selEnd + " " +spans.size)
-                if (!boldAll && spans.size >= selEnd - selStart) {
-                    var i = selStart
-                    for (j in selStart + 1 until selEnd + 1) {
-                        val thisSpan = str.getSpans(i, j, StyleSpan::class.java)
-                        if (thisSpan.isNotEmpty()) {
-                            if (thisSpan[0].style == Typeface.ITALIC) {
-                                str.removeSpan(thisSpan[0])
-                            } else if (thisSpan[0].style == Typeface.BOLD_ITALIC) {
-                                str.removeSpan(thisSpan[0])
-                                str.setSpan(
-                                    StyleSpan(Typeface.BOLD),
-                                    i,
-                                    j,
-                                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-                                )
-                            }
-                        }
-                        i = j
-                    }
-
-//                    for (i in spans.indices) {
-//                        if (spans[i].style == Typeface.BOLD) {
-//                            str.removeSpan(spans[i])
-//                        }
-//                    }
-                } else {
-                    var i = selStart
-                    for (j in selStart + 1 until selEnd + 1) {
-                        //Log.d("Span", "$i $j")
-                        val thisSpan = str.getSpans(i, j, StyleSpan::class.java)
-                        if (thisSpan.isEmpty()) {
-                            str.setSpan(
-                                StyleSpan(Typeface.ITALIC),
-                                i,
-                                j,
-                                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-                            )
-                        } else if (thisSpan[0].style == Typeface.BOLD) {
-                            str.removeSpan(thisSpan[0])
-                            str.setSpan(
-                                StyleSpan(Typeface.BOLD_ITALIC),
-                                i,
-                                j,
-                                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-                            )
-                        }
-                        i = j
-                    }
-                }
-            } else {
+            if (!addSpanToText(editNoteContents, Typeface.ITALIC)) {
                 italicsFlag = !italicsFlag
             }
         }
         underlineButton.setOnClickListener {
-            addSpanToText(editNoteContents)
+            addSpanToText(editNoteContents, 0, underline = true)
             underlineFlag = !underlineFlag
         }
 
@@ -251,19 +124,9 @@ class EditNoteFragment : Fragment() {
                 val str: Spannable = editNoteContents.text
                 val endLength: Int = start + count
 
-                if (boldFlag && italicsFlag) {
+
+                if (boldFlag) {
                     if (lastCursorPosition <= endLength) {
-                        //Log.d("Span", "$lastCursorPosition $endLength")
-                        str.setSpan(
-                            StyleSpan(Typeface.BOLD_ITALIC),
-                            lastCursorPosition,
-                            endLength,
-                            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-                        )
-                    }
-                } else if (boldFlag) {
-                    if (lastCursorPosition <= endLength) {
-                        //Log.d("Span", "$lastCursorPosition $endLength")
                         str.setSpan(
                             StyleSpan(Typeface.BOLD),
                             lastCursorPosition,
@@ -271,9 +134,9 @@ class EditNoteFragment : Fragment() {
                             Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
                         )
                     }
-                } else if (italicsFlag) {
+                }
+                if (italicsFlag) {
                     if (lastCursorPosition <= endLength) {
-                        //Log.d("Span", "$lastCursorPosition $endLength")
                         str.setSpan(
                             StyleSpan(Typeface.ITALIC),
                             lastCursorPosition,
@@ -281,9 +144,9 @@ class EditNoteFragment : Fragment() {
                             Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
                         )
                     }
-                } else if (underlineFlag) {
+                }
+                if (underlineFlag) {
                     if (lastCursorPosition <= endLength) {
-                        //Log.d("Span", "$lastCursorPosition $endLength")
                         str.setSpan(
                             UnderlineSpan(),
                             lastCursorPosition,
@@ -305,7 +168,7 @@ class EditNoteFragment : Fragment() {
     }
 
 
-    private fun addSpanToText(editNoteContents : EditText) {
+    private fun addSpanToText(editNoteContents : EditText, typeface : Int, underline : Boolean? = null) : Boolean {
         // Add span to selected
         val str: Spannable = editNoteContents.text
 
@@ -315,70 +178,85 @@ class EditNoteFragment : Fragment() {
         if (selStart < selEnd) {
             var spanAll = false
             val spans = str.getSpans(selStart, selEnd, StyleSpan::class.java)
-            Log.d("SPAN_CHAR", spans.size.toString())
+            val underlineSpans = str.getSpans(selStart, selEnd, UnderlineSpan::class.java)
+            Log.d("SPAN_CHAR", underlineSpans.size.toString())
 
             // Check to see if add span or remove span
-            if (spans.size < range) { spanAll = true }
+            if (spans.size < range || (underline == true && underlineSpans.size < range)) {
+                spanAll = true
+            }
             else {
                 var i = selStart
                 for (j in selStart + 1 until selEnd + 1) {
-                    val thisSpan = str.getSpans(i, j, StyleSpan::class.java)
-                    Log.d("SPAN_CHAR", thisSpan.size.toString())
-                    for (k in thisSpan.indices) {
-                        Log.d("SPAN_CHAR", thisSpan[k].style.toString())
-                        if (thisSpan[k].style == Typeface.BOLD) break
-                        if (k == thisSpan.lastIndex) spanAll = true
+                    if (underline == true) {
+                        val thisSpan = str.getSpans(i, j, UnderlineSpan::class.java)
+                        for (k in thisSpan.indices) {
+                            Log.d("SPANTYPE", "thisSpan: " + thisSpan[k].spanTypeId + " underSpan: " +UnderlineSpan().spanTypeId)
+                            if (thisSpan[k].spanTypeId == UnderlineSpan().spanTypeId) break
+                            if (k == thisSpan.lastIndex) spanAll = true
+                        }
+                        if (spanAll) break
+                    } else {
+                        val thisSpan = str.getSpans(i, j, StyleSpan::class.java)
+                        for (k in thisSpan.indices) {
+                            if (thisSpan[k].style == typeface) break
+                            if (k == thisSpan.lastIndex) spanAll = true
+                        }
+                        if (spanAll) break
                     }
-                    if (spanAll) break
                     i = j
                 }
             }
-            //.d("STYLE", selStart.toString() + " " +selEnd + " " +spans.size)
-//            if (!spanAll && spans.size >= selEnd - selStart) {
-//                var i = selStart
-//                for (j in selStart + 1 until selEnd + 1) {
-//                    val thisSpan = str.getSpans(i, j, StyleSpan::class.java)
-//                    if (thisSpan.isNotEmpty()) {
-//                        if (thisSpan[0].style == Typeface.BOLD) {
-//                            str.removeSpan(thisSpan[0])
-//                        } else if (thisSpan[0].style == Typeface.BOLD_ITALIC) {
-//                            str.removeSpan(thisSpan[0])
-//                            str.setSpan(
-//                                StyleSpan(Typeface.ITALIC),
-//                                i,
-//                                j,
-//                                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-//                            )
-//                        }
-//                    }
-//                    i = j
-//                }
-//            } else {
-//                var i = selStart
-//                for (j in selStart + 1 until selEnd + 1) {
-//                    //Log.d("Span", "$i $j")
-//                    val thisSpan = str.getSpans(i, j, StyleSpan::class.java)
-//                    if (thisSpan.isEmpty()) {
-//                        str.setSpan(
-//                            StyleSpan(Typeface.BOLD),
-//                            i,
-//                            j,
-//                            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-//                        )
-//                    } else if (thisSpan[0].style == Typeface.ITALIC) {
-//                        str.removeSpan(thisSpan[0])
-//                        str.setSpan(
-//                            StyleSpan(Typeface.BOLD_ITALIC),
-//                            i,
-//                            j,
-//                            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-//                        )
-//                    }
-//                    i = j
-//                }
-//            }
-        } else {
-            //spanFlag = !spanFlag
+            Log.d("Underline SpanALL", spanAll.toString())
+            if (!spanAll && spans.size >= selEnd - selStart || !spanAll && underlineSpans.size >= selEnd - selStart) {
+                if (underline == true) {
+                    var i = selStart
+                    for (j in selStart + 1 until selEnd + 1) {
+                        val thisSpan = str.getSpans(i, j, UnderlineSpan::class.java)
+                        for (span in thisSpan) {
+                            str.removeSpan(span)
+                        }
+                        i = j
+                    }
+                } else {
+                    var i = selStart
+                    for (j in selStart + 1 until selEnd + 1) {
+                        val thisSpan = str.getSpans(i, j, StyleSpan::class.java)
+                        for (span in thisSpan) {
+                            if (span.style == typeface) {
+                                str.removeSpan(span)
+                            }
+                        }
+                        i = j
+                    }
+                }
+            } else {
+                if (underline == true) {
+                    var i = selStart
+                    for (j in selStart + 1 until selEnd + 1) {
+                        str.setSpan(
+                            UnderlineSpan(),
+                            i,
+                            j,
+                            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                        )
+                        i = j
+                    }
+                } else {
+                    var i = selStart
+                    for (j in selStart + 1 until selEnd + 1) {
+                        str.setSpan(
+                            StyleSpan(typeface),
+                            i,
+                            j,
+                            Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                        )
+                        i = j
+                    }
+                }
+            }
+            return true
         }
+        return false
     }
 }
