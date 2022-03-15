@@ -19,16 +19,31 @@
     </fragment>
 
     <fragment
-        android:id="@+id/navigation_journal"
-        android:name="com.example.notetakingapp.ui.journal.JournalFragment"
-        android:label="@string/title_journal"
-        tools:layout="@layout/fragment_journal" />
+        android:id="@+id/navigation_prompt"
+        android:name="com.example.notetakingapp.ui.prompt.PromptFragment"
+        android:label="@string/title_prompt"
+        tools:layout="@layout/fragment_prompt" >
+        <action
+            android:id="@+id/action_navigation_prompt_to_fragment_calendar"
+            app:destination="@id/navigation_calendar" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_calendar"
+        android:name="com.example.notetakingapp.ui.calendar.CalendarFragment"
+        android:label="fragment_calendar"
+        tools:layout="@layout/fragment_calendar" >
+        <action
+            android:id="@+id/action_navigation_calendar_to_fragment_prompt"
+            app:destination="@id/navigation_prompt" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_notifications"
         android:name="com.example.notetakingapp.ui.notifications.NotificationsFragment"
         android:label="@string/title_notifications"
         tools:layout="@layout/fragment_notifications" />
+
     <fragment
         android:id="@+id/navigation_notes"
         android:name="com.example.notetakingapp.ui.notes.NotesFragment"
@@ -41,6 +56,7 @@
             android:id="@+id/action_navigation_notes_to_fragment_edit_note"
             app:destination="@id/fragment_edit_note" />
     </fragment>
+
     <fragment
         android:id="@+id/fragment_edit_note"
         android:name="com.example.notetakingapp.ui.editnote.EditNoteFragment"

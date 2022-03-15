@@ -7,9 +7,9 @@
         android:title="@string/title_notes" />
 
     <item
-        android:id="@+id/navigation_journal"
-        android:icon="@drawable/journal"
-        android:title="@string/title_journal" />
+        android:id="@+id/navigation_prompt"
+        android:icon="@drawable/prompt"
+        android:title="@string/title_prompt" />
 
     <item
         android:id="@+id/navigation_notifications"

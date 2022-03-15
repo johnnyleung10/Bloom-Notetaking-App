@@ -1,13 +1,13 @@
-package com.example.notetakingapp.ui.journal
+package com.example.notetakingapp.ui.calendar
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
-class JournalViewModel : ViewModel() {
+class CalendarViewModel : ViewModel() {
 
     private val _text = MutableLiveData<String>().apply {
-        value = "March 15, 2022"
+        value = "This is calendar Fragment"
     }
     val text: LiveData<String> = _text
 }

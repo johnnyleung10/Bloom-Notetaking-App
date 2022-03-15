@@ -8,4 +8,13 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+
+    <color name="happy">#ffff00</color>
+    <color name="loving">#ff9ecb</color>
+    <color name="excited">#fe9003</color>
+    <color name="neutral">#bbbbbb</color>
+    <color name="sad">#73a6f7</color>
+    <color name="angry">#d7191c</color>
+    <color name="doubtful">#7c67ad</color>
 </resources>
