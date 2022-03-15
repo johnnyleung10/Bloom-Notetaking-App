@@ -8,7 +8,7 @@
     <fragment
         android:id="@+id/navigation_folders"
         android:name="com.example.notetakingapp.ui.folders.FoldersFragment"
-        android:label="@string/title_home"
+        android:label="@string/title_notes"
         tools:layout="@layout/fragment_folders" >
         <action
             android:id="@+id/action_navigation_folders_to_navigation_notes"
@@ -19,10 +19,10 @@
     </fragment>
 
     <fragment
-        android:id="@+id/navigation_dashboard"
-        android:name="com.example.notetakingapp.ui.dashboard.DashboardFragment"
-        android:label="@string/title_dashboard"
-        tools:layout="@layout/fragment_dashboard" />
+        android:id="@+id/navigation_journal"
+        android:name="com.example.notetakingapp.ui.journal.JournalFragment"
+        android:label="@string/title_journal"
+        tools:layout="@layout/fragment_journal" />
 
     <fragment
         android:id="@+id/navigation_notifications"
