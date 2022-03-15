@@ -2,14 +2,14 @@ package com.example.notetakingapp.utilities
 
 import com.example.notetakingapp.models.FolderModel
 import com.example.notetakingapp.models.NoteModel
-import com.example.notetakingapp.models.sqlite.DatabaseHelper
+import com.example.notetakingapp.models.sqlite.NoteTakingDatabaseHelper
 import com.example.notetakingapp.networking.ApiService
 import com.example.notetakingapp.networking.models.FolderUpdateRequestModel
 import com.example.notetakingapp.networking.models.NoteUpdateRequestModel
 import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
 
-class DataSynchronizer(private val databaseHelper: DatabaseHelper) {
+class DataSynchronizer(private val noteTakingDatabaseHelper: NoteTakingDatabaseHelper) {
 
     private val apiService: ApiService = ApiService.create()
 
@@ -19,7 +19,7 @@ class DataSynchronizer(private val databaseHelper: DatabaseHelper) {
     fun insertNote(note: NoteModel) {
 
         // Insert the note locally first to populate the ID
-        databaseHelper.insertNote(note)
+        noteTakingDatabaseHelper.insertNote(note)
 
         val noteCreationRequest = note.toNoteCreationRequestModel()
         var isDirty = false
@@ -29,14 +29,14 @@ class DataSynchronizer(private val databaseHelper: DatabaseHelper) {
         }
 
         if(isDirty){
-            databaseHelper.updateNote(note, isDirty)
+            noteTakingDatabaseHelper.updateNote(note, isDirty)
         }
     }
 
     fun insertFolder(folder: FolderModel) {
 
         // Insert the folder locally first to populate the ID
-        databaseHelper.insertFolder(folder)
+        noteTakingDatabaseHelper.insertFolder(folder)
 
         val folderCreationRequest = folder.toFolderCreationRequestModel()
         var isDirty = false
@@ -46,7 +46,7 @@ class DataSynchronizer(private val databaseHelper: DatabaseHelper) {
         }
 
         if(isDirty) {
-            databaseHelper.updateFolder(folder, isDirty)
+            noteTakingDatabaseHelper.updateFolder(folder, isDirty)
         }
     }
 
@@ -61,9 +61,9 @@ class DataSynchronizer(private val databaseHelper: DatabaseHelper) {
             deletedSuccess = response.await() != null
         }
         if(deletedSuccess){
-            databaseHelper.deleteOneNote(note.id)
+            noteTakingDatabaseHelper.deleteOneNote(note.id)
         } else {
-            databaseHelper.updateNote(note, isPermanentlyDeleted = true)
+            noteTakingDatabaseHelper.updateNote(note, isPermanentlyDeleted = true)
         }
     }
 
@@ -74,9 +74,9 @@ class DataSynchronizer(private val databaseHelper: DatabaseHelper) {
             deletedSuccess = response.await() != null
         }
         if(deletedSuccess){
-            databaseHelper.deleteOneFolder(id = folder.id)
+            noteTakingDatabaseHelper.deleteOneFolder(id = folder.id)
         } else {
-            databaseHelper.updateFolder(folder, isPermanentlyDeleted = true)
+            noteTakingDatabaseHelper.updateFolder(folder, isPermanentlyDeleted = true)
         }
     }
 
@@ -101,7 +101,7 @@ class DataSynchronizer(private val databaseHelper: DatabaseHelper) {
             isDirty = response.await() == null
         }
 
-        databaseHelper.updateNote(note, isDirty=isDirty)
+        noteTakingDatabaseHelper.updateNote(note, isDirty=isDirty)
     }
 
     fun updateFolder(folder: FolderModel) {
@@ -112,7 +112,7 @@ class DataSynchronizer(private val databaseHelper: DatabaseHelper) {
             isDirty = response.await() == null
         }
 
-        databaseHelper.updateFolder(folder, isDirty = isDirty)
+        noteTakingDatabaseHelper.updateFolder(folder, isDirty = isDirty)
     }
 
     /* SYNCHRONIZING */
@@ -122,14 +122,14 @@ class DataSynchronizer(private val databaseHelper: DatabaseHelper) {
         // NOTES
 
         // We need to handle permanently deleted notes first since they could also be dirty
-        val permanentlyDeletedNotes: List<NoteModel> = databaseHelper.getAllNotes(onlyPermanentlyDeleted = true)
+        val permanentlyDeletedNotes: List<NoteModel> = noteTakingDatabaseHelper.getAllNotes(onlyPermanentlyDeleted = true)
 
         for(permanentlyDeletedNote: NoteModel in permanentlyDeletedNotes){
             deleteOneNote(permanentlyDeletedNote)
         }
 
         // Now we can handle dirty notes
-        val dirtyNotes: List<NoteModel> = databaseHelper.getAllNotes(onlyDirty = true)
+        val dirtyNotes: List<NoteModel> = noteTakingDatabaseHelper.getAllNotes(onlyDirty = true)
 
         for(dirtyNote: NoteModel in dirtyNotes){
             updateNote(dirtyNote)
@@ -137,14 +137,14 @@ class DataSynchronizer(private val databaseHelper: DatabaseHelper) {
 
         // FOLDERS
         // We need to handle permanently deleted notes first since they could also be dirty
-        val permanentlyDeletedFolders: List<FolderModel> = databaseHelper.getAllFolders(onlyPermanentlyDeleted = true)
+        val permanentlyDeletedFolders: List<FolderModel> = noteTakingDatabaseHelper.getAllFolders(onlyPermanentlyDeleted = true)
 
         for(permanentlyDeletedFolder: FolderModel in permanentlyDeletedFolders){
             deleteOneFolder(permanentlyDeletedFolder)
         }
 
         // Now we can handle dirty folders
-        val dirtyFolders: List<FolderModel> = databaseHelper.getAllFolders(onlyDirty = true)
+        val dirtyFolders: List<FolderModel> = noteTakingDatabaseHelper.getAllFolders(onlyDirty = true)
 
         for(dirtyFolder: FolderModel in dirtyFolders){
             updateFolder(dirtyFolder)

@@ -6,7 +6,7 @@ import android.text.SpannableStringBuilder
 import android.util.Log
 import com.example.notetakingapp.models.FolderModel
 import com.example.notetakingapp.models.NoteModel
-import com.example.notetakingapp.models.sqlite.DatabaseHelper
+import com.example.notetakingapp.models.sqlite.NoteTakingDatabaseHelper
 
 private const val UNCATEGORIZED_FOLDER : Long = 1
 private const val RECENTLY_DELETED_FOLDER : Long = 2
@@ -14,7 +14,7 @@ private const val UNIDENTIFIED_FOLDER : String = "Unidentified Folder"
 
 class FileManager() {
     private lateinit var context : Context
-    private lateinit var databaseHelper : DatabaseHelper
+    private lateinit var noteTakingDatabaseHelper : NoteTakingDatabaseHelper
     lateinit var dataSynchronizer: DataSynchronizer
 
     val folderList = HashMap<Long, FolderModel>()
@@ -22,8 +22,8 @@ class FileManager() {
 
     fun initManager(context: Context) {
         this.context = context
-        databaseHelper = DatabaseHelper(context)
-        dataSynchronizer = DataSynchronizer(databaseHelper)
+        noteTakingDatabaseHelper = NoteTakingDatabaseHelper(context)
+        dataSynchronizer = DataSynchronizer(noteTakingDatabaseHelper)
     }
 
     /**
@@ -38,12 +38,12 @@ class FileManager() {
      * Initializes existing folders from database, or creates the default folders if none exist
      */
     private fun initFolders() {
-        if (databaseHelper.getNumberOfFolders() == 0) {
+        if (noteTakingDatabaseHelper.getNumberOfFolders() == 0) {
             // Create default folders
             createNewFolder("Uncategorized")
             createNewFolder("Recently Deleted")
         } else {
-            for (folder in databaseHelper.getAllFolders()) {
+            for (folder in noteTakingDatabaseHelper.getAllFolders()) {
                 folderList[folder.id] = folder
             }
         }
@@ -53,7 +53,7 @@ class FileManager() {
      * Initializes existing notes from database, and assigns it to respective folders
      */
     private fun initNotes() {
-        for (note in databaseHelper.getAllNotes()) {
+        for (note in noteTakingDatabaseHelper.getAllNotes()) {
             val i = note.folderID
             note.currFolder = folderList[i]?.title ?: UNIDENTIFIED_FOLDER
             folderList[i]?.noteList?.add(note)
@@ -237,7 +237,7 @@ class FileManager() {
      * Sort notes by columnName in specified folder
      */
     fun sortNotes(columnName : String, folderID: Long, descending: Boolean? = false) {
-        val newOrder = databaseHelper.getSortedNotes(columnName, folderID, descending)
+        val newOrder = noteTakingDatabaseHelper.getSortedNotes(columnName, folderID, descending)
         folderList[folderID]!!.noteList.clear()
         for (noteID : Long in newOrder) {
             val note : NoteModel? = allNotes[noteID]
@@ -250,7 +250,7 @@ class FileManager() {
      * criteria
      */
     fun searchNotes(searchTerm : String, folderID: Long) : List<Long> {
-        return databaseHelper.searchNote(DatabaseHelper.DatabaseContract.NoteEntry.COLUMN_NAME_TITLE, searchTerm, folderID)
+        return noteTakingDatabaseHelper.searchNote(NoteTakingDatabaseHelper.DatabaseContract.NoteEntry.COLUMN_NAME_TITLE, searchTerm, folderID)
     }
 
     /**
@@ -260,7 +260,7 @@ class FileManager() {
         val ret = ArrayList<Long>()
         ret.add(UNCATEGORIZED_FOLDER)
         ret.add(RECENTLY_DELETED_FOLDER)
-        val newOrder = databaseHelper.getSortedFolders(columnName, descending)
+        val newOrder = noteTakingDatabaseHelper.getSortedFolders(columnName, descending)
         for (folderID : Long in newOrder) {
             if (folderID != UNCATEGORIZED_FOLDER && folderID != RECENTLY_DELETED_FOLDER) {
                 ret.add(folderID)
@@ -274,7 +274,7 @@ class FileManager() {
      * Search folders by title. Returns a list of folderIDs that match search criteria
      */
     fun searchFolders(searchTerm : String) : List<Long> {
-        return databaseHelper.searchFolder(DatabaseHelper.DatabaseContract.FolderEntry.COLUMN_NAME_TITLE, searchTerm)
+        return noteTakingDatabaseHelper.searchFolder(NoteTakingDatabaseHelper.DatabaseContract.FolderEntry.COLUMN_NAME_TITLE, searchTerm)
     }
 
     companion object {

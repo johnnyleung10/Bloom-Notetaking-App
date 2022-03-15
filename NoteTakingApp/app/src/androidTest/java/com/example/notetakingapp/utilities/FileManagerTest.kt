@@ -3,7 +3,7 @@ package com.example.notetakingapp.utilities
 import android.text.SpannableStringBuilder
 import androidx.test.platform.app.InstrumentationRegistry
 import com.example.notetakingapp.models.FolderModel
-import com.example.notetakingapp.models.sqlite.DatabaseHelper
+import com.example.notetakingapp.models.sqlite.NoteTakingDatabaseHelper
 import org.junit.Assert
 import org.junit.Test
 
@@ -11,7 +11,7 @@ internal class FileManagerTest {
 
     private fun cleanupManager() {
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        val db = DatabaseHelper(appContext)
+        val db = NoteTakingDatabaseHelper(appContext)
         val manager : FileManager? = FileManager.instance
         manager?.initManager(appContext)
         manager?.folderList?.clear()
@@ -332,23 +332,23 @@ internal class FileManagerTest {
         val note3 = manager?.createNewNote("C Note", 1)
 
         // Test sort by title
-        manager?.sortNotes(DatabaseHelper.DatabaseContract.NoteEntry.COLUMN_NAME_TITLE, 1) // ASC
+        manager?.sortNotes(NoteTakingDatabaseHelper.DatabaseContract.NoteEntry.COLUMN_NAME_TITLE, 1) // ASC
         if (manager != null) {
             Assert.assertEquals(note2?.title, manager.folderList[1]?.noteList?.get(0)?.title)
             Assert.assertEquals(note1?.title, manager.folderList[1]?.noteList?.get(1)?.title)
             Assert.assertEquals(note3?.title, manager.folderList[1]?.noteList?.get(2)?.title)
         }
-        manager?.sortNotes(DatabaseHelper.DatabaseContract.NoteEntry.COLUMN_NAME_TITLE, 1, descending = true) // DESC
+        manager?.sortNotes(NoteTakingDatabaseHelper.DatabaseContract.NoteEntry.COLUMN_NAME_TITLE, 1, descending = true) // DESC
         if (manager != null) {
             Assert.assertEquals(note3?.title, manager.folderList[1]?.noteList?.get(0)?.title)
         }
 
         // Test sort by createdDate
-        manager?.sortNotes(DatabaseHelper.DatabaseContract.NoteEntry.COLUMN_NAME_DATE_CREATED, 1) // ASC
+        manager?.sortNotes(NoteTakingDatabaseHelper.DatabaseContract.NoteEntry.COLUMN_NAME_DATE_CREATED, 1) // ASC
         if (manager != null) {
             Assert.assertEquals(note1?.title, manager.folderList[1]?.noteList?.get(0)?.title)
         }
-        manager?.sortNotes(DatabaseHelper.DatabaseContract.NoteEntry.COLUMN_NAME_DATE_CREATED, 1, descending = true) // DESC
+        manager?.sortNotes(NoteTakingDatabaseHelper.DatabaseContract.NoteEntry.COLUMN_NAME_DATE_CREATED, 1, descending = true) // DESC
         if (manager != null) {
             Assert.assertEquals(note3?.title, manager.folderList[1]?.noteList?.get(0)?.title)
             Assert.assertEquals(note2?.title, manager.folderList[1]?.noteList?.get(1)?.title)
@@ -404,13 +404,13 @@ internal class FileManagerTest {
         val folder3 = manager?.createNewFolder("C Note")
 
         // Test sort by title
-        var ordered = manager?.sortFolders(DatabaseHelper.DatabaseContract.NoteEntry.COLUMN_NAME_TITLE) // ASC
+        var ordered = manager?.sortFolders(NoteTakingDatabaseHelper.DatabaseContract.NoteEntry.COLUMN_NAME_TITLE) // ASC
         if (manager != null) {
             Assert.assertEquals(folder2?.id, ordered?.get(2))
             Assert.assertEquals(folder1?.id, ordered?.get(3))
             Assert.assertEquals(folder3?.id, ordered?.get(4))
         }
-        ordered = manager?.sortFolders(DatabaseHelper.DatabaseContract.NoteEntry.COLUMN_NAME_TITLE, true) // DESC
+        ordered = manager?.sortFolders(NoteTakingDatabaseHelper.DatabaseContract.NoteEntry.COLUMN_NAME_TITLE, true) // DESC
         if (manager != null) {
             Assert.assertEquals(folder3?.id, ordered?.get(2))
             Assert.assertEquals(folder1?.id, ordered?.get(3))
@@ -418,7 +418,7 @@ internal class FileManagerTest {
         }
 
         // Sort by creationDate
-        ordered = manager?.sortFolders(DatabaseHelper.DatabaseContract.NoteEntry.COLUMN_NAME_DATE_CREATED) // ASC
+        ordered = manager?.sortFolders(NoteTakingDatabaseHelper.DatabaseContract.NoteEntry.COLUMN_NAME_DATE_CREATED) // ASC
         if (manager != null) {
             Assert.assertEquals(folder1?.id, ordered?.get(2))
             Assert.assertEquals(folder2?.id, ordered?.get(3))
