@@ -38,7 +38,7 @@ class DailyEntryModel (title : String,
     }
 
     fun imageToByteArray() : ByteArray {
-        val buffer: ByteBuffer = dailyImage!!.getPlanes()[0].getBuffer()
+        val buffer: ByteBuffer = dailyImage!!.planes[0].buffer
         val bytes = ByteArray(buffer.capacity())
         buffer.get(bytes)
         return bytes
