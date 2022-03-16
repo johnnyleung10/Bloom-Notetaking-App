@@ -3,7 +3,10 @@ package com.example.NoteAppService.controllers
 import com.example.NoteAppService.models.EmptyResponse
 import com.example.NoteAppService.models.Note
 import com.example.NoteAppService.services.NoteService
+import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+
 
 @RestController
 @RequestMapping("/note")
@@ -15,31 +18,33 @@ class NoteResource(val service: NoteService) {
     }
 
     @PostMapping
-
-    fun post(@RequestBody note: Note): EmptyResponse {
-        service.insertOrUpdateNote(note)
-        return EmptyResponse()
+    fun post(@RequestBody note: Note): ResponseEntity<EmptyResponse> {
+        return try{
+            service.insertOrUpdateNote(note)
+            ResponseEntity<EmptyResponse>(EmptyResponse(), HttpStatus.OK)
+        } catch(ex: Exception){
+            ResponseEntity<EmptyResponse>(EmptyResponse(), HttpStatus.INTERNAL_SERVER_ERROR)
+        }
     }
 
     @PutMapping
-
-    fun put(@RequestBody note: Note): EmptyResponse {
-        service.insertOrUpdateNote(note)
-        return EmptyResponse()
+    fun put(@RequestBody note: Note): ResponseEntity<EmptyResponse> {
+        return try {
+            service.insertOrUpdateNote(note)
+            ResponseEntity<EmptyResponse>(EmptyResponse(), HttpStatus.OK)
+        } catch(ex: Exception){
+            ResponseEntity<EmptyResponse>(EmptyResponse(), HttpStatus.INTERNAL_SERVER_ERROR)
+        }
     }
 
-//    @PutMapping
-//    fun put(@RequestParam noteId: Long, @RequestParam(required = false) title: String?,
-//            @RequestParam(required = false) contentRich: String?, @RequestParam(required = false) contentPlain: String?,
-//            @RequestParam(required = false) dateModified: String?, @RequestParam(required = false) dateDeleted: String?,
-//            @RequestParam(required = false) folderId: Long?) : Long {
-//        return service.put(noteId, title=title, contentRich=contentRich, contentPlain=contentPlain,
-//                dateModified=dateModified, dateDeleted=dateDeleted, folderId=folderId)
-//    }
-
     @DeleteMapping
-    fun delete(@RequestParam noteId: Long) : EmptyResponse {
-        service.delete(noteId)
-        return EmptyResponse()
+    fun delete(@RequestParam noteId: Long) : ResponseEntity<EmptyResponse> {
+        return try {
+            service.delete(noteId)
+            ResponseEntity<EmptyResponse>(EmptyResponse(), HttpStatus.OK)
+        } catch(ex: Exception){
+            ResponseEntity<EmptyResponse>(EmptyResponse(), HttpStatus.INTERNAL_SERVER_ERROR)
+        }
+
     }
 }
