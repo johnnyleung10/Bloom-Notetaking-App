@@ -2,6 +2,7 @@ package com.example.notetakingapp.models
 
 import android.content.Context
 import android.media.Image
+import java.nio.ByteBuffer
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -34,5 +35,17 @@ class DailyEntryModel (title : String,
         this.promptResponse = promptResponse
         this.moodId = moodId
         this.dailyImage = dailyImage
+    }
+
+    fun imageToBitmap() : ByteArray {
+        val buffer: ByteBuffer = dailyImage!!.getPlanes()[0].getBuffer()
+        val bytes = ByteArray(buffer.capacity())
+        buffer.get(bytes)
+        return bytes
+    }
+
+    fun getDate() : String {
+        val isoFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+        return dateCreated.format(isoFormat)
     }
 }
