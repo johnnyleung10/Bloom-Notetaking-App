@@ -2,6 +2,7 @@ package com.example.notetakingapp.utilities
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Bitmap
 import android.media.Image
 import android.text.SpannableStringBuilder
 import com.example.notetakingapp.models.*
@@ -78,7 +79,7 @@ class DailyEntryManager {
      * Updates daily entry data
      */
     fun editDailyEntry(entryId : Long, title: String? = null, dailyPromptId : Long? = null,
-                       promptResponse : String? = null, moodId : Long? = null, dailyImage : Image? = null) {
+                       promptResponse : String? = null, moodId : Long? = null, dailyImage : Bitmap? = null) {
         // Get entry
         val dailyEntry = getDailyEntry(entryId)
 
