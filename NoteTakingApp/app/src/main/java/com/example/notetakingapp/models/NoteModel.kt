@@ -48,16 +48,6 @@ class NoteModel(
         return contents.toHtml()
     }
 
-
-    /**
-     * Restore note from recently deleted
-     */
-    fun restoreNote() {
-        TODO("Implement later")
-//        currFolder = "Recently Deleted"  // Bring back to original folder
-//        deleteFile()
-    }
-
     fun toNoteCreationRequestModel(): NoteCreationRequestModel{
         return NoteCreationRequestModel(id, title, spannableStringToText(), contents.toString(), getDateCreated(), getLastModifiedDate(), getDeletionDate(), folderID)
     }

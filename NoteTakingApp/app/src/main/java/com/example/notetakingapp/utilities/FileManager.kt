@@ -12,7 +12,7 @@ private const val UNCATEGORIZED_FOLDER : Long = 1
 private const val RECENTLY_DELETED_FOLDER : Long = 2
 private const val UNIDENTIFIED_FOLDER : String = "Unidentified Folder"
 
-class FileManager() {
+class FileManager {
     private lateinit var context : Context
     private lateinit var noteTakingDatabaseHelper : NoteTakingDatabaseHelper
     lateinit var dataSynchronizer: DataSynchronizer
