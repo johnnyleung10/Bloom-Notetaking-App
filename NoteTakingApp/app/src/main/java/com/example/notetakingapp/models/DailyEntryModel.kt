@@ -18,7 +18,7 @@ class DailyEntryModel (title : String,
     var linkedNoteId : Long? = null
 
     constructor (title: String, context: Context, id: Long, noteId : Long, dailyPromptId : Long,
-                 promptResponse: String, moodId : Long, dailyImage: Bitmap, dateCreated : String,
+                 promptResponse: String, moodId : Long, dailyImage: ByteArray, dateCreated : String,
                  dateModified : String, dateDeleted : String) : this(title, context, dailyPromptId) {
         this.title = title
         this.id = id
@@ -37,7 +37,7 @@ class DailyEntryModel (title : String,
         this.linkedNoteId = noteId
         this.promptResponse = promptResponse
         this.moodId = moodId
-        this.dailyImage = dailyImage
+        this.dailyImage = byteArrayToImage(dailyImage)
     }
 
     fun imageToByteArray() : ByteArray {
@@ -46,7 +46,7 @@ class DailyEntryModel (title : String,
         return stream.toByteArray()
     }
 
-    fun byteArrayToImage(data : ByteArray): Bitmap {
+    private fun byteArrayToImage(data : ByteArray): Bitmap {
         return BitmapFactory.decodeByteArray(data, 0, data.size)
     }
 
