@@ -1,9 +1,13 @@
 package com.example.notetakingapp.models.sqlite
 
+import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import android.provider.BaseColumns
+import com.example.notetakingapp.models.DailyEntryModel
+import com.example.notetakingapp.models.DailyPromptModel
+import com.example.notetakingapp.models.MoodModel
 
 private const val SQL_CREATE_DAILY_ENTRIES =
     "CREATE TABLE ${DailyEntryDatabaseHelper.DatabaseContract.DailyEntry.TABLE_NAME} (" +
@@ -36,6 +40,50 @@ class DailyEntryDatabaseHelper(private val context: Context) :
         DATABASE_NAME, null,
         DATABASE_VERSION
     ) {
+
+    // INSERTING
+    fun insertDailyEntry(dailyEntry: DailyEntryModel): Long {
+        val values = ContentValues().apply {
+            put(DailyEntry.COLUMN_NAME_DAILY_PROMPT_ID, dailyEntry.dailyPromptId)
+            put(DailyEntry.COLUMN_NAME_DAILY_PROMPT_ANSWER, dailyEntry.promptResponse)
+            put(DailyEntry.COLUMN_NAME_DAILY_IMAGE, dailyEntry.imageToByteArray())
+            put(DailyEntry.COLUMN_NAME_DATE_CREATED, dailyEntry.getDateCreated())
+            put(DailyEntry.COLUMN_NAME_DATE_MODIFIED, dailyEntry.getLastModifiedDate())
+            put(DailyEntry.COLUMN_NAME_DATE_DELETED, dailyEntry.getDeletionDate())
+            put(DailyEntry.COLUMN_NAME_MOOD_ID, dailyEntry.moodId)
+            put(DailyEntry.COLUMN_NAME_LINKED_NOTE_ID, dailyEntry.linkedNoteId)
+        }
+        val dbWrite = this.writableDatabase
+        val id = dbWrite.insert(DailyEntry.TABLE_NAME, null, values)
+        dailyEntry.id = id
+        dbWrite.close()
+        return id
+    }
+
+    fun insertMood(mood: MoodModel): Long {
+        val values = ContentValues().apply {
+            put(Mood.COLUMN_NAME_DESCRIPTION, mood.description)
+            put(Mood.COLUMN_NAME_COLOUR, mood.colour)
+        }
+        val dbWrite = this.writableDatabase
+        val id = dbWrite.insert(Mood.TABLE_NAME, null, values)
+        mood.id = id
+        dbWrite.close()
+        return id
+    }
+
+    fun insertDailyPrompt(dailyPrompt: DailyPromptModel): Long {
+        val values = ContentValues().apply {
+            put(DailyPrompt.COLUMN_NAME_PROMPT, dailyPrompt.prompt)
+        }
+        val dbWrite = this.writableDatabase
+        val id = dbWrite.insert(DailyPrompt.TABLE_NAME, null, values)
+        dailyPrompt.id = id
+        dbWrite.close()
+        return id
+    }
+
+    // QUERYING
 
     override fun onCreate(db: SQLiteDatabase?) {
         db?.execSQL(SQL_CREATE_DAILY_ENTRIES)
