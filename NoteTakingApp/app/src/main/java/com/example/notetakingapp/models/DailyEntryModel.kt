@@ -6,16 +6,16 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 class DailyEntryModel (title : String,
-    context: Context, var dailyPrompt : DailyPrompt
+    context: Context, var dailyPromptId : Long?
 ) : FileModel(title, context) {
     var promptResponse : String? = ""
-    var mood : Mood? = null
+    var moodId : Long? = null
     var dailyImage : Image? = null
     var linkedNoteId : Long? = null
 
-    constructor (title: String, context: Context, id: Long, noteId : Long, dailyPrompt : DailyPrompt,
-                 promptResponse: String, moodRating : Mood, dailyImage: Image, dateCreated : String,
-                 dateModified : String, dateDeleted : String) : this(title, context, dailyPrompt) {
+    constructor (title: String, context: Context, id: Long, noteId : Long, dailyPromptId : Long,
+                 promptResponse: String, moodId : Long, dailyImage: Image, dateCreated : String,
+                 dateModified : String, dateDeleted : String) : this(title, context, dailyPromptId) {
         this.title = title
         this.id = id
 
@@ -32,7 +32,7 @@ class DailyEntryModel (title : String,
 
         this.linkedNoteId = noteId
         this.promptResponse = promptResponse
-        this.mood = moodRating
+        this.moodId = moodId
         this.dailyImage = dailyImage
     }
 }
