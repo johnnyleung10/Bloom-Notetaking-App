@@ -43,8 +43,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginTop="54dp"
-        android:layout_marginEnd="107dp"
+        android:layout_marginTop="53dp"
+        android:layout_marginEnd="193dp"
         android:text="BOLD" />
 
     <Button
@@ -53,7 +53,17 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginTop="54dp"
+        android:layout_marginTop="53dp"
         android:layout_marginEnd="9dp"
         android:text="ITALICS" />
+
+    <Button
+        android:id="@+id/underlineButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="53dp"
+        android:layout_marginEnd="98dp"
+        android:text="UNDER" />
 </RelativeLayout>

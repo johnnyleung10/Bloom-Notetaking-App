@@ -219,13 +219,9 @@ class FileManager {
 
         // Add note to new folder
         folderList[folderID]?.noteList?.add(note!!)
-        if (note?.getDeletionDate() == "") { // Only change folderID and folderName if not deleted
-            note.currFolder = folderList[folderID]?.title ?: UNIDENTIFIED_FOLDER
-            note.folderID = folderID
-            note.updateModifiedDate()
-        } else {
-            note?.updateDeletionDate() // More up to date
-        }
+        note?.currFolder = folderList[folderID]?.title ?: UNIDENTIFIED_FOLDER
+        note?.folderID = folderID
+        note?.updateModifiedDate()
 
         // Update in database
         if (note != null) {
