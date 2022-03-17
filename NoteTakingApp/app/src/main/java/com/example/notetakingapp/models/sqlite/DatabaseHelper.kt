@@ -170,7 +170,8 @@ class DatabaseHelper(private val context: Context) :
 
     fun searchNote(column: String, searchTerm: String, folderId: Long): List<Long> {
         val retList : ArrayList<Long> = arrayListOf()
-        val queryString = "SELECT * FROM " + NoteEntry.TABLE_NAME + " WHERE folder_Id=" + folderId + " AND " + column + " LIKE '%$searchTerm%'"
+        var queryString = "SELECT * FROM " + NoteEntry.TABLE_NAME + " WHERE folder_Id=" + folderId + " AND " + column + " LIKE '%$searchTerm%'"
+        queryString = queryString.plus(" AND " + NoteEntry.COLUMN_NAME_IS_PERMANENTLY_DELETED + "=FALSE")
         val dbRead = this.readableDatabase
 
         val cursor = dbRead.rawQuery(queryString, null)
@@ -198,7 +199,8 @@ class DatabaseHelper(private val context: Context) :
 
     fun searchFolder(column: String, searchTerm: String): List<Long> {
         val retList : ArrayList<Long> = arrayListOf()
-        val queryString = "SELECT * FROM " + FolderEntry.TABLE_NAME + " WHERE " + column + " LIKE '%$searchTerm%'"
+        var queryString = "SELECT * FROM " + FolderEntry.TABLE_NAME + " WHERE " + column + " LIKE '%$searchTerm%'"
+        queryString = queryString.plus(" AND " + FolderEntry.COLUMN_NAME_IS_PERMANENTLY_DELETED + "=FALSE")
         val dbRead = this.readableDatabase
 
         val cursor = dbRead.rawQuery(queryString, null)
@@ -217,7 +219,11 @@ class DatabaseHelper(private val context: Context) :
 
     fun getSortedNotes(columnName: String, folderId: Long, descending: Boolean? = false): List<Long> {
         val retList : ArrayList<Long> = arrayListOf()
-        var queryString = "SELECT * FROM " + NoteEntry.TABLE_NAME + " WHERE folder_Id=" + folderId + " ORDER BY " + columnName
+        var queryString =
+            "SELECT * FROM " + NoteEntry.TABLE_NAME +
+            " WHERE folder_Id=" + folderId +
+            " AND " + NoteEntry.COLUMN_NAME_IS_PERMANENTLY_DELETED + "=FALSE" +
+            " ORDER BY " + columnName
         if (descending == true) queryString += " DESC" // Descending
         val dbRead = this.readableDatabase
 
@@ -238,7 +244,10 @@ class DatabaseHelper(private val context: Context) :
 
     fun getSortedFolders(columnName: String, descending: Boolean? = false): List<Long>  {
         val retList : ArrayList<Long> = arrayListOf()
-        var queryString = "SELECT * FROM " + FolderEntry.TABLE_NAME + " ORDER BY " + columnName
+        var queryString =
+            "SELECT * FROM " + FolderEntry.TABLE_NAME +
+            " WHERE " + FolderEntry.COLUMN_NAME_IS_PERMANENTLY_DELETED + "=FALSE" +
+            " ORDER BY " + columnName
         if (descending == true) queryString += " DESC" // Descending
         val dbRead = this.readableDatabase
 
