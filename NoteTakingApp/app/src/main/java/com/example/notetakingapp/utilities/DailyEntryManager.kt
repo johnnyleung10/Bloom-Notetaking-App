@@ -3,16 +3,26 @@ package com.example.notetakingapp.utilities
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
-import android.media.Image
-import android.text.SpannableStringBuilder
+import android.graphics.Color
 import com.example.notetakingapp.models.*
-import com.example.notetakingapp.models.sqlite.NoteTakingDatabaseHelper
+import com.example.notetakingapp.models.sqlite.DailyEntryDatabaseHelper
 import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
+
+enum class Moods(id: MoodModel) {
+    HAPPY(MoodModel(0, "Feeling happy", Color.RED)),
+    MOTIVATED(MoodModel(1, "Feeling motivated", Color.YELLOW)),
+    ENERGETIC(MoodModel(2, "Feeling energetic", Color.CYAN)),
+    NEUTRAL(MoodModel(3, "Feeling neutral", Color.BLACK)),
+    SAD(MoodModel(4, "Feeling sad", Color.MAGENTA)),
+    ANGRY(MoodModel(5, "Feeling angry", Color.BLUE)),
+    ENVIOUS(MoodModel(6, "Feeling envious", Color.GREEN)),
+}
 
 class DailyEntryManager {
     private lateinit var context : Context
-    private lateinit var noteTakingDatabaseHelper : NoteTakingDatabaseHelper
+    private lateinit var dailyEntryDatabaseHelper : DailyEntryDatabaseHelper
     // lateinit var dataSynchronizer: DataSynchronizer
 
     val dailyEntryMap = HashMap<Long, DailyEntryModel>()
@@ -22,50 +32,49 @@ class DailyEntryManager {
 
     fun initManager(context: Context) {
         this.context = context
-        noteTakingDatabaseHelper = NoteTakingDatabaseHelper(context)
+        dailyEntryDatabaseHelper = DailyEntryDatabaseHelper(context)
         //dataSynchronizer = DataSynchronizer(noteTakingDatabaseHelper)
     }
 
     fun initFiles() {
         initPrompts()
-        initMoods()
     }
 
     /**
      * Gets all prompts from database and stores it in dailyPromptMap
      */
     private fun initPrompts() {
-
+        for (prompt in dailyEntryDatabaseHelper.getAllPrompts()) {
+            dailyPromptMap[prompt.id] = prompt
+        }
     }
 
     /**
-     * Gets all moods from database and stores it in moodMap
+     * Returns a random daily prompt for today
      */
-    private fun initMoods() {
-
+    fun getDailyPrompt() : DailyPromptModel {
+        val random = Random()
+        return dailyPromptMap.entries.elementAt(random.nextInt(dailyPromptMap.size)).value // get a random prompt
     }
 
     /**
      * Returns daily entry by date, format: "yyyy-mm-dd". If no entry exists one will be created.
      */
-    fun getDailyEntryByDate(date : String) : DailyEntryModel {
+    fun getDailyEntryByDate(month : Int, year: Int) : List<DailyEntryModel> {
+        val retEntries = ArrayList<DailyEntryModel>()
         for (entry in dailyEntryMap.values) {
-            if (entry.getDate() == date) {
-                return entry
+            if (entry.getMonth() == month && entry.getYear() == year) {
+                retEntries.add(entry)
             }
         }
-        // Create new entry
-        return createDailyEntry()
+        return retEntries
     }
 
     /**
      * Creates a new daily entry with a random prompt
      */
-    fun createDailyEntry() : DailyEntryModel {
-        val random = Random()
-        val prompt = dailyPromptMap.entries.elementAt(random.nextInt(dailyPromptMap.size)).key // get a random prompt
-        val dailyEntry = DailyEntryModel("Daily Entry", context, prompt)
-        return dailyEntry
+    fun createDailyEntry(): DailyEntryModel {
+        return DailyEntryModel("Daily Entry", context, getDailyPrompt().id)
     }
 
     /**

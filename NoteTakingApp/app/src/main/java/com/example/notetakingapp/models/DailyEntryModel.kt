@@ -17,10 +17,9 @@ class DailyEntryModel (title : String,
     var dailyImage : Bitmap? = null
     var linkedNoteId : Long? = null
 
-    constructor (title: String, context: Context, id: Long, noteId : Long, dailyPromptId : Long,
+    constructor (context: Context, id: Long, noteId : Long, dailyPromptId : Long,
                  promptResponse: String, moodId : Long, dailyImage: ByteArray, dateCreated : String,
-                 dateModified : String, dateDeleted : String) : this(title, context, dailyPromptId) {
-        this.title = title
+                 dateModified : String, dateDeleted : String) : this("", context, dailyPromptId) {
         this.id = id
 
         // Handle dates
@@ -50,8 +49,11 @@ class DailyEntryModel (title : String,
         return BitmapFactory.decodeByteArray(data, 0, data.size)
     }
 
-    fun getDate() : String {
-        val isoFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd")
-        return dateCreated.format(isoFormat)
+    fun getMonth() : Int {
+        return dateCreated.monthValue
+    }
+
+    fun getYear() : Int {
+        return dateCreated.year
     }
 }
