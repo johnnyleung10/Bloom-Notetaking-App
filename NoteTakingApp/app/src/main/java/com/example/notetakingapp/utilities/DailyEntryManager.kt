@@ -38,6 +38,7 @@ class DailyEntryManager {
 
     fun initFiles() {
         initPrompts()
+        initDailyEntries()
     }
 
     /**
@@ -46,6 +47,15 @@ class DailyEntryManager {
     private fun initPrompts() {
         for (prompt in dailyEntryDatabaseHelper.getAllPrompts()) {
             dailyPromptMap[prompt.id] = prompt
+        }
+    }
+
+    /**
+     * Gets all DailyEntries from database and stores it in dailyEntryMap
+     */
+    private fun initDailyEntries() {
+        for (entry in dailyEntryDatabaseHelper.getAllDailyEntries()) {
+            dailyEntryMap[entry.id] = entry
         }
     }
 

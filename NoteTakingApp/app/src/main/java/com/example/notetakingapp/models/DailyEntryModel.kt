@@ -56,4 +56,8 @@ class DailyEntryModel (title : String,
     fun getYear() : Int {
         return dateCreated.year
     }
+
+    fun getInt() : Int {
+        return dateCreated.dayOfMonth
+    }
 }
