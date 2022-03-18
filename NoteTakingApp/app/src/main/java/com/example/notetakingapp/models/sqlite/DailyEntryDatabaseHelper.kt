@@ -7,8 +7,6 @@ import android.database.sqlite.SQLiteOpenHelper
 import android.provider.BaseColumns
 import com.example.notetakingapp.models.DailyEntryModel
 import com.example.notetakingapp.models.DailyPromptModel
-import com.example.notetakingapp.models.MoodModel
-import com.example.notetakingapp.models.NoteModel
 
 private const val SQL_CREATE_DAILY_ENTRIES =
     "CREATE TABLE ${DailyEntryDatabaseHelper.DatabaseContract.DailyEntry.TABLE_NAME} (" +
