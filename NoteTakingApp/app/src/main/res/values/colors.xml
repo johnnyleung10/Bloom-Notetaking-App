@@ -8,8 +8,9 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="background">#f8f3ee</color>
 
-
+    <color name="no_selection">@color/background</color>
     <color name="happy">#ffff00</color>
     <color name="loving">#ff9ecb</color>
     <color name="excited">#fe9003</color>
@@ -17,4 +18,13 @@
     <color name="sad">#73a6f7</color>
     <color name="angry">#d7191c</color>
     <color name="doubtful">#7c67ad</color>
+    <color name="none">#00000000</color>
+
+    <color name="happy_light">#ffff00</color>
+    <color name="loving_light">#ff9ecb</color>
+    <color name="excited_light">#fe9003</color>
+    <color name="neutral_light">#bbbbbb</color>
+    <color name="sad_light">#73a6f7</color>
+    <color name="angry_light">#d7191c</color>
+    <color name="doubtful_light">#7c67ad</color>
 </resources>
