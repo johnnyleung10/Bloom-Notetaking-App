@@ -15,4 +15,12 @@
         <item name="android:textColor">#000</item>
         <item name="android:windowLightStatusBar">true</item>
     </style>
+
+    <style name="CalenderViewCustom" parent="Theme.AppCompat">
+        <item name="colorAccent">@color/background</item>
+        <item name="android:textColorPrimary">@color/black</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textColorSecondary">@color/black</item>
+    </style>
+
 </resources>
