@@ -109,6 +109,17 @@ class DailyEntryManager {
         title?.let { dailyEntry?.dailyImage = dailyImage }
     }
 
+    /**
+     * Delete daily entry from database and from local storage
+     */
+    fun deleteDailyEntry(entryId: Long) : Boolean {
+        if (dailyEntryDatabaseHelper.deleteDailyEntry(entryId)) {
+            dailyEntryMap.remove(entryId)
+            return true
+        }
+        return false
+    }
+
 
     companion object {
         @SuppressLint("StaticFieldLeak")
