@@ -124,6 +124,23 @@ class DailyEntryDatabaseHelper(private val context: Context) :
         return retList
     }
 
+    // DELETE
+    fun deleteDailyEntry(id: Long) : Boolean {
+        val queryString = "DELETE FROM " + DailyEntry.TABLE_NAME + " WHERE " + BaseColumns._ID + " = " + id
+        val dbRead = this.readableDatabase
+
+        val cursor = dbRead.rawQuery(queryString, null)
+
+        if (cursor.moveToFirst()) {
+            dbRead.close()
+            cursor.close()
+            return true
+        }
+        dbRead.close()
+        cursor.close()
+        return false
+    }
+
     override fun onCreate(db: SQLiteDatabase?) {
         db?.execSQL(SQL_CREATE_DAILY_ENTRIES)
         db?.execSQL(SQL_CREATE_DAILY_PROMPTS)
