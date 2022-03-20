@@ -39,25 +39,40 @@ class DailyEntryModel (title : String,
         this.dailyImage = byteArrayToImage(dailyImage)
     }
 
+    /**
+     * Converts an image to byteArray for storage
+     */
     fun imageToByteArray() : ByteArray {
         val stream = ByteArrayOutputStream()
         dailyImage?.compress(Bitmap.CompressFormat.PNG, 90, stream)
         return stream.toByteArray()
     }
 
+    /**
+     * Converts byteArray to Image upon construction of model
+     */
     private fun byteArrayToImage(data : ByteArray): Bitmap {
         return BitmapFactory.decodeByteArray(data, 0, data.size)
     }
 
+    /**
+     * Returns month of creationDate
+     */
     fun getMonth() : Int {
         return dateCreated.monthValue
     }
 
+    /**
+     * Returns year of creationDate
+     */
     fun getYear() : Int {
         return dateCreated.year
     }
 
-    fun getInt() : Int {
+    /**
+     * Returns day of creationDate
+     */
+    fun getDay() : Int {
         return dateCreated.dayOfMonth
     }
 }
