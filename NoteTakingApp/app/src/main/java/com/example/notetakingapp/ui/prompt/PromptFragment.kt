@@ -1,15 +1,20 @@
 package com.example.notetakingapp.ui.prompt
 
+import android.content.res.ColorStateList
+import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.cardview.widget.CardView
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.NavHostFragment
 import com.example.notetakingapp.R
 import com.example.notetakingapp.databinding.FragmentPromptBinding
+import android.widget.TextView
 
 
 class PromptFragment : Fragment() {
@@ -53,9 +58,11 @@ class PromptFragment : Fragment() {
 
     private fun addListeners(){
         val calendarButton: Button = binding.calendar
+        val prompt: CardView = binding.prompt
         val promptAnswer: EditText = binding.promptAnswer
         val attachNote: TextView = binding.attachNote
         val attachImage: ImageButton = binding.attachImage
+        val moodPicker: CardView = binding.moodPicker
         val spinner: Spinner = binding.moods
         val submit: Button = binding.submit
 
@@ -64,9 +71,9 @@ class PromptFragment : Fragment() {
         }
 
         ArrayAdapter.createFromResource(
-            requireContext(), R.array.moods, R.layout.dropdown
+            requireContext(), R.array.moods, R.layout.moods_dropdown
         ).also { adapter ->
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            adapter.setDropDownViewResource(R.layout.moods_item_dropdown)
             spinner.adapter = adapter
         }
 
@@ -74,6 +81,25 @@ class PromptFragment : Fragment() {
             override fun onNothingSelected(parent: AdapterView<*>?) {}
 
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                var mood = ""
+                parent?.getChildAt(1)?.setBackgroundColor(Color.BLUE)
+                when(position){
+                    0 -> mood = "no_selection"
+                    1 -> mood = "happy"
+                    2 -> mood = "loving"
+                    3 -> mood = "excited"
+                    4 -> mood = "neutral"
+                    5 -> mood = "sad"
+                    6 -> mood = "angry"
+                    7 -> mood = "doubtful"
+                }
+
+                val colorId: Int = requireContext().resources.getIdentifier(mood, "color", requireContext().packageName)
+                val color = ContextCompat.getColor(requireContext(), colorId)
+
+                submit.backgroundTintList = ColorStateList.valueOf(color)
+                moodPicker.setCardBackgroundColor(color)
+                prompt.setCardBackgroundColor(color)
 
             }
         }

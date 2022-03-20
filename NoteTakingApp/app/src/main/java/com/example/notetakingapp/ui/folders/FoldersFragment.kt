@@ -135,7 +135,7 @@ class FoldersFragment : Fragment(), NewFolderDialogFragment.NewFolderDialogListe
         }
 
         ArrayAdapter.createFromResource(
-            requireContext(), R.array.sort_by, R.layout.dropdown
+            requireContext(), R.array.sort_by, R.layout.sort_dropdown
         ).also { adapter ->
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             spinner.adapter = adapter

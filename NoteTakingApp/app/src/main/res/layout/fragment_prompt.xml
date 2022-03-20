@@ -62,7 +62,7 @@
         android:layout_marginTop="20dp"
         android:layout_marginStart="12dp"
         android:layout_marginEnd="12dp"
-        card_view:cardBackgroundColor="#f8f3ee"
+        card_view:cardBackgroundColor="@color/background"
         app:layout_constraintTop_toBottomOf="@+id/date">
 
         <TextView
@@ -137,7 +137,7 @@
         android:layout_marginEnd="12dp"
         android:layout_marginTop="30dp"
         android:layout_gravity="center"
-        card_view:cardBackgroundColor="#f8f3ee"
+        card_view:cardBackgroundColor="@color/background"
         card_view:cardCornerRadius="7dp"
         card_view:cardElevation="4dp"
         card_view:cardMaxElevation="5dp"
@@ -149,6 +149,7 @@
             android:layout_width="wrap_content"
             android:layout_height="45dp"
             android:gravity="center"
+            android:layout_gravity="center"
             android:text="Choose a Mood"
             android:textSize="16sp"
             android:background="#00000000"

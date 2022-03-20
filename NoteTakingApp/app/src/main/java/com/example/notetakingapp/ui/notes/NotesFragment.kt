@@ -18,8 +18,6 @@ import com.example.notetakingapp.models.FolderModel
 import com.example.notetakingapp.models.NoteModel
 import com.example.notetakingapp.viewmodels.NotesViewModel
 import com.example.notetakingapp.utilities.FileManager
-import com.example.notetakingapp.viewmodels.FoldersViewModel
-import kotlinx.coroutines.runBlocking
 
 class NotesFragment : Fragment(), MoveNoteDialogFragment.MoveNoteDialogListener {
 
@@ -167,7 +165,7 @@ class NotesFragment : Fragment(), MoveNoteDialogFragment.MoveNoteDialogListener 
         }
 
         ArrayAdapter.createFromResource(
-            requireContext(), R.array.sort_by, R.layout.dropdown
+            requireContext(), R.array.sort_by, R.layout.sort_dropdown
         ).also { adapter ->
             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             spinner.adapter = adapter

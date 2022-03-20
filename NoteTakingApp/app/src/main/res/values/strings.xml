@@ -29,6 +29,7 @@
     </string-array>
 
     <string-array name="moods">
+        <item>Choose a Mood</item>
         <item>Happy</item>
         <item>Love</item>
         <item>Motivated</item>
