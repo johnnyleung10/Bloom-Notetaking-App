@@ -26,17 +26,15 @@ class DailyEntryManager {
     // lateinit var dataSynchronizer: DataSynchronizer
 
     val dailyEntryMap = HashMap<Long, DailyEntryModel>()
-    val noteMap = HashMap<Long, NoteModel>()
     val dailyPromptMap = HashMap<Long, DailyPromptModel>()
-    val moodMap = HashMap<Long, MoodModel>()
 
     fun initManager(context: Context) {
         this.context = context
         dailyEntryDatabaseHelper = DailyEntryDatabaseHelper(context)
-        //dataSynchronizer = DataSynchronizer(noteTakingDatabaseHelper)
+        //dataSynchronizer = DataSynchronizer(dailyEntryDatabaseHelper)
     }
 
-    fun initFiles() {
+    fun initEntries() {
         initPrompts()
         initDailyEntries()
     }
@@ -84,7 +82,7 @@ class DailyEntryManager {
      * Creates a new daily entry with a random prompt
      */
     fun createDailyEntry(): DailyEntryModel {
-        return DailyEntryModel("Daily Entry", context, getDailyPrompt().id)
+        return DailyEntryModel("Daily Entry", getDailyPrompt().id)
     }
 
     /**

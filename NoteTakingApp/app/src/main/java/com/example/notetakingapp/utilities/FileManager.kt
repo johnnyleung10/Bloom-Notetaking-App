@@ -66,7 +66,7 @@ class FileManager {
      * Creates a new folder and adds it to folderList
      */
     fun createNewFolder(name : String) : FolderModel {
-        val newFolder = FolderModel(name, context)
+        val newFolder = FolderModel(name)
         dataSynchronizer.insertFolder(newFolder)
         folderList[newFolder.id] = newFolder
         return newFolder
@@ -131,7 +131,7 @@ class FileManager {
      */
     fun createNewNote(name : String, folderID : Long) : NoteModel {
         // Create note and assign it to folder
-        val newNote = NoteModel(name, context)
+        val newNote = NoteModel(name)
         newNote.folderID = folderID
         newNote.currFolder = folderList[folderID]?.title ?: UNIDENTIFIED_FOLDER
         folderList[folderID]?.noteList?.add(newNote)

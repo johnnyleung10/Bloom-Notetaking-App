@@ -1,6 +1,5 @@
 package com.example.notetakingapp.models
 
-import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.media.Image
@@ -9,17 +8,16 @@ import java.nio.ByteBuffer
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
-class DailyEntryModel (title : String,
-    context: Context, var dailyPromptId : Long?
-) : FileModel(title, context) {
+class DailyEntryModel (title : String, var dailyPromptId : Long?
+) : FileModel(title) {
     var promptResponse : String? = ""
     var moodId : Long? = null
     var dailyImage : Bitmap? = null
     var linkedNoteId : Long? = null
 
-    constructor (context: Context, id: Long, noteId : Long, dailyPromptId : Long,
+    constructor (id: Long, noteId : Long, dailyPromptId : Long,
                  promptResponse: String, moodId : Long, dailyImage: ByteArray, dateCreated : String,
-                 dateModified : String, dateDeleted : String) : this("", context, dailyPromptId) {
+                 dateModified : String, dateDeleted : String) : this("", dailyPromptId) {
         this.id = id
 
         // Handle dates

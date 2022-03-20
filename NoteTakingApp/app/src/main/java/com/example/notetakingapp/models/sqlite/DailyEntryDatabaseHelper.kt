@@ -86,7 +86,7 @@ class DailyEntryDatabaseHelper(private val context: Context) :
                 val dateModified = cursor.getString(7)
                 val dateDeleted = cursor.getString(8)
 
-                val dailyEntry = DailyEntryModel(context, id.toLong(), linkedNoteId.toLong(), dailyPromptId.toLong(),
+                val dailyEntry = DailyEntryModel(id.toLong(), linkedNoteId.toLong(), dailyPromptId.toLong(),
                     dailyPromptAnswer, moodId.toLong(), dailyImage, dateCreated, dateModified,
                     dateDeleted)
                 retList.add(dailyEntry)

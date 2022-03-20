@@ -10,6 +10,7 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.notetakingapp.databinding.ActivityMainBinding
+import com.example.notetakingapp.utilities.DailyEntryManager
 import com.example.notetakingapp.utilities.DataSynchronizer
 import com.example.notetakingapp.utilities.FileManager
 
@@ -27,6 +28,11 @@ class MainActivity : AppCompatActivity() {
         // Handle the dirty data first!
         fm?.dataSynchronizer?.handleDirtyData()
         fm?.initFiles()
+
+        // Instantiate Daily Entry Manager
+        val dem = DailyEntryManager.instance
+        dem?.initManager(this)
+        dem?.initEntries()
 
         // Hide Action Bar
         window.requestFeature(Window.FEATURE_ACTION_BAR)

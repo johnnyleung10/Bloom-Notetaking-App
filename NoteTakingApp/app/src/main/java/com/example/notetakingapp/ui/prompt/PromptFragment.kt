@@ -15,6 +15,9 @@ import androidx.navigation.fragment.NavHostFragment
 import com.example.notetakingapp.R
 import com.example.notetakingapp.databinding.FragmentPromptBinding
 import android.widget.TextView
+import com.example.notetakingapp.utilities.DailyEntryManager
+import com.example.notetakingapp.utilities.FileManager
+import com.example.notetakingapp.viewmodels.FoldersViewModel
 
 
 class PromptFragment : Fragment() {
@@ -25,13 +28,19 @@ class PromptFragment : Fragment() {
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
+    private lateinit var dailyEntryManager: DailyEntryManager
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        dailyEntryManager = DailyEntryManager.instance!!
+        promptViewModel = ViewModelProvider(this).get(PromptViewModel::class.java)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        promptViewModel = ViewModelProvider(this).get(PromptViewModel::class.java)
 
         _binding = FragmentPromptBinding.inflate(inflater, container, false)
         val root: View = binding.root
@@ -51,9 +60,9 @@ class PromptFragment : Fragment() {
 
     private fun setupDate(){
         val textView: TextView = binding.date
-        promptViewModel.text.observe(viewLifecycleOwner, {
+        promptViewModel.text.observe(viewLifecycleOwner) {
             textView.text = it
-        })
+        }
     }
 
     private fun addListeners(){
@@ -68,6 +77,10 @@ class PromptFragment : Fragment() {
 
         calendarButton.setOnClickListener{
             onCalendarClick()
+        }
+
+        submit.setOnClickListener{
+            submitDailyEntry()
         }
 
         ArrayAdapter.createFromResource(
@@ -103,6 +116,11 @@ class PromptFragment : Fragment() {
 
             }
         }
+
+    }
+
+    private fun submitDailyEntry(){
+        //
     }
 
     private fun onCalendarClick() {
