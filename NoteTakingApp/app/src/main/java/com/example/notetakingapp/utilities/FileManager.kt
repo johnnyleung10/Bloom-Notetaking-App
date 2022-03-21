@@ -22,8 +22,8 @@ class FileManager {
 
     fun initManager(context: Context) {
         this.context = context
-        this.noteTakingDatabaseHelper = NoteTakingDatabaseHelper(context)
-        this.noteDataSynchronizer = NoteDataSynchronizer(noteTakingDatabaseHelper)
+        noteTakingDatabaseHelper = NoteTakingDatabaseHelper(context)
+        noteDataSynchronizer = NoteDataSynchronizer(noteTakingDatabaseHelper)
     }
 
     /**

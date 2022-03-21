@@ -31,8 +31,9 @@ class DailyEntryManager {
 
     fun initManager(context: Context) {
         this.context = context
-        this.dailyEntryDatabaseHelper = DailyEntryDatabaseHelper(context)
-        this.dailyEntryDataSynchronizer = DailyEntryDataSynchronizer(dailyEntryDatabaseHelper)
+        dailyEntryDatabaseHelper = DailyEntryDatabaseHelper(context)
+        dailyEntryDatabaseHelper.onCreate(dailyEntryDatabaseHelper.writableDatabase)
+        dailyEntryDataSynchronizer = DailyEntryDataSynchronizer(dailyEntryDatabaseHelper)
     }
 
     fun initEntries() {
