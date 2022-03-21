@@ -22,4 +22,13 @@ class DailyEntryDataSynchronizer(private val dailyEntryDatabaseHelper: DailyEntr
         // Insert the daily entry locally first to populate the ID
         dailyEntryDatabaseHelper.insertDailyEntry(dailyEntry)
     }
+
+    /**
+     * Updating
+     */
+    fun updateDailyEntry(dailyEntry: DailyEntryModel) {
+        // Insert the daily entry locally first to populate the ID
+        // TODO: @Ajay DB helper method for updating daily entry
+//        dailyEntryDatabaseHelper.updateDailyEntry(dailyEntry)
+    }
 }

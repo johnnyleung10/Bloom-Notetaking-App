@@ -47,10 +47,8 @@ class PromptFragment : Fragment() {
         _binding = FragmentPromptBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        getDailyPrompt()
-
+        setupDailyEntry()
         setupDate()
-        setupPrompt()
 
         // Setup all listeners for fragment
         addListeners()
@@ -63,9 +61,16 @@ class PromptFragment : Fragment() {
         _binding = null
     }
 
+    private fun setupDailyEntry(){
+        val dailyEntry = dailyEntryManager.getDailyEntryToday()
+        promptViewModel.dailyEntry = dailyEntry
+
+        setupPrompt()
+    }
+
     private fun setupPrompt(){
         val promptQuestion: TextView = binding.promptQuestion
-        promptQuestion.text = promptViewModel.dailyPrompt.prompt
+        promptQuestion.text = promptViewModel.dailyEntry.dailyPrompt.prompt
     }
 
     private fun setupDate(){
@@ -73,10 +78,6 @@ class PromptFragment : Fragment() {
         promptViewModel.text.observe(viewLifecycleOwner) {
             textView.text = it
         }
-    }
-
-    private fun getDailyPrompt(){
-        promptViewModel.dailyPrompt = dailyEntryManager.getDailyPrompt()
     }
 
     private fun addListeners(){
@@ -94,7 +95,7 @@ class PromptFragment : Fragment() {
         }
 
         submit.setOnClickListener{
-            submitDailyEntry()
+            updateDailyEntry()
         }
 
         ArrayAdapter.createFromResource(
@@ -121,7 +122,7 @@ class PromptFragment : Fragment() {
                     7 -> mood = "doubtful"
                 }
 
-                promptViewModel.moodId = position.toLong()
+                promptViewModel.dailyEntry.moodId = position.toLong()
 
                 val colorId: Int = requireContext().resources.getIdentifier(mood, "color", requireContext().packageName)
                 val color = ContextCompat.getColor(requireContext(), colorId)
@@ -134,13 +135,12 @@ class PromptFragment : Fragment() {
         }
     }
 
-    private fun submitDailyEntry(){
+    private fun updateDailyEntry(){
+        // TODO: update the promptResponse as the user types
         val promptResponse = binding.promptAnswer.text.toString()
-        val moodId = promptViewModel.moodId
-        val dailyImage = promptViewModel.dailyImage.value
-        val linkedNoteId = promptViewModel.linkedNoteId
-        val dailyPromptId = promptViewModel.dailyPrompt.id
-        dailyEntryManager.createDailyEntry(promptResponse, moodId, dailyImage, linkedNoteId, dailyPromptId)
+        promptViewModel.dailyEntry.promptResponse = promptResponse
+
+        dailyEntryManager.updateDailyEntry(promptViewModel.dailyEntry)
     }
 
     private fun onCalendarClick() {

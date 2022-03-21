@@ -51,9 +51,12 @@ class DailyEntryManager {
      * Gets all prompts from database and stores it in dailyPromptMap
      */
     private fun initPrompts() {
-        for (prompt in dailyEntryDatabaseHelper.getAllPrompts()) {
-            dailyPromptMap[prompt.id] = prompt
-        }
+        // TODO: uncomment this
+//        for (prompt in dailyEntryDatabaseHelper.getAllPrompts()) {
+//            dailyPromptMap[prompt.id] = prompt
+//        }
+        val testPrompt = DailyPromptModel(0, "This is a test prompt")
+        dailyPromptMap[testPrompt.id] = testPrompt
     }
 
     /**
@@ -74,9 +77,17 @@ class DailyEntryManager {
     }
 
     /**
+     * Returns today's daily entry. If no entry exists one will be created.
+     */
+    fun getDailyEntryToday(): DailyEntryModel{
+        // TODO: @Johnny fill this in
+        return createDailyEntry()
+    }
+
+    /**
      * Returns daily entry by date, format: "yyyy-mm-dd". If no entry exists one will be created.
      */
-    fun getDailyEntryByDate(month : Int, year: Int) : List<DailyEntryModel> {
+    fun getDailyEntriesByDate(month : Int, year: Int) : List<DailyEntryModel> {
         val retEntries = ArrayList<DailyEntryModel>()
         for (entry in dailyEntryMap.values) {
             if (entry.getMonth() == month && entry.getYear() == year) {
@@ -89,15 +100,9 @@ class DailyEntryManager {
     /**
      * Creates a new daily entry
      */
-    fun createDailyEntry(promptResponse : String? = "",
-                         moodId : Long? = null,
-                         dailyImage : Bitmap? = null,
-                         linkedNoteId : Long? = null,
-                         dailyPromptId : Long?): DailyEntryModel {
-
-        val dailyEntry = DailyEntryModel(promptResponse, moodId, dailyImage, linkedNoteId, dailyPromptId)
-
-        // Update in database
+    fun createDailyEntry(): DailyEntryModel {
+        // TODO: @johnny create a new note to link to the daily entry
+        val dailyEntry = DailyEntryModel(dailyPrompt = getDailyPrompt())
         dailyEntryDataSynchronizer.insertDailyEntry(dailyEntry)
         dailyEntryMap[dailyEntry.id] = dailyEntry
         return dailyEntry
@@ -106,22 +111,15 @@ class DailyEntryManager {
     /**
      * Returns daily entry by Id
      */
-    fun getDailyEntry(entryId : Long) : DailyEntryModel? {
+    fun getDailyEntryById(entryId : Long) : DailyEntryModel? {
         return dailyEntryMap[entryId]
     }
 
     /**
      * Updates daily entry data
      */
-    fun editDailyEntry(entryId : Long, title: String? = null, dailyPromptId : Long? = null,
-                       promptResponse : String? = null, moodId : Long? = null, dailyImage : Bitmap? = null) {
-        // Get entry
-        val dailyEntry = getDailyEntry(entryId)
-
-        dailyPromptId?.let { dailyEntry?.dailyPromptId = dailyPromptId }
-        promptResponse?.let { dailyEntry?.promptResponse = promptResponse }
-        moodId?.let { dailyEntry?.moodId = moodId }
-        dailyImage?.let { dailyEntry?.dailyImage = dailyImage }
+    fun updateDailyEntry(dailyEntry: DailyEntryModel) {
+        dailyEntryDataSynchronizer.updateDailyEntry(dailyEntry)
     }
 
     /**

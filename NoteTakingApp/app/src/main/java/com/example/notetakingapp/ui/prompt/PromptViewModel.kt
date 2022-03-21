@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.notetakingapp.models.DailyEntryModel
 import com.example.notetakingapp.models.DailyPromptModel
 
 class PromptViewModel : ViewModel() {
@@ -13,19 +14,6 @@ class PromptViewModel : ViewModel() {
     }
     val text: LiveData<String> = _text
 
-    private val _promptResponse = MutableLiveData<String>().apply {
-        value = ""
-    }
-    val promptResponse: LiveData<String> = _promptResponse
-
-    var moodId: Long = 0
-
-    private val _dailyImage = MutableLiveData<Bitmap?>().apply {
-        value = null
-    }
-    val dailyImage: LiveData<Bitmap?> = _dailyImage
-
-    val linkedNoteId: Long? = null
-    lateinit var dailyPrompt: DailyPromptModel
+    lateinit var dailyEntry: DailyEntryModel
 
 }

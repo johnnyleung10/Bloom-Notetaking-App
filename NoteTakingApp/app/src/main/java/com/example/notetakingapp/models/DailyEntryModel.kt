@@ -8,22 +8,23 @@ import java.nio.ByteBuffer
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
-class DailyEntryModel (var promptResponse : String? = "",
-                       var moodId : Long? = null,
-                       var dailyImage : Bitmap? = null,
-                       var linkedNoteId : Long? = null,
-                       var dailyPromptId : Long?)  {
+class DailyEntryModel (var dailyPrompt: DailyPromptModel)  {
 
     var id : Long = -1
         internal set
+    var linkedNoteId: Long? = null
+    var promptResponse: String = ""
+    var moodId: Long? = null
+    var dailyImage: Bitmap? = null
+
     private val isoFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS")
     var dateCreated : LocalDateTime = LocalDateTime.now()
     var lastModifiedDate : LocalDateTime = dateCreated
     var deletionDate : LocalDateTime? = null
 
-    constructor (id: Long, noteId : Long, dailyPromptId : Long,
+    constructor (id: Long, noteId : Long, dailyPrompt : DailyPromptModel,
                  promptResponse: String, moodId : Long, dailyImage: ByteArray, dateCreated : String,
-                 dateModified : String, dateDeleted : String) : this(dailyPromptId=dailyPromptId) {
+                 dateModified : String, dateDeleted : String) : this(dailyPrompt=dailyPrompt) {
 
         this.id = id
 
