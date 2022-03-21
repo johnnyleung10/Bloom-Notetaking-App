@@ -24,6 +24,7 @@ import com.example.notetakingapp.utilities.DailyEntryManager
 import com.example.notetakingapp.utilities.FileManager
 import com.example.notetakingapp.utilities.Mood
 import com.example.notetakingapp.viewmodels.FoldersViewModel
+import java.time.format.DateTimeFormatter
 
 
 class PromptFragment : Fragment() {
@@ -80,12 +81,12 @@ class PromptFragment : Fragment() {
     }
 
     private fun setupObservers(){
-        val textView: TextView = binding.date
+        val date: TextView = binding.date
         val promptQuestion: TextView = binding.promptQuestion
         val promptAnswer: EditText = binding.promptAnswer
 
         promptViewModel.dailyEntry.observe(viewLifecycleOwner) {
-            textView.text = it.dateCreated.toString()
+            date.text = it.dateCreated.format(DateTimeFormatter.ofPattern("MMMM d, u"))
             promptQuestion.text = it.dailyPrompt.prompt
             promptAnswer.setText(it.promptResponse)
             updateDailyEntryColor(it.mood.id.toInt())

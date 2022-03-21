@@ -11,11 +11,6 @@ import com.example.notetakingapp.models.NoteModel
 
 class PromptViewModel : ViewModel() {
 
-    private val _text = MutableLiveData<String>().apply {
-        value = "March 15, 2022"
-    }
-    val text: LiveData<String> = _text
-
     private val _dailyEntry = MutableLiveData<DailyEntryModel>()
     val dailyEntry: LiveData<DailyEntryModel> = _dailyEntry
 
