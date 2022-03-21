@@ -6,6 +6,7 @@ import android.graphics.Bitmap
 import android.graphics.Color
 import com.example.notetakingapp.models.*
 import com.example.notetakingapp.models.sqlite.DailyEntryDatabaseHelper
+import java.time.LocalDateTime
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
@@ -22,10 +23,15 @@ enum class Mood(val id: Long, val description : String, val colour : Int) {
 
     companion object {
         private val allValues = values()
+        fun getMood(id: Long): Mood? = allValues.find { it.id == id }
         fun getDesc(id: Long): String? = allValues.find { it.id == id }?.description
         fun getColour(id: Long): Int? = allValues.find { it.id == id }?.colour
     }
 }
+
+val DailyPrompts : HashMap<Long, DailyPromptModel> = hashMapOf(
+    0.toLong() to DailyPromptModel(0, "How are you feeling today?"),
+    1.toLong() to DailyPromptModel(1, "What reminds you of home"))
 
 class DailyEntryManager {
     private lateinit var context : Context
@@ -33,7 +39,6 @@ class DailyEntryManager {
     lateinit var dailyEntryDataSynchronizer: DailyEntryDataSynchronizer
 
     val dailyEntryMap = HashMap<Long, DailyEntryModel>()
-    val dailyPromptMap = HashMap<Long, DailyPromptModel>()
 
     fun initManager(context: Context) {
         this.context = context
@@ -43,20 +48,7 @@ class DailyEntryManager {
     }
 
     fun initEntries() {
-        initPrompts()
         initDailyEntries()
-    }
-
-    /**
-     * Gets all prompts from database and stores it in dailyPromptMap
-     */
-    private fun initPrompts() {
-        // TODO: uncomment this
-//        for (prompt in dailyEntryDatabaseHelper.getAllPrompts()) {
-//            dailyPromptMap[prompt.id] = prompt
-//        }
-        val testPrompt = DailyPromptModel(0, "This is a test prompt")
-        dailyPromptMap[testPrompt.id] = testPrompt
     }
 
     /**
@@ -71,16 +63,22 @@ class DailyEntryManager {
     /**
      * Returns a random daily prompt for today
      */
-    fun getDailyPrompt() : DailyPromptModel {
+    private fun getDailyPrompt() : DailyPromptModel {
         val random = Random()
-        return dailyPromptMap.entries.elementAt(random.nextInt(dailyPromptMap.size)).value // get a random prompt
+        return DailyPrompts.entries.elementAt(random.nextInt(DailyPrompts.size)).value // get a random prompt
     }
 
     /**
      * Returns today's daily entry. If no entry exists one will be created.
      */
     fun getDailyEntryToday(): DailyEntryModel{
-        // TODO: @Johnny fill this in
+        val today = LocalDateTime.now()
+        for (entry in dailyEntryMap.values) {
+            if (entry.getMonth() == today.monthValue && entry.getYear() == today.year &&
+                entry.getDay() == today.dayOfMonth) {
+                return entry
+            }
+        }
         return createDailyEntry()
     }
 
@@ -98,11 +96,17 @@ class DailyEntryManager {
     }
 
     /**
-     * Creates a new daily entry
+     * Creates a new daily entry with a random prompt
      */
     fun createDailyEntry(): DailyEntryModel {
-        // TODO: @johnny create a new note to link to the daily entry
         val dailyEntry = DailyEntryModel(dailyPrompt = getDailyPrompt())
+
+        // Create new note
+        val fileManager = FileManager.instance
+        val newNote = fileManager?.createNewNote("Daily Entry " +dailyEntry.getMonth() +"-"
+                +dailyEntry.getDay() +"-" +dailyEntry.getYear())
+        dailyEntry.linkedNoteId = newNote?.id
+
         dailyEntryDataSynchronizer.insertDailyEntry(dailyEntry)
         dailyEntryMap[dailyEntry.id] = dailyEntry
         return dailyEntry
@@ -118,8 +122,23 @@ class DailyEntryManager {
     /**
      * Updates daily entry data
      */
-    fun updateDailyEntry(dailyEntry: DailyEntryModel) {
-        dailyEntryDataSynchronizer.updateDailyEntry(dailyEntry)
+    fun editDailyEntry(entryId : Long, dailyPrompt : DailyPromptModel? = null, promptResponse : String? = null,
+                       mood : Mood? = null, dailyImage : Bitmap? = null) {
+        // Get entry
+        val dailyEntry = getDailyEntryById(entryId)
+
+        dailyPrompt?.let { dailyEntry?.dailyPrompt = dailyPrompt }
+        promptResponse?.let { dailyEntry?.promptResponse = promptResponse }
+        mood?.let { dailyEntry?.mood = mood }
+        dailyImage?.let { dailyEntry?.dailyImage = dailyImage }
+
+        dailyEntry?.updateModifiedDate()
+
+        // Update in database
+        if (dailyEntry != null) {
+            dailyEntryDatabaseHelper.updateDailyEntry(dailyEntry)
+            dailyEntryDataSynchronizer.updateDailyEntry(dailyEntry)
+        }
     }
 
     /**
@@ -127,6 +146,11 @@ class DailyEntryManager {
      */
     fun deleteDailyEntry(entryId: Long) : Boolean {
         if (dailyEntryDatabaseHelper.deleteDailyEntry(entryId)) {
+            // Delete note
+            val fileManager = FileManager.instance
+            fileManager?.deleteNote(dailyEntryMap[entryId]?.linkedNoteId!!)
+
+            // Delete entry
             dailyEntryMap.remove(entryId)
             return true
         }

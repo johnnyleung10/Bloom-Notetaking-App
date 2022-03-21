@@ -3,6 +3,7 @@ package com.example.notetakingapp.models
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.media.Image
+import com.example.notetakingapp.utilities.Mood
 import java.io.ByteArrayOutputStream
 import java.nio.ByteBuffer
 import java.time.LocalDateTime
@@ -14,7 +15,7 @@ class DailyEntryModel (var dailyPrompt: DailyPromptModel)  {
         internal set
     var linkedNoteId: Long? = null
     var promptResponse: String = ""
-    var moodId: Long? = null
+    var mood: Mood? = null
     var dailyImage: Bitmap? = null
 
     private val isoFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS")
@@ -23,7 +24,7 @@ class DailyEntryModel (var dailyPrompt: DailyPromptModel)  {
     var deletionDate : LocalDateTime? = null
 
     constructor (id: Long, noteId : Long, dailyPrompt : DailyPromptModel,
-                 promptResponse: String, moodId : Long, dailyImage: ByteArray?, dateCreated : String,
+                 promptResponse: String, mood : Mood, dailyImage: ByteArray?, dateCreated : String,
                  dateModified : String, dateDeleted : String) : this(dailyPrompt=dailyPrompt) {
 
         this.id = id
@@ -41,7 +42,7 @@ class DailyEntryModel (var dailyPrompt: DailyPromptModel)  {
 
         this.linkedNoteId = noteId
         this.promptResponse = promptResponse
-        this.moodId = moodId
+        this.mood = mood
         this.dailyImage = byteArrayToImage(dailyImage)
     }
 
