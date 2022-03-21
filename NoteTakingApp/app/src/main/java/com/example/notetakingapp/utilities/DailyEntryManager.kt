@@ -18,7 +18,7 @@ enum class Mood(val id: Long, val description : String, val colour : Int) {
     NEUTRAL(4, "Feeling neutral", Color.BLACK),
     SAD(5, "Feeling sad", Color.MAGENTA),
     ANGRY(6, "Feeling angry", Color.BLUE),
-    DOUBTFUL(7, "Feeling doubtful", Color.GREEN),
+    DOUBTFUL(7, "Feeling doubtful", Color.GREEN);
 
     companion object {
         private val allValues = values()
