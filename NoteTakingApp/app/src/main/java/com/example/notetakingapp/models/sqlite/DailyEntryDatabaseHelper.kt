@@ -69,7 +69,7 @@ class DailyEntryDatabaseHelper(private val context: Context) :
     }
 
     // UPDATING
-    fun updateNote(dailyEntry: DailyEntryModel){
+    fun updateDailyEntry(dailyEntry: DailyEntryModel){
 
         val dbWrite = this.writableDatabase
         val values = ContentValues().apply {
