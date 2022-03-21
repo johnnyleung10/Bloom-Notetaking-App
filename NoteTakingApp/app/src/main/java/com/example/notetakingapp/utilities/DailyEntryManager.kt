@@ -22,14 +22,15 @@ enum class Mood(val id: Long, val description : String, val colour : Int) {
 
     companion object {
         private val allValues = values()
+        fun getMood(id: Long): Mood? = allValues.find { it.id == id }
         fun getDesc(id: Long): String? = allValues.find { it.id == id }?.description
         fun getColour(id: Long): Int? = allValues.find { it.id == id }?.colour
     }
 }
 
-val dailyPrompts = hashMapOf(
-    0 to DailyPromptModel(0, "What do you like to eat?"),
-    1 to "no")
+val DailyPrompts : HashMap<Long, DailyPromptModel> = hashMapOf(
+    0.toLong() to DailyPromptModel(0, "How are you feeling today?"),
+    1.toLong() to DailyPromptModel(1, "What reminds you of home"))
 
 class DailyEntryManager {
     private lateinit var context : Context
