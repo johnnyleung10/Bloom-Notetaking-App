@@ -89,6 +89,11 @@ class PromptFragment : Fragment() {
             promptQuestion.text = it.dailyPrompt.prompt
             promptAnswer.setText(it.promptResponse)
             updateDailyEntryColor(it.mood.id.toInt())
+            if(it.getDateCreated() == it.getLastModifiedDate()){
+                binding.submit.visibility = View.VISIBLE
+            } else {
+                binding.submit.visibility = View.GONE
+            }
             // TODO: Update the image!
 
         }
