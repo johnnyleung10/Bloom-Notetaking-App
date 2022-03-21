@@ -10,15 +10,21 @@ import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
-enum class Mood(id: MoodModel) {
-    NO_SELECTION(MoodModel(0, "No Mood", Color.BLUE)),
-    HAPPY(MoodModel(1, "Feeling happy", Color.RED)),
-    LOVING(MoodModel(2, "Feeling loving", Color.YELLOW)),
-    EXCITED(MoodModel(3, "Feeling excited", Color.CYAN)),
-    NEUTRAL(MoodModel(4, "Feeling neutral", Color.BLACK)),
-    SAD(MoodModel(5, "Feeling sad", Color.MAGENTA)),
-    ANGRY(MoodModel(6, "Feeling angry", Color.BLUE)),
-    DOUBTFUL(MoodModel(7, "Feeling doubtful", Color.GREEN)),
+enum class Mood(val id: Long, val description : String, val colour : Int) {
+    NO_SELECTION(0, "No Mood", Color.BLUE),
+    HAPPY(1, "Feeling happy", Color.RED),
+    LOVING(2, "Feeling loving", Color.YELLOW),
+    EXCITED(3, "Feeling excited", Color.CYAN),
+    NEUTRAL(4, "Feeling neutral", Color.BLACK),
+    SAD(5, "Feeling sad", Color.MAGENTA),
+    ANGRY(6, "Feeling angry", Color.BLUE),
+    DOUBTFUL(7, "Feeling doubtful", Color.GREEN),
+
+    companion object {
+        private val allValues = values()
+        fun getDesc(id: Long): String? = allValues.find { it.id == id }?.description
+        fun getColour(id: Long): Int? = allValues.find { it.id == id }?.colour
+    }
 }
 
 class DailyEntryManager {
