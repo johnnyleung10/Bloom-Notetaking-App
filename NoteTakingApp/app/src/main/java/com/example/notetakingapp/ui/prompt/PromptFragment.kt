@@ -55,7 +55,7 @@ class PromptFragment : Fragment() {
         lastCursorPosition = promptResponse.selectionStart
 
         setupDailyEntry()
-        setupDate()
+        setupObservers()
 
         // Setup all listeners for fragment
         addListeners()
@@ -70,20 +70,28 @@ class PromptFragment : Fragment() {
 
     private fun setupDailyEntry(){
         val dailyEntry = dailyEntryManager.getDailyEntryToday()
-        promptViewModel.dailyEntry = dailyEntry
+        promptViewModel.setDailyEntry(dailyEntry)
 
         setupPrompt()
     }
 
     private fun setupPrompt(){
         val promptQuestion: TextView = binding.promptQuestion
-        promptQuestion.text = promptViewModel.dailyEntry.dailyPrompt.prompt
+        promptQuestion.text = promptViewModel.dailyEntry.value?.dailyPrompt?.prompt
     }
 
-    private fun setupDate(){
+    private fun setupObservers(){
         val textView: TextView = binding.date
-        promptViewModel.text.observe(viewLifecycleOwner) {
-            textView.text = it
+        val promptQuestion: TextView = binding.promptQuestion
+        val promptAnswer: EditText = binding.promptAnswer
+
+        promptViewModel.dailyEntry.observe(viewLifecycleOwner) {
+            textView.text = it.dateCreated.toString()
+            promptQuestion.text = it.dailyPrompt.prompt
+            promptAnswer.setText(it.promptResponse)
+            // TODO: Update the image!
+
+
         }
     }
 
@@ -102,7 +110,7 @@ class PromptFragment : Fragment() {
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 val response: String = promptResponse.text.toString()
-                promptViewModel.dailyEntry.promptResponse = response
+                promptViewModel.dailyEntry.value?.promptResponse = response
             }
         })
     }
@@ -125,22 +133,23 @@ class PromptFragment : Fragment() {
             override fun onNothingSelected(parent: AdapterView<*>?) {}
 
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                var mood = ""
                 parent?.getChildAt(1)?.setBackgroundColor(Color.BLUE)
-                when(position){
-                    0 -> mood = "no_selection"
-                    1 -> mood = "happy"
-                    2 -> mood = "loving"
-                    3 -> mood = "excited"
-                    4 -> mood = "neutral"
-                    5 -> mood = "sad"
-                    6 -> mood = "angry"
-                    7 -> mood = "doubtful"
+                var mood = when(position) {
+                    0 -> Mood.NO_SELECTION
+                    1 -> Mood.HAPPY
+                    2 -> Mood.LOVING
+                    3 -> Mood.EXCITED
+                    4 -> Mood.NEUTRAL
+                    5 -> Mood.SAD
+                    6 -> Mood.ANGRY
+                    7 -> Mood.DOUBTFUL
+                    else -> Mood.NO_SELECTION
                 }
 
-                promptViewModel.dailyEntry.moodId = position.toLong()
+                promptViewModel.dailyEntry.value?.mood = mood
 
-                val colorId: Int = requireContext().resources.getIdentifier(mood, "color", requireContext().packageName)
+                val colorId = mood.colour
+
                 val color = ContextCompat.getColor(requireContext(), colorId)
 
                 submit.backgroundTintList = ColorStateList.valueOf(color)
@@ -173,11 +182,7 @@ class PromptFragment : Fragment() {
     }
 
     private fun updateDailyEntry(){
-        // TODO: update the promptResponse as the user types
-        val promptResponse = binding.promptAnswer.text.toString()
-        promptViewModel.dailyEntry.promptResponse = promptResponse
-
-        dailyEntryManager.updateDailyEntry(promptViewModel.dailyEntry)
+        dailyEntryManager.updateDailyEntry(promptViewModel.dailyEntry.value!!)
     }
 
     private fun onCalendarClick() {

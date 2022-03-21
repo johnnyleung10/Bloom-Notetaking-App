@@ -163,7 +163,7 @@
         android:drawableTop="@drawable/submit"
         android:drawableTint="@color/salmon"
         android:background="#00000000"
-        android:enabled="false"
+        android:enabled="true"
         android:layout_marginEnd="14dp"
         android:layout_marginTop="32dp"
         android:layout_gravity="end"

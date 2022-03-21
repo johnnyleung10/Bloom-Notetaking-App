@@ -4,6 +4,8 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Color
+import androidx.core.content.ContextCompat
+import com.example.notetakingapp.R
 import com.example.notetakingapp.models.*
 import com.example.notetakingapp.models.sqlite.DailyEntryDatabaseHelper
 import java.time.LocalDateTime
@@ -12,19 +14,18 @@ import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
 enum class Mood(val id: Long, val description : String, val colour : Int) {
-    NO_SELECTION(0, "No Mood", Color.BLUE),
-    HAPPY(1, "Feeling happy", Color.RED),
-    LOVING(2, "Feeling loving", Color.YELLOW),
-    EXCITED(3, "Feeling excited", Color.CYAN),
-    NEUTRAL(4, "Feeling neutral", Color.BLACK),
-    SAD(5, "Feeling sad", Color.MAGENTA),
-    ANGRY(6, "Feeling angry", Color.BLUE),
-    DOUBTFUL(7, "Feeling doubtful", Color.GREEN);
+    NO_SELECTION(0, "No Mood", R.color.no_selection),
+    HAPPY(1, "Feeling happy", R.color.happy),
+    LOVING(2, "Feeling loving", R.color.loving),
+    EXCITED(3, "Feeling excited", R.color.excited),
+    NEUTRAL(4, "Feeling neutral", R.color.neutral),
+    SAD(5, "Feeling sad", R.color.sad),
+    ANGRY(6, "Feeling angry", R.color.angry),
+    DOUBTFUL(7, "Feeling doubtful", R.color.doubtful);
 
     companion object {
         private val allValues = values()
         fun getMood(id: Long): Mood? = allValues.find { it.id == id }
-        fun getDesc(id: Long): String? = allValues.find { it.id == id }?.description
         fun getColour(id: Long): Int? = allValues.find { it.id == id }?.colour
     }
 }
@@ -122,23 +123,12 @@ class DailyEntryManager {
     /**
      * Updates daily entry data
      */
-    fun editDailyEntry(entryId : Long, dailyPrompt : DailyPromptModel? = null, promptResponse : String? = null,
-                       mood : Mood? = null, dailyImage : Bitmap? = null) {
-        // Get entry
-        val dailyEntry = getDailyEntryById(entryId)
-
-        dailyPrompt?.let { dailyEntry?.dailyPrompt = dailyPrompt }
-        promptResponse?.let { dailyEntry?.promptResponse = promptResponse }
-        mood?.let { dailyEntry?.mood = mood }
-        dailyImage?.let { dailyEntry?.dailyImage = dailyImage }
+    fun updateDailyEntry(dailyEntry: DailyEntryModel) {
 
         dailyEntry?.updateModifiedDate()
 
         // Update in database
-        if (dailyEntry != null) {
-            dailyEntryDatabaseHelper.updateDailyEntry(dailyEntry)
-            dailyEntryDataSynchronizer.updateDailyEntry(dailyEntry)
-        }
+        dailyEntryDataSynchronizer.updateDailyEntry(dailyEntry)
     }
 
     /**
