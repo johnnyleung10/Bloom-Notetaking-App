@@ -7,6 +7,9 @@ import android.database.sqlite.SQLiteOpenHelper
 import android.provider.BaseColumns
 import com.example.notetakingapp.models.DailyEntryModel
 import com.example.notetakingapp.models.DailyPromptModel
+import com.example.notetakingapp.models.NoteModel
+import com.example.notetakingapp.utilities.DailyPrompts
+import com.example.notetakingapp.utilities.Mood
 
 private const val SQL_CREATE_DAILY_ENTRIES =
     "CREATE TABLE IF NOT EXISTS ${DailyEntryDatabaseHelper.DatabaseContract.DailyEntry.TABLE_NAME} (" +
@@ -44,7 +47,7 @@ class DailyEntryDatabaseHelper(private val context: Context) :
             put(DailyEntry.COLUMN_NAME_DATE_CREATED, dailyEntry.getDateCreated())
             put(DailyEntry.COLUMN_NAME_DATE_MODIFIED, dailyEntry.getLastModifiedDate())
             put(DailyEntry.COLUMN_NAME_DATE_DELETED, dailyEntry.getDeletionDate())
-            put(DailyEntry.COLUMN_NAME_MOOD_ID, dailyEntry.moodId)
+            put(DailyEntry.COLUMN_NAME_MOOD_ID, dailyEntry.mood?.id ?: 0)
             put(DailyEntry.COLUMN_NAME_LINKED_NOTE_ID, dailyEntry.linkedNoteId)
         }
         val dbWrite = this.writableDatabase
@@ -65,10 +68,29 @@ class DailyEntryDatabaseHelper(private val context: Context) :
         return id
     }
 
+    // UPDATING
+    fun updateNote(dailyEntry: DailyEntryModel){
+
+        val dbWrite = this.writableDatabase
+        val values = ContentValues().apply {
+            put(DailyEntry.COLUMN_NAME_DATE_MODIFIED, dailyEntry.getLastModifiedDate())
+            put(DailyEntry.COLUMN_NAME_DATE_DELETED, dailyEntry.getDeletionDate())
+            put(DailyEntry.COLUMN_NAME_DAILY_PROMPT_ID, dailyEntry.dailyPrompt.id)
+            put(DailyEntry.COLUMN_NAME_DAILY_PROMPT_ANSWER, dailyEntry.promptResponse)
+            put(DailyEntry.COLUMN_NAME_DAILY_IMAGE, dailyEntry.imageToByteArray())
+            put(DailyEntry.COLUMN_NAME_MOOD_ID, dailyEntry.mood?.id ?: 0)
+            put(DailyEntry.COLUMN_NAME_LINKED_NOTE_ID, dailyEntry.linkedNoteId)
+        }
+        dbWrite.update(
+            DailyEntry.TABLE_NAME, values, BaseColumns._ID + " = ?",
+            arrayOf(dailyEntry.id.toString()))
+        dbWrite.close()
+    }
+
     // QUERYING
     fun getAllDailyEntries() : List<DailyEntryModel>{
         val retList : ArrayList<DailyEntryModel> = arrayListOf()
-        val queryString = "SELECT * FROM " + DatabaseContract.DailyEntry.TABLE_NAME
+        val queryString = "SELECT * FROM " + DailyEntry.TABLE_NAME
 
         val dbRead = this.readableDatabase
 
@@ -76,8 +98,8 @@ class DailyEntryDatabaseHelper(private val context: Context) :
 
         if (cursor.moveToFirst()) {
             do {
-                val id = cursor.getInt(0)
-                val dailyPromptId = cursor.getInt(1)
+                val id = cursor.getLong(0)
+                val dailyPromptId = cursor.getLong(1)
                 val dailyPromptAnswer = cursor.getString(2)
                 val dailyImage = cursor.getBlob(3)
                 val linkedNoteId = cursor.getInt(4)
@@ -86,10 +108,10 @@ class DailyEntryDatabaseHelper(private val context: Context) :
                 val dateModified = cursor.getString(7)
                 val dateDeleted = cursor.getString(8)
 
-                // TODO: @Ajay create the daily prompt here
-                val dailyPrompt = DailyPromptModel(dailyPromptId.toLong(), "This is a test prompt")
-                val dailyEntry = DailyEntryModel(id.toLong(), linkedNoteId.toLong(), dailyPrompt,
-                    dailyPromptAnswer, moodId.toLong(), dailyImage, dateCreated, dateModified,
+                val dailyPrompt = DailyPrompts[dailyPromptId]
+                val mood = Mood.getMood(moodId.toLong()) ?: Mood.NO_SELECTION
+                val dailyEntry = DailyEntryModel(id, linkedNoteId.toLong(), dailyPrompt!!,
+                    dailyPromptAnswer, mood, dailyImage, dateCreated, dateModified,
                     dateDeleted)
                 retList.add(dailyEntry)
             } while (cursor.moveToNext())
@@ -102,7 +124,7 @@ class DailyEntryDatabaseHelper(private val context: Context) :
 
     fun getAllPrompts() : List<DailyPromptModel>{
         val retList : ArrayList<DailyPromptModel> = arrayListOf()
-        val queryString = "SELECT * FROM " + DatabaseContract.DailyPrompt.TABLE_NAME
+        val queryString = "SELECT * FROM " + DailyPrompt.TABLE_NAME
 
         val dbRead = this.readableDatabase
 
