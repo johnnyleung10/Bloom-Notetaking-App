@@ -33,6 +33,7 @@ class DailyEntryManager {
     fun initManager(context: Context) {
         this.context = context
         dailyEntryDatabaseHelper = DailyEntryDatabaseHelper(context)
+        dailyEntryDatabaseHelper.onCreate(dailyEntryDatabaseHelper.writableDatabase)
         //dataSynchronizer = DataSynchronizer(noteTakingDatabaseHelper)
     }
 
