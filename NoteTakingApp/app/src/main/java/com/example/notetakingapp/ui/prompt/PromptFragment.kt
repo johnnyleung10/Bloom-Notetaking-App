@@ -153,6 +153,8 @@ class PromptFragment : Fragment() {
 
     private fun addListeners(){
         val calendarButton: Button = binding.calendar
+        val attachNote: TextView = binding.attachNote
+        val attachImage: ImageButton = binding.attachImage
         val submit: Button = binding.submit
 
         calendarButton.setOnClickListener{
@@ -165,6 +167,8 @@ class PromptFragment : Fragment() {
 
         setupPromptResponseListener()
         setupMoodDropdown()
+
+        // TODO @lucas setup listeners for note and image
 
     }
 
