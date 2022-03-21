@@ -23,7 +23,7 @@ class DailyEntryModel (var dailyPrompt: DailyPromptModel)  {
     var deletionDate : LocalDateTime? = null
 
     constructor (id: Long, noteId : Long, dailyPrompt : DailyPromptModel,
-                 promptResponse: String, moodId : Long, dailyImage: ByteArray, dateCreated : String,
+                 promptResponse: String, moodId : Long, dailyImage: ByteArray?, dateCreated : String,
                  dateModified : String, dateDeleted : String) : this(dailyPrompt=dailyPrompt) {
 
         this.id = id
@@ -77,7 +77,10 @@ class DailyEntryModel (var dailyPrompt: DailyPromptModel)  {
     /**
      * Converts byteArray to Image upon construction of model
      */
-    private fun byteArrayToImage(data : ByteArray): Bitmap {
+    private fun byteArrayToImage(data : ByteArray?): Bitmap? {
+        if(data == null){
+            return null
+        }
         return BitmapFactory.decodeByteArray(data, 0, data.size)
     }
 

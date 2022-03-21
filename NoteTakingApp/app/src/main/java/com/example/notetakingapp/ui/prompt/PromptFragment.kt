@@ -3,6 +3,10 @@ package com.example.notetakingapp.ui.prompt
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
+import android.text.Editable
+import android.text.Selection
+import android.text.Spannable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -31,6 +35,7 @@ class PromptFragment : Fragment() {
     // onDestroyView.
     private val binding get() = _binding!!
     private lateinit var dailyEntryManager: DailyEntryManager
+    private var lastCursorPosition: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,6 +51,8 @@ class PromptFragment : Fragment() {
 
         _binding = FragmentPromptBinding.inflate(inflater, container, false)
         val root: View = binding.root
+        val promptResponse = binding.promptAnswer
+        lastCursorPosition = promptResponse.selectionStart
 
         setupDailyEntry()
         setupDate()
@@ -80,23 +87,32 @@ class PromptFragment : Fragment() {
         }
     }
 
-    private fun addListeners(){
-        val calendarButton: Button = binding.calendar
+    private fun setupPromptResponseListener(){
+        val promptResponse = binding.promptAnswer
+
+        promptResponse.addTextChangedListener(object : TextWatcher {
+
+            override fun afterTextChanged(s: Editable?) {
+                lastCursorPosition = promptResponse.selectionStart
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                lastCursorPosition = promptResponse.selectionStart
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                val response: String = promptResponse.text.toString()
+                promptViewModel.dailyEntry.promptResponse = response
+            }
+        })
+    }
+
+    private fun setupMoodDropdown(){
+
         val prompt: CardView = binding.prompt
-        val promptAnswer: EditText = binding.promptAnswer
-        val attachNote: TextView = binding.attachNote
-        val attachImage: ImageButton = binding.attachImage
         val moodPicker: CardView = binding.moodPicker
         val spinner: Spinner = binding.moods
         val submit: Button = binding.submit
-
-        calendarButton.setOnClickListener{
-            onCalendarClick()
-        }
-
-        submit.setOnClickListener{
-            updateDailyEntry()
-        }
 
         ArrayAdapter.createFromResource(
             requireContext(), R.array.moods, R.layout.moods_dropdown
@@ -133,6 +149,23 @@ class PromptFragment : Fragment() {
 
             }
         }
+    }
+
+    private fun addListeners(){
+        val calendarButton: Button = binding.calendar
+        val submit: Button = binding.submit
+
+        calendarButton.setOnClickListener{
+            onCalendarClick()
+        }
+
+        submit.setOnClickListener{
+            updateDailyEntry()
+        }
+
+        setupPromptResponseListener()
+        setupMoodDropdown()
+
     }
 
     private fun updateDailyEntry(){
