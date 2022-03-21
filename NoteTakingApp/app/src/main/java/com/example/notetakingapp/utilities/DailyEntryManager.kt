@@ -27,6 +27,10 @@ enum class Mood(val id: Long, val description : String, val colour : Int) {
     }
 }
 
+val dailyPrompts = hashMapOf(
+    0 to DailyPromptModel(0, "What do you like to eat?"),
+    1 to "no")
+
 class DailyEntryManager {
     private lateinit var context : Context
     lateinit var dailyEntryDatabaseHelper : DailyEntryDatabaseHelper
@@ -117,21 +121,22 @@ class DailyEntryManager {
     /**
      * Updates daily entry data
      */
-    fun editDailyEntry(entryId : Long, title: String? = null, dailyPromptId : Long? = null,
-                       promptResponse : String? = null, moodId : Long? = null, dailyImage : Bitmap? = null) {
+    fun editDailyEntry(entryId : Long, dailyPrompt : DailyPromptModel? = null, promptResponse : String? = null,
+                       mood : Mood? = null, dailyImage : Bitmap? = null) {
         // Get entry
         val dailyEntry = getDailyEntryById(entryId)
 
-        title?.let { dailyEntry?.title = title }
-        title?.let { dailyEntry?.dailyPromptId = dailyPromptId }
-        title?.let { dailyEntry?.promptResponse = promptResponse }
-        title?.let { dailyEntry?.moodId = moodId }
-        title?.let { dailyEntry?.dailyImage = dailyImage }
+        dailyPrompt?.let { dailyEntry?.dailyPrompt = dailyPrompt }
+        promptResponse?.let { dailyEntry?.promptResponse = promptResponse }
+        mood?.let { dailyEntry?.mood = mood }
+        dailyImage?.let { dailyEntry?.dailyImage = dailyImage }
 
         dailyEntry?.updateModifiedDate()
 
         // TODO: Update in manager
-        dailyEntryDataSynchronizer.updateDailyEntry(dailyEntry)
+        if (dailyEntry != null) {
+            dailyEntryDataSynchronizer.updateDailyEntry(dailyEntry)
+        }
     }
 
     /**

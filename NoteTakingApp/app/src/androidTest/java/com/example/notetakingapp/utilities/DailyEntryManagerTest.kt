@@ -15,17 +15,8 @@ internal class DailyEntryManagerTest {
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
         val manager : DailyEntryManager? = DailyEntryManager.instance
         manager?.initManager(appContext)
-        manager?.initFiles()
+        manager?.initEntries()
         Assert.assertEquals(HashMap<Long, DailyEntryModel>(), manager?.dailyEntryMap)
-    }
-
-    @Test
-    fun getNoteMap() {
-        val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        val manager : DailyEntryManager? = DailyEntryManager.instance
-        manager?.initManager(appContext)
-        manager?.initFiles()
-        Assert.assertEquals(HashMap<Long, NoteModel>(), manager?.noteMap)
     }
 
     @Test
@@ -33,14 +24,15 @@ internal class DailyEntryManagerTest {
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
         val manager : DailyEntryManager? = DailyEntryManager.instance
         manager?.initManager(appContext)
-        manager?.initFiles()
+        manager?.initEntries()
         Assert.assertEquals(HashMap<Long, DailyPromptModel>(), manager?.dailyPromptMap)
     }
 
     @Test
     fun testMoodEnum() {
-        val mood = Moods.ANGRY
+        val mood = Mood.ANGRY
         Assert.assertEquals(Color.BLUE, mood.colour)
+        Assert.assertEquals("Feeling angry", Mood.getColour(6))
     }
 
     @Test
