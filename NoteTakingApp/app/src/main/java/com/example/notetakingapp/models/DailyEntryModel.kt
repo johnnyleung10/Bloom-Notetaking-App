@@ -15,7 +15,7 @@ class DailyEntryModel (var dailyPrompt: DailyPromptModel)  {
         internal set
     var linkedNoteId: Long? = null
     var promptResponse: String = ""
-    var mood: Mood? = null
+    var mood: Mood = Mood.NO_SELECTION
     var dailyImage: Bitmap? = null
 
     private val isoFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS")

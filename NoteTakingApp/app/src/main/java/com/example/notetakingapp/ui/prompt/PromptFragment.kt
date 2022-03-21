@@ -71,7 +71,6 @@ class PromptFragment : Fragment() {
     private fun setupDailyEntry(){
         val dailyEntry = dailyEntryManager.getDailyEntryToday()
         promptViewModel.setDailyEntry(dailyEntry)
-
         setupPrompt()
     }
 
@@ -89,8 +88,8 @@ class PromptFragment : Fragment() {
             textView.text = it.dateCreated.toString()
             promptQuestion.text = it.dailyPrompt.prompt
             promptAnswer.setText(it.promptResponse)
+            updateDailyEntryColor(it.mood.id.toInt())
             // TODO: Update the image!
-
 
         }
     }
@@ -117,10 +116,7 @@ class PromptFragment : Fragment() {
 
     private fun setupMoodDropdown(){
 
-        val prompt: CardView = binding.prompt
-        val moodPicker: CardView = binding.moodPicker
         val spinner: Spinner = binding.moods
-        val submit: Button = binding.submit
 
         ArrayAdapter.createFromResource(
             requireContext(), R.array.moods, R.layout.moods_dropdown
@@ -134,30 +130,13 @@ class PromptFragment : Fragment() {
 
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 parent?.getChildAt(1)?.setBackgroundColor(Color.BLUE)
-                var mood = when(position) {
-                    0 -> Mood.NO_SELECTION
-                    1 -> Mood.HAPPY
-                    2 -> Mood.LOVING
-                    3 -> Mood.EXCITED
-                    4 -> Mood.NEUTRAL
-                    5 -> Mood.SAD
-                    6 -> Mood.ANGRY
-                    7 -> Mood.DOUBTFUL
-                    else -> Mood.NO_SELECTION
-                }
 
-                promptViewModel.dailyEntry.value?.mood = mood
-
-                val colorId = mood.colour
-
-                val color = ContextCompat.getColor(requireContext(), colorId)
-
-                submit.backgroundTintList = ColorStateList.valueOf(color)
-                moodPicker.setCardBackgroundColor(color)
-                prompt.setCardBackgroundColor(color)
-
+                updateDailyEntryColor(position)
             }
         }
+
+        // Set it to the daily entry's mood!
+        spinner.setSelection(promptViewModel.dailyEntry.value!!.mood.id.toInt())
     }
 
     private fun addListeners(){
@@ -179,6 +158,34 @@ class PromptFragment : Fragment() {
 
         // TODO @lucas setup listeners for note and image
 
+    }
+
+    private fun updateDailyEntryColor(position: Int){
+        val prompt: CardView = binding.prompt
+        val moodPicker: CardView = binding.moodPicker
+        val submit: Button = binding.submit
+
+        var mood = when(position) {
+            0 -> Mood.NO_SELECTION
+            1 -> Mood.HAPPY
+            2 -> Mood.LOVING
+            3 -> Mood.EXCITED
+            4 -> Mood.NEUTRAL
+            5 -> Mood.SAD
+            6 -> Mood.ANGRY
+            7 -> Mood.DOUBTFUL
+            else -> Mood.NO_SELECTION
+        }
+
+        promptViewModel.dailyEntry.value?.mood = mood
+
+        val colorId = mood.colour
+
+        val color = ContextCompat.getColor(requireContext(), colorId)
+
+        submit.backgroundTintList = ColorStateList.valueOf(color)
+        moodPicker.setCardBackgroundColor(color)
+        prompt.setCardBackgroundColor(color)
     }
 
     private fun updateDailyEntry(){
