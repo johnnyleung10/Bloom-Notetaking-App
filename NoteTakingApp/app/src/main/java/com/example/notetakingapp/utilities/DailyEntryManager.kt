@@ -10,22 +10,15 @@ import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
-enum class Moods(val id: Long, val description : String, val colour : Int) {
-//    HAPPY(MoodModel(0, "Feeling happy", Color.RED)),
-//    MOTIVATED(MoodModel(1, "Feeling motivated", Color.YELLOW)),
-//    ENERGETIC(MoodModel(2, "Feeling energetic", Color.CYAN)),
-//    NEUTRAL(MoodModel(3, "Feeling neutral", Color.BLACK)),
-//    SAD(MoodModel(4, "Feeling sad", Color.MAGENTA)),
-//    ANGRY(MoodModel(5, "Feeling angry", Color.BLUE)),
-//    ENVIOUS(MoodModel(6, "Feeling envious", Color.GREEN))
-
-    HAPPY(0, "Feeling happy", Color.RED),
-    MOTIVATED(1, "Feeling motivated", Color.YELLOW),
-    ENERGETIC(2, "Feeling energetic", Color.CYAN),
-    NEUTRAL(3, "Feeling neutral", Color.BLACK),
-    SAD(4, "Feeling sad", Color.MAGENTA),
-    ANGRY(5, "Feeling angry", Color.BLUE),
-    ENVIOUS(6, "Feeling envious", Color.GREEN);
+enum class Mood(val id: Long, val description : String, val colour : Int) {
+    NO_SELECTION(0, "No Mood", Color.BLUE),
+    HAPPY(1, "Feeling happy", Color.RED),
+    LOVING(2, "Feeling loving", Color.YELLOW),
+    EXCITED(3, "Feeling excited", Color.CYAN),
+    NEUTRAL(4, "Feeling neutral", Color.BLACK),
+    SAD(5, "Feeling sad", Color.MAGENTA),
+    ANGRY(6, "Feeling angry", Color.BLUE),
+    DOUBTFUL(7, "Feeling doubtful", Color.GREEN);
 
     companion object {
         private val allValues = values()
@@ -36,21 +29,20 @@ enum class Moods(val id: Long, val description : String, val colour : Int) {
 
 class DailyEntryManager {
     private lateinit var context : Context
-    private lateinit var dailyEntryDatabaseHelper : DailyEntryDatabaseHelper
-    // lateinit var dataSynchronizer: DataSynchronizer
+    lateinit var dailyEntryDatabaseHelper : DailyEntryDatabaseHelper
+    lateinit var dailyEntryDataSynchronizer: DailyEntryDataSynchronizer
 
     val dailyEntryMap = HashMap<Long, DailyEntryModel>()
-    val noteMap = HashMap<Long, NoteModel>()
     val dailyPromptMap = HashMap<Long, DailyPromptModel>()
 
     fun initManager(context: Context) {
         this.context = context
         dailyEntryDatabaseHelper = DailyEntryDatabaseHelper(context)
         dailyEntryDatabaseHelper.onCreate(dailyEntryDatabaseHelper.writableDatabase)
-        //dataSynchronizer = DataSynchronizer(noteTakingDatabaseHelper)
+        dailyEntryDataSynchronizer = DailyEntryDataSynchronizer(dailyEntryDatabaseHelper)
     }
 
-    fun initFiles() {
+    fun initEntries() {
         initPrompts()
         initDailyEntries()
     }
@@ -62,6 +54,8 @@ class DailyEntryManager {
         for (prompt in dailyEntryDatabaseHelper.getAllPrompts()) {
             dailyPromptMap[prompt.id] = prompt
         }
+        val testPrompt = DailyPromptModel(0, "This is a test prompt")
+        dailyPromptMap[testPrompt.id] = testPrompt
     }
 
     /**
@@ -82,9 +76,17 @@ class DailyEntryManager {
     }
 
     /**
+     * Returns today's daily entry. If no entry exists one will be created.
+     */
+    fun getDailyEntryToday(): DailyEntryModel{
+        // TODO: @Johnny fill this in
+        return createDailyEntry()
+    }
+
+    /**
      * Returns daily entry by date, format: "yyyy-mm-dd". If no entry exists one will be created.
      */
-    fun getDailyEntryByDate(month : Int, year: Int) : List<DailyEntryModel> {
+    fun getDailyEntriesByDate(month : Int, year: Int) : List<DailyEntryModel> {
         val retEntries = ArrayList<DailyEntryModel>()
         for (entry in dailyEntryMap.values) {
             if (entry.getMonth() == month && entry.getYear() == year) {
@@ -98,13 +100,17 @@ class DailyEntryManager {
      * Creates a new daily entry with a random prompt
      */
     fun createDailyEntry(): DailyEntryModel {
-        return DailyEntryModel("Daily Entry", context, getDailyPrompt().id)
+        // TODO: @johnny create a new note to link to the daily entry
+        val dailyEntry = DailyEntryModel(dailyPrompt = getDailyPrompt())
+        dailyEntryDataSynchronizer.insertDailyEntry(dailyEntry)
+        dailyEntryMap[dailyEntry.id] = dailyEntry
+        return dailyEntry
     }
 
     /**
      * Returns daily entry by Id
      */
-    fun getDailyEntry(entryId : Long) : DailyEntryModel? {
+    fun getDailyEntryById(entryId : Long) : DailyEntryModel? {
         return dailyEntryMap[entryId]
     }
 
@@ -114,7 +120,7 @@ class DailyEntryManager {
     fun editDailyEntry(entryId : Long, title: String? = null, dailyPromptId : Long? = null,
                        promptResponse : String? = null, moodId : Long? = null, dailyImage : Bitmap? = null) {
         // Get entry
-        val dailyEntry = getDailyEntry(entryId)
+        val dailyEntry = getDailyEntryById(entryId)
 
         title?.let { dailyEntry?.title = title }
         title?.let { dailyEntry?.dailyPromptId = dailyPromptId }
@@ -125,6 +131,7 @@ class DailyEntryManager {
         dailyEntry?.updateModifiedDate()
 
         // TODO: Update in manager
+        dailyEntryDataSynchronizer.updateDailyEntry(dailyEntry)
     }
 
     /**

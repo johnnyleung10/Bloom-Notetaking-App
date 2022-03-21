@@ -38,7 +38,7 @@ class DailyEntryDatabaseHelper(private val context: Context) :
     // INSERTING
     fun insertDailyEntry(dailyEntry: DailyEntryModel): Long {
         val values = ContentValues().apply {
-            put(DailyEntry.COLUMN_NAME_DAILY_PROMPT_ID, dailyEntry.dailyPromptId)
+            put(DailyEntry.COLUMN_NAME_DAILY_PROMPT_ID, dailyEntry.dailyPrompt.id)
             put(DailyEntry.COLUMN_NAME_DAILY_PROMPT_ANSWER, dailyEntry.promptResponse)
             put(DailyEntry.COLUMN_NAME_DAILY_IMAGE, dailyEntry.imageToByteArray())
             put(DailyEntry.COLUMN_NAME_DATE_CREATED, dailyEntry.getDateCreated())
@@ -86,7 +86,9 @@ class DailyEntryDatabaseHelper(private val context: Context) :
                 val dateModified = cursor.getString(7)
                 val dateDeleted = cursor.getString(8)
 
-                val dailyEntry = DailyEntryModel(context, id.toLong(), linkedNoteId.toLong(), dailyPromptId.toLong(),
+                // TODO: @Ajay create the daily prompt here
+                val dailyPrompt = DailyPromptModel(dailyPromptId.toLong(), "This is a test prompt")
+                val dailyEntry = DailyEntryModel(id.toLong(), linkedNoteId.toLong(), dailyPrompt,
                     dailyPromptAnswer, moodId.toLong(), dailyImage, dateCreated, dateModified,
                     dateDeleted)
                 retList.add(dailyEntry)

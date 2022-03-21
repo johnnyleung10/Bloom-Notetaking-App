@@ -1,8 +1,11 @@
 package com.example.notetakingapp.ui.prompt
 
+import android.graphics.Bitmap
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.notetakingapp.models.DailyEntryModel
+import com.example.notetakingapp.models.DailyPromptModel
 
 class PromptViewModel : ViewModel() {
 
@@ -10,4 +13,7 @@ class PromptViewModel : ViewModel() {
         value = "March 15, 2022"
     }
     val text: LiveData<String> = _text
+
+    lateinit var dailyEntry: DailyEntryModel
+
 }

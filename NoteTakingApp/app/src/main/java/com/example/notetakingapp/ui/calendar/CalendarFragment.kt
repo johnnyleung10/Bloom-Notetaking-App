@@ -11,6 +11,9 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.NavHostFragment
 import com.example.notetakingapp.databinding.FragmentCalendarBinding
+import com.example.notetakingapp.utilities.DailyEntryManager
+import com.example.notetakingapp.utilities.FileManager
+import com.example.notetakingapp.viewmodels.FoldersViewModel
 import io.ktor.util.date.*
 import java.util.*
 import kotlin.collections.ArrayList
@@ -27,14 +30,21 @@ class CalendarFragment : Fragment() {
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
+    private lateinit var dailyEntryManager: DailyEntryManager
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        dailyEntryManager = DailyEntryManager.instance!!
+        calendarViewModel =
+            ViewModelProvider(this).get(CalendarViewModel::class.java)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        calendarViewModel =
-            ViewModelProvider(this).get(CalendarViewModel::class.java)
+
 
         _binding = FragmentCalendarBinding.inflate(inflater, container, false)
         val root: View = binding.root

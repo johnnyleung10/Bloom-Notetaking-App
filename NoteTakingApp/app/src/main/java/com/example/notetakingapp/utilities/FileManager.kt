@@ -14,8 +14,8 @@ private const val UNIDENTIFIED_FOLDER : String = "Unidentified Folder"
 
 class FileManager {
     private lateinit var context : Context
-    private lateinit var noteTakingDatabaseHelper : NoteTakingDatabaseHelper
-    lateinit var dataSynchronizer: DataSynchronizer
+    lateinit var noteTakingDatabaseHelper : NoteTakingDatabaseHelper
+    lateinit var noteDataSynchronizer: NoteDataSynchronizer
 
     val folderList = HashMap<Long, FolderModel>()
     val allNotes = HashMap<Long, NoteModel>()
@@ -23,7 +23,7 @@ class FileManager {
     fun initManager(context: Context) {
         this.context = context
         noteTakingDatabaseHelper = NoteTakingDatabaseHelper(context)
-        dataSynchronizer = DataSynchronizer(noteTakingDatabaseHelper)
+        noteDataSynchronizer = NoteDataSynchronizer(noteTakingDatabaseHelper)
     }
 
     /**
@@ -66,8 +66,8 @@ class FileManager {
      * Creates a new folder and adds it to folderList
      */
     fun createNewFolder(name : String) : FolderModel {
-        val newFolder = FolderModel(name, context)
-        dataSynchronizer.insertFolder(newFolder)
+        val newFolder = FolderModel(name)
+        noteDataSynchronizer.insertFolder(newFolder)
         folderList[newFolder.id] = newFolder
         return newFolder
     }
@@ -87,7 +87,7 @@ class FileManager {
         folder?.updateModifiedDate()
 
         if(folder != null){
-            dataSynchronizer.updateFolder(folder)
+            noteDataSynchronizer.updateFolder(folder)
         }
     }
 
@@ -111,7 +111,7 @@ class FileManager {
 
         // Remove from database
         if(folder != null){
-            dataSynchronizer.deleteOneFolder(folder)
+            noteDataSynchronizer.deleteOneFolder(folder)
         }
 
         folderList.remove(folderID)
@@ -131,13 +131,13 @@ class FileManager {
      */
     fun createNewNote(name : String, folderID : Long) : NoteModel {
         // Create note and assign it to folder
-        val newNote = NoteModel(name, context)
+        val newNote = NoteModel(name)
         newNote.folderID = folderID
         newNote.currFolder = folderList[folderID]?.title ?: UNIDENTIFIED_FOLDER
         folderList[folderID]?.noteList?.add(newNote)
 
         // Update in database
-        dataSynchronizer.insertNote(newNote)
+        noteDataSynchronizer.insertNote(newNote)
         allNotes[newNote.id] = newNote
         return newNote
     }
@@ -155,7 +155,7 @@ class FileManager {
 
         // Update the database
         if(note != null){
-            dataSynchronizer.updateNote(note)
+            noteDataSynchronizer.updateNote(note)
         }
     }
 
@@ -201,7 +201,7 @@ class FileManager {
 
         allNotes.remove(noteID)
         if(note != null){
-            dataSynchronizer.deleteOneNote(note)
+            noteDataSynchronizer.deleteOneNote(note)
         }
 
         return true
@@ -225,7 +225,7 @@ class FileManager {
 
         // Update in database
         if (note != null) {
-            dataSynchronizer.updateNote(note)
+            noteDataSynchronizer.updateNote(note)
         }
     }
 

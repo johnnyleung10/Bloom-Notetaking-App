@@ -15,6 +15,11 @@ import androidx.navigation.fragment.NavHostFragment
 import com.example.notetakingapp.R
 import com.example.notetakingapp.databinding.FragmentPromptBinding
 import android.widget.TextView
+import com.example.notetakingapp.models.DailyEntryModel
+import com.example.notetakingapp.utilities.DailyEntryManager
+import com.example.notetakingapp.utilities.FileManager
+import com.example.notetakingapp.utilities.Mood
+import com.example.notetakingapp.viewmodels.FoldersViewModel
 
 
 class PromptFragment : Fragment() {
@@ -25,17 +30,24 @@ class PromptFragment : Fragment() {
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
+    private lateinit var dailyEntryManager: DailyEntryManager
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        dailyEntryManager = DailyEntryManager.instance!!
+        promptViewModel = ViewModelProvider(this).get(PromptViewModel::class.java)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        promptViewModel = ViewModelProvider(this).get(PromptViewModel::class.java)
 
         _binding = FragmentPromptBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
+        setupDailyEntry()
         setupDate()
 
         // Setup all listeners for fragment
@@ -49,11 +61,23 @@ class PromptFragment : Fragment() {
         _binding = null
     }
 
+    private fun setupDailyEntry(){
+        val dailyEntry = dailyEntryManager.getDailyEntryToday()
+        promptViewModel.dailyEntry = dailyEntry
+
+        setupPrompt()
+    }
+
+    private fun setupPrompt(){
+        val promptQuestion: TextView = binding.promptQuestion
+        promptQuestion.text = promptViewModel.dailyEntry.dailyPrompt.prompt
+    }
+
     private fun setupDate(){
         val textView: TextView = binding.date
-        promptViewModel.text.observe(viewLifecycleOwner, {
+        promptViewModel.text.observe(viewLifecycleOwner) {
             textView.text = it
-        })
+        }
     }
 
     private fun addListeners(){
@@ -68,6 +92,10 @@ class PromptFragment : Fragment() {
 
         calendarButton.setOnClickListener{
             onCalendarClick()
+        }
+
+        submit.setOnClickListener{
+            updateDailyEntry()
         }
 
         ArrayAdapter.createFromResource(
@@ -94,6 +122,8 @@ class PromptFragment : Fragment() {
                     7 -> mood = "doubtful"
                 }
 
+                promptViewModel.dailyEntry.moodId = position.toLong()
+
                 val colorId: Int = requireContext().resources.getIdentifier(mood, "color", requireContext().packageName)
                 val color = ContextCompat.getColor(requireContext(), colorId)
 
@@ -103,6 +133,14 @@ class PromptFragment : Fragment() {
 
             }
         }
+    }
+
+    private fun updateDailyEntry(){
+        // TODO: update the promptResponse as the user types
+        val promptResponse = binding.promptAnswer.text.toString()
+        promptViewModel.dailyEntry.promptResponse = promptResponse
+
+        dailyEntryManager.updateDailyEntry(promptViewModel.dailyEntry)
     }
 
     private fun onCalendarClick() {

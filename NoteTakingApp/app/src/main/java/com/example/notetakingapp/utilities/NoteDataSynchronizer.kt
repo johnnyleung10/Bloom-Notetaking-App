@@ -1,7 +1,9 @@
 package com.example.notetakingapp.utilities
 
+import com.example.notetakingapp.models.DailyEntryModel
 import com.example.notetakingapp.models.FolderModel
 import com.example.notetakingapp.models.NoteModel
+import com.example.notetakingapp.models.sqlite.DailyEntryDatabaseHelper
 import com.example.notetakingapp.models.sqlite.NoteTakingDatabaseHelper
 import com.example.notetakingapp.networking.ApiService
 import com.example.notetakingapp.networking.models.FolderUpdateRequestModel
@@ -9,9 +11,10 @@ import com.example.notetakingapp.networking.models.NoteUpdateRequestModel
 import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
 
-class DataSynchronizer(private val noteTakingDatabaseHelper: NoteTakingDatabaseHelper) {
+class NoteDataSynchronizer(private val noteTakingDatabaseHelper: NoteTakingDatabaseHelper) {
 
     private val apiService: ApiService = ApiService.create()
+
 
     /**
      * INSERTING

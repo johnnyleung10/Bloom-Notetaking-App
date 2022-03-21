@@ -1,12 +1,10 @@
 package com.example.notetakingapp.models
 
-import android.content.Context
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 abstract class FileModel(
     var title : String,
-    val context: Context,
 ) {
     var id : Long = -1
         internal set

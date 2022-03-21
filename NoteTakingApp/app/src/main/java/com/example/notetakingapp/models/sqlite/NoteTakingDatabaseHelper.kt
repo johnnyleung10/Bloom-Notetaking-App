@@ -119,7 +119,7 @@ class NoteTakingDatabaseHelper(private val context: Context) :
                 val dateModified = cursor.getString(3)
                 val dateDeleted = cursor.getString(4)
 
-                val folder = FolderModel(title, context, id.toLong(), dateCreated, dateModified, dateDeleted)
+                val folder = FolderModel(title, id.toLong(), dateCreated, dateModified, dateDeleted)
                 retList.add(folder)
             } while (cursor.moveToNext())
        }
@@ -154,7 +154,7 @@ class NoteTakingDatabaseHelper(private val context: Context) :
                 val dateDeleted = cursor.getString(6)
                 val folderID = cursor.getLong(7)
 
-                val note = NoteModel(title, context, id.toLong(), folderID, content, dateCreated,
+                val note = NoteModel(title, id.toLong(), folderID, content, dateCreated,
                     dateModified, dateDeleted)
                 retList.add(note)
             } while (cursor.moveToNext())
