@@ -10,14 +10,28 @@ import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
-enum class Moods(id: MoodModel) {
-    HAPPY(MoodModel(0, "Feeling happy", Color.RED)),
-    MOTIVATED(MoodModel(1, "Feeling motivated", Color.YELLOW)),
-    ENERGETIC(MoodModel(2, "Feeling energetic", Color.CYAN)),
-    NEUTRAL(MoodModel(3, "Feeling neutral", Color.BLACK)),
-    SAD(MoodModel(4, "Feeling sad", Color.MAGENTA)),
-    ANGRY(MoodModel(5, "Feeling angry", Color.BLUE)),
-    ENVIOUS(MoodModel(6, "Feeling envious", Color.GREEN)),
+enum class Moods(val id: Long, val description : String, val colour : Int) {
+//    HAPPY(MoodModel(0, "Feeling happy", Color.RED)),
+//    MOTIVATED(MoodModel(1, "Feeling motivated", Color.YELLOW)),
+//    ENERGETIC(MoodModel(2, "Feeling energetic", Color.CYAN)),
+//    NEUTRAL(MoodModel(3, "Feeling neutral", Color.BLACK)),
+//    SAD(MoodModel(4, "Feeling sad", Color.MAGENTA)),
+//    ANGRY(MoodModel(5, "Feeling angry", Color.BLUE)),
+//    ENVIOUS(MoodModel(6, "Feeling envious", Color.GREEN))
+
+    HAPPY(0, "Feeling happy", Color.RED),
+    MOTIVATED(1, "Feeling motivated", Color.YELLOW),
+    ENERGETIC(2, "Feeling energetic", Color.CYAN),
+    NEUTRAL(3, "Feeling neutral", Color.BLACK),
+    SAD(4, "Feeling sad", Color.MAGENTA),
+    ANGRY(5, "Feeling angry", Color.BLUE),
+    ENVIOUS(6, "Feeling envious", Color.GREEN);
+
+    companion object {
+        private val allValues = values()
+        fun getDesc(id: Long): String? = allValues.find { it.id == id }?.description
+        fun getColour(id: Long): Int? = allValues.find { it.id == id }?.colour
+    }
 }
 
 class DailyEntryManager {
@@ -28,7 +42,6 @@ class DailyEntryManager {
     val dailyEntryMap = HashMap<Long, DailyEntryModel>()
     val noteMap = HashMap<Long, NoteModel>()
     val dailyPromptMap = HashMap<Long, DailyPromptModel>()
-    val moodMap = HashMap<Long, MoodModel>()
 
     fun initManager(context: Context) {
         this.context = context
