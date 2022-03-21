@@ -121,6 +121,10 @@ class DailyEntryManager {
         title?.let { dailyEntry?.promptResponse = promptResponse }
         title?.let { dailyEntry?.moodId = moodId }
         title?.let { dailyEntry?.dailyImage = dailyImage }
+
+        dailyEntry?.updateModifiedDate()
+
+        // TODO: Update in manager
     }
 
     /**
@@ -129,6 +133,7 @@ class DailyEntryManager {
     fun deleteDailyEntry(entryId: Long) : Boolean {
         if (dailyEntryDatabaseHelper.deleteDailyEntry(entryId)) {
             dailyEntryMap.remove(entryId)
+            // TODO: Also delete note
             return true
         }
         return false
