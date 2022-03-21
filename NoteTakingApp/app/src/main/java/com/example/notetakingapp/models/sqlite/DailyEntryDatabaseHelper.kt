@@ -9,7 +9,7 @@ import com.example.notetakingapp.models.DailyEntryModel
 import com.example.notetakingapp.models.DailyPromptModel
 
 private const val SQL_CREATE_DAILY_ENTRIES =
-    "CREATE TABLE ${DailyEntryDatabaseHelper.DatabaseContract.DailyEntry.TABLE_NAME} (" +
+    "CREATE TABLE IF NOT EXISTS ${DailyEntryDatabaseHelper.DatabaseContract.DailyEntry.TABLE_NAME} (" +
             "${DailyEntryDatabaseHelper.DatabaseContract.DailyEntry.COLUMN_NAME_ID} INTEGER PRIMARY KEY," +
             "${DailyEntryDatabaseHelper.DatabaseContract.DailyEntry.COLUMN_NAME_DAILY_PROMPT_ID} TEXT," +
             "${DailyEntryDatabaseHelper.DatabaseContract.DailyEntry.COLUMN_NAME_DAILY_PROMPT_ANSWER} TEXT," +
@@ -25,7 +25,7 @@ private const val SQL_CREATE_DAILY_ENTRIES =
 
 
 private const val SQL_CREATE_DAILY_PROMPTS =
-    "CREATE TABLE ${DailyEntryDatabaseHelper.DatabaseContract.DailyPrompt.TABLE_NAME} (" +
+    "CREATE TABLE IF NOT EXISTS ${DailyEntryDatabaseHelper.DatabaseContract.DailyPrompt.TABLE_NAME} (" +
             "${DailyEntryDatabaseHelper.DatabaseContract.DailyPrompt.COLUMN_NAME_ID} INTEGER PRIMARY KEY," +
             "${DailyEntryDatabaseHelper.DatabaseContract.DailyPrompt.COLUMN_NAME_PROMPT} TEXT)"
 
