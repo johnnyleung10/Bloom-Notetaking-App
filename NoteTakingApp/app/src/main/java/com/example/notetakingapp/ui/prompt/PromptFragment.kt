@@ -15,8 +15,10 @@ import androidx.navigation.fragment.NavHostFragment
 import com.example.notetakingapp.R
 import com.example.notetakingapp.databinding.FragmentPromptBinding
 import android.widget.TextView
+import com.example.notetakingapp.models.DailyEntryModel
 import com.example.notetakingapp.utilities.DailyEntryManager
 import com.example.notetakingapp.utilities.FileManager
+import com.example.notetakingapp.utilities.Mood
 import com.example.notetakingapp.viewmodels.FoldersViewModel
 
 
@@ -45,7 +47,10 @@ class PromptFragment : Fragment() {
         _binding = FragmentPromptBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
+        getDailyPrompt()
+
         setupDate()
+        setupPrompt()
 
         // Setup all listeners for fragment
         addListeners()
@@ -58,11 +63,20 @@ class PromptFragment : Fragment() {
         _binding = null
     }
 
+    private fun setupPrompt(){
+        val promptQuestion: TextView = binding.promptQuestion
+        promptQuestion.text = promptViewModel.dailyPrompt.prompt
+    }
+
     private fun setupDate(){
         val textView: TextView = binding.date
         promptViewModel.text.observe(viewLifecycleOwner) {
             textView.text = it
         }
+    }
+
+    private fun getDailyPrompt(){
+        promptViewModel.dailyPrompt = dailyEntryManager.getDailyPrompt()
     }
 
     private fun addListeners(){
@@ -107,6 +121,8 @@ class PromptFragment : Fragment() {
                     7 -> mood = "doubtful"
                 }
 
+                promptViewModel.moodId = position.toLong()
+
                 val colorId: Int = requireContext().resources.getIdentifier(mood, "color", requireContext().packageName)
                 val color = ContextCompat.getColor(requireContext(), colorId)
 
@@ -116,11 +132,15 @@ class PromptFragment : Fragment() {
 
             }
         }
-
     }
 
     private fun submitDailyEntry(){
-        //
+        val promptResponse = binding.promptAnswer.text.toString()
+        val moodId = promptViewModel.moodId
+        val dailyImage = promptViewModel.dailyImage.value
+        val linkedNoteId = promptViewModel.linkedNoteId
+        val dailyPromptId = promptViewModel.dailyPrompt.id
+        dailyEntryManager.createDailyEntry(promptResponse, moodId, dailyImage, linkedNoteId, dailyPromptId)
     }
 
     private fun onCalendarClick() {

@@ -8,16 +8,23 @@ import java.nio.ByteBuffer
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
-class DailyEntryModel (title : String, var dailyPromptId : Long?
-) : FileModel(title) {
-    var promptResponse : String? = ""
-    var moodId : Long? = null
-    var dailyImage : Bitmap? = null
-    var linkedNoteId : Long? = null
+class DailyEntryModel (var promptResponse : String? = "",
+                       var moodId : Long? = null,
+                       var dailyImage : Bitmap? = null,
+                       var linkedNoteId : Long? = null,
+                       var dailyPromptId : Long?)  {
+
+    var id : Long = -1
+        internal set
+    private val isoFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS")
+    var dateCreated : LocalDateTime = LocalDateTime.now()
+    var lastModifiedDate : LocalDateTime = dateCreated
+    var deletionDate : LocalDateTime? = null
 
     constructor (id: Long, noteId : Long, dailyPromptId : Long,
                  promptResponse: String, moodId : Long, dailyImage: ByteArray, dateCreated : String,
-                 dateModified : String, dateDeleted : String) : this("", dailyPromptId) {
+                 dateModified : String, dateDeleted : String) : this(dailyPromptId=dailyPromptId) {
+
         this.id = id
 
         // Handle dates
@@ -35,6 +42,26 @@ class DailyEntryModel (title : String, var dailyPromptId : Long?
         this.promptResponse = promptResponse
         this.moodId = moodId
         this.dailyImage = byteArrayToImage(dailyImage)
+    }
+
+    private fun dateToISO(date : LocalDateTime?) : String {
+        if (date == null) return("")
+        return date.format(isoFormat)
+    }
+    fun getDateCreated() : String {return dateToISO(dateCreated)}
+    fun getLastModifiedDate() : String {return dateToISO(lastModifiedDate)}
+    fun getDeletionDate() : String {return dateToISO(deletionDate)}
+
+    fun updateModifiedDate() {
+        lastModifiedDate = LocalDateTime.now()
+    }
+
+    /**
+     * Update the deletion date to lastsModified
+     */
+    fun updateDeletionDate() {
+        updateModifiedDate()
+        deletionDate = lastModifiedDate
     }
 
     /**
