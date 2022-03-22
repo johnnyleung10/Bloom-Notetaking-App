@@ -104,6 +104,9 @@ class NotesFragment : Fragment(), MoveNoteDialogFragment.MoveNoteDialogListener 
         val search: EditText = binding.searchTerm
         val spinner: Spinner = binding.sortBy
         val sortOrder: ImageButton = binding.sortOrder
+        val blank: TextView = binding.blank
+
+        if (folder.noteList.size == 0) blank.isVisible = true
 
         if (folderId == 2.toLong()){
             newNoteButton.isVisible = false

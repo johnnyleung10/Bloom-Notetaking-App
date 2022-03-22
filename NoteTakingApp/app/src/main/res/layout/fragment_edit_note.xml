@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
     tools:context=".ui.editnote.EditNoteFragment" >
 
     <EditText
@@ -23,10 +24,9 @@
     <EditText
         android:id="@+id/editNoteContents"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/editNoteTitle"
+        android:layout_height="590dp"
+        android:layout_below="@id/toolbar"
         android:layout_marginStart="10dp"
-        android:layout_marginTop="10dp"
         android:layout_marginEnd="10dp"
         android:layout_marginBottom="10dp"
         android:autofillHints=""
@@ -34,36 +34,38 @@
         android:hint="Enter Note Contents"
         android:inputType="textMultiLine"
         android:singleLine="false"
+        android:backgroundTint="#ffcccccc"
         android:textColor="@color/black"
         android:textColorHint="@color/black" />
 
-    <Button
-        android:id="@+id/boldButton"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginTop="53dp"
-        android:layout_marginEnd="193dp"
-        android:text="BOLD" />
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:gravity="center"
+        android:layout_gravity="center"
+        android:layout_below="@id/editNoteTitle">
+        <Button
+            android:id="@+id/boldButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.33"
+            android:text="BOLD" />
 
-    <Button
-        android:id="@+id/italicsButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginTop="53dp"
-        android:layout_marginEnd="9dp"
-        android:text="ITALICS" />
+        <Button
+            android:id="@+id/italicsButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.33"
+            android:text="ITALICS" />
 
-    <Button
-        android:id="@+id/underlineButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginTop="53dp"
-        android:layout_marginEnd="98dp"
-        android:text="UNDER" />
+        <Button
+            android:id="@+id/underlineButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.33"
+            android:text="UNDERLINE" />
+    </LinearLayout>
 </RelativeLayout>

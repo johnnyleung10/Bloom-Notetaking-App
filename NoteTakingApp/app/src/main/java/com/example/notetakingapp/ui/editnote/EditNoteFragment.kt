@@ -14,7 +14,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.notetakingapp.databinding.FragmentEditNoteBinding
 import com.example.notetakingapp.utilities.FileManager
-import java.lang.reflect.Type
+import com.example.notetakingapp.MainActivity
 
 
 class EditNoteFragment : Fragment() {
@@ -84,6 +84,7 @@ class EditNoteFragment : Fragment() {
             underlineFlag = !underlineFlag
         }
 
+        (requireActivity() as MainActivity).navView.visibility = View.GONE
 
         editNoteContents.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
@@ -133,6 +134,11 @@ class EditNoteFragment : Fragment() {
         })
 
         return root
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        (requireActivity() as MainActivity).navView.visibility = View.VISIBLE
     }
 
     override fun onPause() {
