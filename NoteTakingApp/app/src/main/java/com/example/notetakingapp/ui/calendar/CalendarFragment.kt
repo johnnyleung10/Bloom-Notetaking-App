@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.cardview.widget.CardView
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -168,7 +169,7 @@ class CalendarFragment : Fragment() {
         } else {
             promptQuestion.text = dailyEntry.dailyPrompt.prompt
             promptAnswer.text = dailyEntry.promptResponse
-            prompt.setBackgroundColor(dailyEntry.mood.colour)
+            prompt.setBackgroundColor(ContextCompat.getColor(requireContext(), dailyEntry.mood.colour))
             // TODO: set the image here
             // TODO: delete button
         }
