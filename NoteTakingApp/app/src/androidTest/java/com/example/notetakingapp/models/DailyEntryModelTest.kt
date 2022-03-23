@@ -28,7 +28,7 @@ internal class DailyEntryModelTest {
     fun getMoodId() {
         val prompt = DailyPrompts[0]
         val newEntry = prompt?.let { DailyEntryModel(it) }
-        Assert.assertEquals(null, newEntry?.mood)
+        Assert.assertEquals(Mood.NO_SELECTION, newEntry?.mood)
     }
 
     @Test

@@ -1,27 +1,42 @@
 package com.example.notetakingapp.ui.prompt
 
+import android.Manifest
+import android.app.Activity
+import android.app.AlertDialog
+import android.content.DialogInterface
+import android.content.Intent
+import android.content.pm.PackageManager
 import android.content.res.ColorStateList
 import android.graphics.Paint
+import android.media.Image
+import android.os.Build
 import android.os.Bundle
+import android.os.Environment
+import android.provider.MediaStore
 import android.text.Editable
 import android.text.InputType
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
+import androidx.core.content.PermissionChecker
+import androidx.core.content.PermissionChecker.checkSelfPermission
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.NavHostFragment
+import com.example.notetakingapp.MainActivity
 import com.example.notetakingapp.R
 import com.example.notetakingapp.databinding.FragmentPromptBinding
-import android.widget.TextView
 import com.example.notetakingapp.utilities.DailyEntryManager
 import com.example.notetakingapp.utilities.Mood
+import java.io.File
 import java.time.format.DateTimeFormatter
 
+private const val REQUEST_CODE = 1000
 
 class PromptFragment : Fragment() {
 
@@ -60,6 +75,17 @@ class PromptFragment : Fragment() {
         return root
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        // Sets the image to the uploaded image
+        if(requestCode == REQUEST_CODE && resultCode == Activity.RESULT_OK){
+            binding.image.setImageURI(data?.data)
+
+            // TODO: Assign to todays Daily Entry
+            dailyEntryManager.getDailyEntryToday().dailyImage = MediaStore.Images.Media.getBitmap(context?.contentResolver, data?.data)
+            dailyEntryManager.updateDailyEntry(dailyEntryManager.getDailyEntryToday())
+        }
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
@@ -80,6 +106,7 @@ class PromptFragment : Fragment() {
         val date: TextView = binding.date
         val promptQuestion: TextView = binding.promptQuestion
         val promptAnswer: EditText = binding.promptAnswer
+        val image: ImageView = binding.image
 
         promptViewModel.dailyEntry.observe(viewLifecycleOwner) {
             date.text = it.dateCreated.format(DateTimeFormatter.ofPattern("MMMM d, u"))
@@ -89,7 +116,7 @@ class PromptFragment : Fragment() {
             if(it.getDateCreated() != it.getLastModifiedDate()) submitted()
 
             // TODO: Update the image!
-
+            image.setImageBitmap(it.dailyImage)
         }
     }
 
@@ -161,7 +188,40 @@ class PromptFragment : Fragment() {
         setupMoodDropdown()
 
         // TODO @lucas setup listeners for note and image
+        attachImage.setOnClickListener{
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+                if (checkSelfPermission(requireContext(), Manifest.permission.READ_EXTERNAL_STORAGE) == PermissionChecker.PERMISSION_DENIED){
+                    val permissions = arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE)
+                    requestPermissions(permissions, PERMISSION_CODE)
+                } else{
+                    chooseImageGallery();
+                }
+            }else{
+                chooseImageGallery();
+            }
+        }
 
+    }
+
+    companion object {
+        private val IMAGE_CHOOSE = 1000;
+        private val PERMISSION_CODE = 1001;
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        when(requestCode){
+            PERMISSION_CODE -> {
+                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                    chooseImageGallery()
+                }else{
+                    Toast.makeText(requireContext(),"Permission denied", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
     }
 
     private fun updateDailyEntryColor(position: Int){
@@ -202,6 +262,12 @@ class PromptFragment : Fragment() {
     private fun onCalendarClick() {
         val action = PromptFragmentDirections.actionNavigationPromptToFragmentCalendar()
         NavHostFragment.findNavController(this).navigate(action)
+    }
+
+    private fun chooseImageGallery() {
+        val intent = Intent(Intent.ACTION_PICK)
+        intent.type = "image/*"
+        startActivityForResult(intent, IMAGE_CHOOSE)
     }
 
     private fun readyToSubmit(){
