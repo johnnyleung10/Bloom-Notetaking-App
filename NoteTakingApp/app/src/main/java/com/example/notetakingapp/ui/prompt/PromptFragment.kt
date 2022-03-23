@@ -61,7 +61,7 @@ class PromptFragment : Fragment() {
 
         setupDailyEntry()
         setupObservers()
-        //setupLinkedNoteButton()
+        setupLinkedNoteButton()
 
         // Setup all listeners for fragment
         addListeners()
@@ -99,7 +99,7 @@ class PromptFragment : Fragment() {
 
     private fun setupLinkedNoteButton() {
         if (dailyEntryManager.getDailyEntryToday().linkedNoteId != null) {
-            binding.attachNote.text = "Daily Journal for " + binding.date.text.toString()
+            binding.attachNote.text = "View daily Journal for today"
             binding.attachNote.paintFlags = Paint.UNDERLINE_TEXT_FLAG
         }
     }
