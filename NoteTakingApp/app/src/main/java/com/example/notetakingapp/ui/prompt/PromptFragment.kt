@@ -4,6 +4,8 @@ import android.Manifest
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Paint
 import android.os.Build
 import android.os.Bundle
@@ -26,6 +28,7 @@ import com.example.notetakingapp.R
 import com.example.notetakingapp.databinding.FragmentPromptBinding
 import com.example.notetakingapp.utilities.DailyEntryManager
 import com.example.notetakingapp.utilities.Mood
+import java.io.ByteArrayOutputStream
 import java.time.format.DateTimeFormatter
 
 private const val REQUEST_CODE = 1000
@@ -76,6 +79,21 @@ class PromptFragment : Fragment() {
             // TODO: Assign to todays Daily Entry
             dailyEntryManager.getDailyEntryToday().dailyImage = MediaStore.Images.Media.getBitmap(context?.contentResolver, data?.data)
             dailyEntryManager.updateDailyEntry(dailyEntryManager.getDailyEntryToday())
+
+            val imgByte = dailyEntryManager.getDailyEntryToday().imageToByteArray()
+            // COMPRESS
+            while (imgByte.size > 500000) {
+                val bitmap = BitmapFactory.decodeByteArray(imgByte, 0, imgByte.size)
+                val resized = Bitmap.createScaledBitmap(
+                    bitmap,
+                    (bitmap.width * 0.8).toInt(), (bitmap.height * 0.8).toInt(), true
+                )
+                val stream = ByteArrayOutputStream()
+                resized.compress(Bitmap.CompressFormat.PNG, 100, stream)
+
+                dailyEntryManager.getDailyEntryToday().dailyImage = resized
+                dailyEntryManager.updateDailyEntry(dailyEntryManager.getDailyEntryToday())
+            }
         }
     }
 

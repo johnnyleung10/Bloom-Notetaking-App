@@ -162,7 +162,7 @@ class DailyEntryDatabaseHelper(private val context: Context) :
         return false
     }
 
-    // CLEAR DATEBASE
+    // CLEAR DATABASE
     fun clearDatabase() {
         val dbWrite = this.writableDatabase
         dbWrite.execSQL(SQL_DELETE_DAILY_ENTRIES)
