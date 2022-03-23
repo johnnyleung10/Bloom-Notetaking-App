@@ -152,14 +152,9 @@ class DailyEntryDatabaseHelper(private val context: Context) :
 
         val cursor = dbWrite.rawQuery(queryString, null)
 
-        if (cursor.moveToFirst()) {
-            dbWrite.close()
-            cursor.close()
-            return true
-        }
         dbWrite.close()
         cursor.close()
-        return false
+        return true
     }
 
     // CLEAR DATABASE

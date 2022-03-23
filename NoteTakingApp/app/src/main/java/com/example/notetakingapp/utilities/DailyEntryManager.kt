@@ -192,7 +192,9 @@ class DailyEntryManager {
         if (dailyEntryDatabaseHelper.deleteDailyEntry(entryId)) {
             // Delete note
             val fileManager = FileManager.instance
-            fileManager?.deleteNote(dailyEntryMap[entryId]?.linkedNoteId!!)
+            if (dailyEntryMap[entryId]?.linkedNoteId != null) {
+                fileManager?.deleteNote(dailyEntryMap[entryId]?.linkedNoteId!!)
+            }
 
             // Delete entry
             dailyEntryMap.remove(entryId)
