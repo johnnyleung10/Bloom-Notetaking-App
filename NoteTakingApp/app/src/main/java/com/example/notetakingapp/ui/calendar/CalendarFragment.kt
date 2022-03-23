@@ -61,6 +61,8 @@ class CalendarFragment : Fragment() {
 
         // Set the daily entries for the current month/year
         getDailyEntriesForMonth(c.get(Calendar.MONTH), c.get(Calendar.YEAR))
+        // Show the currently selected entry
+        showDailyEntry(c.get(Calendar.DATE))
 
         return root
     }
@@ -74,16 +76,15 @@ class CalendarFragment : Fragment() {
         val c: Calendar = Calendar.getInstance()
         val today = LocalDateTime.now()
         c.set(Calendar.DAY_OF_MONTH, today.dayOfMonth)
-        c.set(Calendar.MONTH, today.monthValue)
+        c.set(Calendar.MONTH, today.monthValue - 1)
         c.set(Calendar.YEAR, today.year)
     }
 
     private fun getColorsForDailyEntries(entries: HashMap<Int, DailyEntryModel>): ArrayList<Int>{
         val c: Calendar = Calendar.getInstance()
 
-        val cal = Calendar.getInstance()
-        cal.set(Calendar.DAY_OF_MONTH, 0)
-        val padding: Int = c.get(Calendar.DAY_OF_WEEK) - 1
+        c.set(Calendar.DAY_OF_MONTH, 1)
+        val padding: Int = c.get(Calendar.DAY_OF_WEEK)-1
         setCalendarToToday()
 
         val newColors = ArrayList<Int>()
@@ -122,7 +123,7 @@ class CalendarFragment : Fragment() {
             right.isVisible = true
 
             getDailyEntriesForMonth(cal.get(Calendar.MONTH), cal.get(Calendar.YEAR))
-            showDailyEntry(cal.get(Calendar.DATE), cal.get(Calendar.MONTH), cal.get(Calendar.YEAR))
+            showDailyEntry(cal.get(Calendar.DATE))
         }
 
         right.setOnClickListener {
@@ -136,7 +137,7 @@ class CalendarFragment : Fragment() {
                 right.isVisible = false
 
             getDailyEntriesForMonth(cal.get(Calendar.MONTH), cal.get(Calendar.YEAR))
-            showDailyEntry(cal.get(Calendar.DATE), cal.get(Calendar.MONTH), cal.get(Calendar.YEAR))
+            showDailyEntry(cal.get(Calendar.DATE))
         }
 
         promptButton.setOnClickListener{
@@ -145,7 +146,7 @@ class CalendarFragment : Fragment() {
 
         calendar.maxDate = getTimeMillis()
         calendar.setOnDateChangeListener { view, year, month, dayOfMonth ->
-            showDailyEntry(dayOfMonth, month, year)
+            showDailyEntry(dayOfMonth)
         }
     }
 
@@ -154,19 +155,23 @@ class CalendarFragment : Fragment() {
         calendarViewModel.setDailyEntries(dailyEntries)
     }
 
-    private fun showDailyEntry(day: Int, month: Int, year: Int){
-        // TODO: get the daily entry from the view model
-
+    private fun showDailyEntry(day: Int){
         val prompt: CardView = binding.entry
         val promptQuestion: TextView = binding.promptQuestion
         val promptAnswer: TextView = binding.promptAnswer
         val image: ImageView = binding.image
         val delete: ImageButton = binding.delete
 
-        //prompt.isVisible = false
-        //prompt.setBackgroundColor()
-
-        // TODO: set up fields and delete
+        val dailyEntry = calendarViewModel.dailyEntries.value!![day]
+        if(dailyEntry == null){
+            prompt.isVisible = false
+        } else {
+            promptQuestion.text = dailyEntry.dailyPrompt.prompt
+            promptAnswer.text = dailyEntry.promptResponse
+            prompt.setBackgroundColor(dailyEntry.mood.colour)
+            // TODO: set the image here
+            // TODO: delete button
+        }
 
     }
 
