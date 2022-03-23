@@ -167,6 +167,7 @@ class CalendarFragment : Fragment() {
         if(dailyEntry == null){
             prompt.isVisible = false
         } else {
+            prompt.isVisible = true
             promptQuestion.text = dailyEntry.dailyPrompt.prompt
             promptAnswer.text = dailyEntry.promptResponse
             prompt.setBackgroundColor(ContextCompat.getColor(requireContext(), dailyEntry.mood.colour))
