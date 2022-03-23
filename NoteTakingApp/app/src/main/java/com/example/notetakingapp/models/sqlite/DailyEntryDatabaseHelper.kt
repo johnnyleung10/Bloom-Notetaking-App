@@ -25,12 +25,12 @@ private const val SQL_CREATE_DAILY_ENTRIES =
             "FOREIGN KEY ("+DailyEntryDatabaseHelper.DatabaseContract.DailyEntry.COLUMN_NAME_DAILY_PROMPT_ID+") REFERENCES "+DailyEntryDatabaseHelper.DatabaseContract.DailyPrompt.TABLE_NAME+"("+BaseColumns._ID+")," +
             "FOREIGN KEY ("+DailyEntryDatabaseHelper.DatabaseContract.DailyEntry.COLUMN_NAME_LINKED_NOTE_ID+") REFERENCES "+NoteTakingDatabaseHelper.DatabaseContract.NoteEntry.TABLE_NAME+"("+BaseColumns._ID+"))"
 
-
-
 private const val SQL_CREATE_DAILY_PROMPTS =
     "CREATE TABLE IF NOT EXISTS ${DailyEntryDatabaseHelper.DatabaseContract.DailyPrompt.TABLE_NAME} (" +
             "${DailyEntryDatabaseHelper.DatabaseContract.DailyPrompt.COLUMN_NAME_ID} INTEGER PRIMARY KEY," +
             "${DailyEntryDatabaseHelper.DatabaseContract.DailyPrompt.COLUMN_NAME_PROMPT} TEXT)"
+
+private const val SQL_DELETE_DAILY_ENTRIES = "DROP TABLE IF EXISTS ${DailyEntryDatabaseHelper.DatabaseContract.DailyEntry.TABLE_NAME}"
 
 class DailyEntryDatabaseHelper(private val context: Context) :
     SQLiteOpenHelper(context,
@@ -162,6 +162,14 @@ class DailyEntryDatabaseHelper(private val context: Context) :
         return false
     }
 
+    // CLEAR DATEBASE
+    fun clearDatabase() {
+        val dbWrite = this.writableDatabase
+        dbWrite.execSQL(SQL_DELETE_DAILY_ENTRIES)
+        onCreate(dbWrite)
+        dbWrite.close()
+    }
+
     override fun onCreate(db: SQLiteDatabase?) {
         db?.execSQL(SQL_CREATE_DAILY_ENTRIES)
         db?.execSQL(SQL_CREATE_DAILY_PROMPTS)
@@ -187,7 +195,6 @@ class DailyEntryDatabaseHelper(private val context: Context) :
             const val COLUMN_NAME_MOOD_ID = "mood_id"
             const val COLUMN_NAME_LINKED_NOTE_ID = "linked_note_id"
         }
-
 
         object DailyPrompt : BaseColumns {
             const val TABLE_NAME = "daily_prompt_table"
