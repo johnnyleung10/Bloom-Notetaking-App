@@ -92,11 +92,11 @@ class DailyEntryManager {
      * @param month month value
      * @param year year value
      */
-    fun getDailyEntriesByDate(month : Int, year: Int) : List<DailyEntryModel> {
-        val retEntries = ArrayList<DailyEntryModel>()
+    fun getDailyEntriesByDate(month : Int, year: Int) : HashMap<Int, DailyEntryModel> {
+        val retEntries = HashMap<Int, DailyEntryModel>()
         for (entry in dailyEntryMap.values) {
             if (entry.getMonth() == month && entry.getYear() == year) {
-                retEntries.add(entry)
+                retEntries[entry.getDay()] = entry
             }
         }
         return retEntries

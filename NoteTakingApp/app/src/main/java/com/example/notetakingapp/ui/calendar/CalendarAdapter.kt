@@ -9,7 +9,7 @@ import androidx.core.content.ContextCompat
 import com.example.notetakingapp.R
 
 
-class CalendarAdapter(private val mContext: Context, private val colors: ArrayList<String>) : ArrayAdapter<String>(mContext, 0, colors) {
+class CalendarAdapter(private val mContext: Context, private val colors: ArrayList<Int>) : ArrayAdapter<Int>(mContext, 0, colors) {
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         var color_cell = convertView
@@ -18,18 +18,19 @@ class CalendarAdapter(private val mContext: Context, private val colors: ArrayLi
             color_cell = LayoutInflater.from(parent.context).inflate(R.layout.calendar_cell, parent, false)
         }
 
-        val hex: String? = getItem(position)
+//        val hex: String? = getItem(position)
         val block: View = color_cell!!.findViewById(R.id.block)
 
-        val colorId: Int = context.resources.getIdentifier(hex, "color", context.packageName)
-        val color = ContextCompat.getColor(context, colorId)
+//        val colorId: Int = context.resources.getIdentifier(hex, "color", context.packageName)
+        val colorId: Int? = getItem(position)
+        val color = ContextCompat.getColor(context, colorId!!)
 
         block.setBackgroundColor(color)
 
         return color_cell
     }
 
-    fun setColors(newColors: ArrayList<String>){
+    fun setColors(newColors: ArrayList<Int>){
         colors.clear()
         colors.addAll(newColors)
         this.notifyDataSetChanged()
