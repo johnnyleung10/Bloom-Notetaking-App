@@ -20,15 +20,6 @@ internal class DailyEntryManagerTest {
     }
 
     @Test
-    fun getDailyPromptMap() {
-        val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        val manager : DailyEntryManager? = DailyEntryManager.instance
-        manager?.initManager(appContext)
-        manager?.initEntries()
-        Assert.assertEquals(HashMap<Long, DailyPromptModel>(), manager?.dailyPromptMap)
-    }
-
-    @Test
     fun testMoodEnum() {
         val mood = Mood.ANGRY
         Assert.assertEquals(Color.BLUE, mood.colour)
