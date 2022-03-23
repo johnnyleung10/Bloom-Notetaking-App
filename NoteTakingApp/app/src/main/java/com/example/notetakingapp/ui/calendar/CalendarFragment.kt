@@ -12,8 +12,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.NavHostFragment
 import com.example.notetakingapp.databinding.FragmentCalendarBinding
 import com.example.notetakingapp.utilities.DailyEntryManager
-import com.example.notetakingapp.utilities.FileManager
-import com.example.notetakingapp.viewmodels.FoldersViewModel
 import io.ktor.util.date.*
 import java.util.*
 import kotlin.collections.ArrayList
@@ -23,9 +21,6 @@ class CalendarFragment : Fragment() {
     private lateinit var calendarViewModel: CalendarViewModel
     private var _binding: FragmentCalendarBinding? = null
     private lateinit var adapter: CalendarAdapter
-//    private var selectedMonth = 0
-//    private var selectedDate = 0
-//    private var selectedYear = 0
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -53,9 +48,6 @@ class CalendarFragment : Fragment() {
         val colors = ArrayList<String>()
 
         val c: Calendar = Calendar.getInstance()
-//        selectedDate = Calendar.DATE
-//        selectedMonth = Calendar.MONTH - 1
-//        selectedYear = Calendar.YEAR
 
         c.set(Calendar.DAY_OF_MONTH, 0)
         val padding: Int = c.get(Calendar.DAY_OF_WEEK) //- (c.get(Calendar.DATE) % 7)
@@ -101,8 +93,6 @@ class CalendarFragment : Fragment() {
     private fun addListeners(){
         val promptButton: Button = binding.prompt
         val calendar: CalendarView = binding.calendar
-        val prompt: CardView = binding.entry
-        val delete: ImageButton = binding.delete
         val left: Button = binding.left
         val right: Button = binding.right
 
@@ -113,6 +103,9 @@ class CalendarFragment : Fragment() {
             cal.set(Calendar.DAY_OF_MONTH, 1)
             calendar.date = cal.time.time
             right.isVisible = true
+
+            getMonthMoods(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH))
+            getDailyPrompt(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DATE))
         }
 
         right.setOnClickListener {
@@ -124,6 +117,9 @@ class CalendarFragment : Fragment() {
 
             if (Calendar.MONTH == cal.get(Calendar.MONTH))
                 right.isVisible = false
+
+            getMonthMoods(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH))
+            getDailyPrompt(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DATE))
         }
 
         promptButton.setOnClickListener{
@@ -132,17 +128,29 @@ class CalendarFragment : Fragment() {
 
         calendar.maxDate = getTimeMillis()
         calendar.setOnDateChangeListener { view, year, month, dayOfMonth ->
-//            prompt.isVisible = false
-//            if (year == selectedYear && month == selectedMonth && dayOfMonth == selectedDate){
-//                val newColors = ArrayList<String>()
-//                for (i in 1..30) newColors.add("none")
-//                adapter.setColors(newColors)
-//            } else {
-//                selectedYear = year
-//                selectedMonth = month
-//                selectedDate = dayOfMonth
-//            }
+            getDailyPrompt(year, month, dayOfMonth)
         }
+    }
+
+    private fun getMonthMoods(year: Int, month: Int){
+        // TODO: get list of moods for selected month
+        val newColors = ArrayList<String>()
+
+        adapter.setColors(newColors)
+    }
+
+    private fun getDailyPrompt(year: Int, month: Int, date: Int){
+        val prompt: CardView = binding.entry
+        val promptQuestion: TextView = binding.promptQuestion
+        val promptAnswer: TextView = binding.promptAnswer
+        val image: ImageView = binding.image
+        val delete: ImageButton = binding.delete
+
+        //prompt.isVisible = false
+        //prompt.setBackgroundColor()
+
+        // TODO: set up fields and delete
+
     }
 
     private fun onPromptClick() {

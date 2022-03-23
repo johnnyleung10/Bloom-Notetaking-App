@@ -30,6 +30,9 @@ enum class Mood(val id: Long, val description : String, val colour : Int) {
     }
 }
 
+/**
+ * Global hashmap containing all dailyPrompts
+ */
 val DailyPrompts : HashMap<Long, DailyPromptModel> = hashMapOf(
     0.toLong() to DailyPromptModel(0, "How are you feeling today?"),
     1.toLong() to DailyPromptModel(1, "What reminds you of home"))
@@ -84,7 +87,10 @@ class DailyEntryManager {
     }
 
     /**
-     * Returns daily entry by date, format: "yyyy-mm-dd". If no entry exists one will be created.
+     * Returns list of daily entries in a given month and year
+     *
+     * @param month month value
+     * @param year year value
      */
     fun getDailyEntriesByDate(month : Int, year: Int) : List<DailyEntryModel> {
         val retEntries = ArrayList<DailyEntryModel>()
@@ -100,10 +106,12 @@ class DailyEntryManager {
      * Creates a new daily entry with a random prompt
      */
     fun createDailyEntry(): DailyEntryModel {
+        // TODO: Check that no daily entry exists for today?
         val dailyEntry = DailyEntryModel(dailyPrompt = getDailyPrompt())
 
         // Create new note
         val fileManager = FileManager.instance
+        fileManager?.initManager(context)
         val newNote = fileManager?.createNewNote("Daily Entry " +dailyEntry.getMonth() +"-"
                 +dailyEntry.getDay() +"-" +dailyEntry.getYear())
         dailyEntry.linkedNoteId = newNote?.id

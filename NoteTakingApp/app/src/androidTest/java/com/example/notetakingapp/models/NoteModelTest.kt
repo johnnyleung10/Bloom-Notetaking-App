@@ -13,31 +13,26 @@ internal class NoteModelTest {
 
     @Test
     fun getId() {
-        val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        val newNote = NoteModel("New Note", appContext)
+        val newNote = NoteModel("New Note")
         Assert.assertEquals(-1, newNote.id)
     }
 
     @Test
     fun getTitle() {
-        val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        val newNote = NoteModel("New Note", appContext)
+        val newNote = NoteModel("New Note")
         Assert.assertEquals("New Note", newNote.title)
     }
 
     @Test
     fun setTitle() {
-        val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        val newNote = NoteModel("New Note", appContext)
+        val newNote = NoteModel("New Note")
         newNote.title = "New Title"
         Assert.assertEquals("New Title", newNote.title)
     }
 
     @Test
     fun testGetDateCreated() {
-        val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-
-        val newNote = NoteModel("New Note", appContext)
+        val newNote = NoteModel("New Note")
         val timeNow = LocalDateTime.now()
         val dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
         Assert.assertEquals(timeNow.format(dateFormat), newNote.getDateCreated().substring(0, 16))
@@ -45,9 +40,7 @@ internal class NoteModelTest {
 
     @Test
     fun testGetLastModifiedDate() {
-        val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-
-        val newNote = NoteModel("New Note", appContext)
+        val newNote = NoteModel("New Note")
         val timeNow = LocalDateTime.now()
         val dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
         Assert.assertEquals(timeNow.format(dateFormat), newNote.getLastModifiedDate().substring(0, 16))
@@ -55,16 +48,13 @@ internal class NoteModelTest {
 
     @Test
     fun testGetDeletionDate() {
-        val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        val newNote = NoteModel("New Note", appContext)
+        val newNote = NoteModel("New Note")
         Assert.assertEquals("", newNote.getDeletionDate())
     }
 
     @Test
     fun updateDeletionDate() {
-        val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-
-        val newNote = NoteModel("New Note", appContext)
+        val newNote = NoteModel("New Note")
         newNote.updateDeletionDate()
         val timeNow = LocalDateTime.now()
         val dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
@@ -73,57 +63,41 @@ internal class NoteModelTest {
 
     @Test
     fun restoreFileDate() {
-        val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-
-        val newNote = NoteModel("New Note", appContext)
+        val newNote = NoteModel("New Note")
         newNote.updateDeletionDate()
         newNote.restoreFileDate()
         Assert.assertEquals("", newNote.getDeletionDate())
     }
 
     @Test
-    fun getContext() {
-        // Context of the app under test.
-        val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        Assert.assertEquals("com.example.notetakingapp", appContext.packageName)
-    }
-
-    @Test
     fun getContents() {
-        val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        val newNote = NoteModel("New Note", appContext)
+        val newNote = NoteModel("New Note")
         Assert.assertEquals("", newNote.contents.toString())
     }
 
     @Test
     fun setContents() {
-        val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        val newNote = NoteModel("New Note", appContext)
+        val newNote = NoteModel("New Note")
         newNote.contents = SpannableStringBuilder("Hi there")
         Assert.assertEquals("Hi there", newNote.contents.toString())
     }
 
     @Test
     fun getCurrFolder() {
-        val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-
-        val newNote = NoteModel("New Note", appContext)
+        val newNote = NoteModel("New Note")
         Assert.assertEquals("", newNote.currFolder)
     }
 
     @Test
     fun setCurrFolder() {
-        val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-
-        val newNote = NoteModel("New Note", appContext)
+        val newNote = NoteModel("New Note")
         newNote.currFolder = "Uncategorized"
         Assert.assertEquals("Uncategorized", newNote.currFolder)
     }
 
     @Test
     fun spannableStringToText() {
-        val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        val newNote = NoteModel("New Note", appContext)
+        val newNote = NoteModel("New Note")
         newNote.contents = SpannableStringBuilder("Hi there")
         var htmlContent = newNote.spannableStringToText()
         Assert.assertEquals("<p dir=\"ltr\">Hi there</p>\n", htmlContent)

@@ -1,31 +1,42 @@
 package com.example.notetakingapp.ui.prompt
 
+import android.Manifest
+import android.app.Activity
+import android.app.AlertDialog
+import android.content.DialogInterface
+import android.content.Intent
+import android.content.pm.PackageManager
 import android.content.res.ColorStateList
-import android.graphics.Color
+import android.graphics.Paint
+import android.media.Image
+import android.os.Build
 import android.os.Bundle
+import android.os.Environment
+import android.provider.MediaStore
 import android.text.Editable
-import android.text.Selection
-import android.text.Spannable
+import android.text.InputType
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
+import androidx.core.content.PermissionChecker
+import androidx.core.content.PermissionChecker.checkSelfPermission
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.NavHostFragment
+import com.example.notetakingapp.MainActivity
 import com.example.notetakingapp.R
 import com.example.notetakingapp.databinding.FragmentPromptBinding
-import android.widget.TextView
-import com.example.notetakingapp.models.DailyEntryModel
 import com.example.notetakingapp.utilities.DailyEntryManager
-import com.example.notetakingapp.utilities.FileManager
 import com.example.notetakingapp.utilities.Mood
-import com.example.notetakingapp.viewmodels.FoldersViewModel
+import java.io.File
 import java.time.format.DateTimeFormatter
 
+private const val REQUEST_CODE = 1000
 
 class PromptFragment : Fragment() {
 
@@ -64,6 +75,17 @@ class PromptFragment : Fragment() {
         return root
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        // Sets the image to the uploaded image
+        if(requestCode == REQUEST_CODE && resultCode == Activity.RESULT_OK){
+            binding.image.setImageURI(data?.data)
+
+            // TODO: Assign to todays Daily Entry
+            dailyEntryManager.getDailyEntryToday().dailyImage = MediaStore.Images.Media.getBitmap(context?.contentResolver, data?.data)
+            dailyEntryManager.updateDailyEntry(dailyEntryManager.getDailyEntryToday())
+        }
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
@@ -84,19 +106,17 @@ class PromptFragment : Fragment() {
         val date: TextView = binding.date
         val promptQuestion: TextView = binding.promptQuestion
         val promptAnswer: EditText = binding.promptAnswer
+        val image: ImageView = binding.image
 
         promptViewModel.dailyEntry.observe(viewLifecycleOwner) {
             date.text = it.dateCreated.format(DateTimeFormatter.ofPattern("MMMM d, u"))
             promptQuestion.text = it.dailyPrompt.prompt
             promptAnswer.setText(it.promptResponse)
             updateDailyEntryColor(it.mood.id.toInt())
-            if(it.getDateCreated() == it.getLastModifiedDate()){
-                binding.submit.visibility = View.VISIBLE
-            } else {
-                binding.submit.visibility = View.GONE
-            }
-            // TODO: Update the image!
+            if(it.getDateCreated() != it.getLastModifiedDate()) submitted()
 
+            // TODO: Update the image!
+            image.setImageBitmap(it.dailyImage)
         }
     }
 
@@ -107,6 +127,7 @@ class PromptFragment : Fragment() {
 
             override fun afterTextChanged(s: Editable?) {
                 lastCursorPosition = promptResponse.selectionStart
+                if (promptResponse.text.toString() != "" && binding.spinner.selectedItemPosition != 0) readyToSubmit()
             }
 
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -121,8 +142,7 @@ class PromptFragment : Fragment() {
     }
 
     private fun setupMoodDropdown(){
-
-        val spinner: Spinner = binding.moods
+        val spinner: Spinner = binding.spinner
 
         ArrayAdapter.createFromResource(
             requireContext(), R.array.moods, R.layout.moods_dropdown
@@ -135,8 +155,6 @@ class PromptFragment : Fragment() {
             override fun onNothingSelected(parent: AdapterView<*>?) {}
 
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                parent?.getChildAt(1)?.setBackgroundColor(Color.BLUE)
-
                 updateDailyEntryColor(position)
             }
         }
@@ -159,11 +177,51 @@ class PromptFragment : Fragment() {
             updateDailyEntry()
         }
 
+        attachNote.setOnClickListener {
+            binding.attachNote.text = "Daily Journal for " + binding.date.text.toString()
+            binding.attachNote.paintFlags = Paint.UNDERLINE_TEXT_FLAG
+
+            //TODO: link new note function
+        }
+
         setupPromptResponseListener()
         setupMoodDropdown()
 
         // TODO @lucas setup listeners for note and image
+        attachImage.setOnClickListener{
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+                if (checkSelfPermission(requireContext(), Manifest.permission.READ_EXTERNAL_STORAGE) == PermissionChecker.PERMISSION_DENIED){
+                    val permissions = arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE)
+                    requestPermissions(permissions, PERMISSION_CODE)
+                } else{
+                    chooseImageGallery();
+                }
+            }else{
+                chooseImageGallery();
+            }
+        }
 
+    }
+
+    companion object {
+        private val IMAGE_CHOOSE = 1000;
+        private val PERMISSION_CODE = 1001;
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        when(requestCode){
+            PERMISSION_CODE -> {
+                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                    chooseImageGallery()
+                }else{
+                    Toast.makeText(requireContext(),"Permission denied", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
     }
 
     private fun updateDailyEntryColor(position: Int){
@@ -171,7 +229,7 @@ class PromptFragment : Fragment() {
         val moodPicker: CardView = binding.moodPicker
         val submit: Button = binding.submit
 
-        var mood = when(position) {
+        val mood = when(position) {
             0 -> Mood.NO_SELECTION
             1 -> Mood.HAPPY
             2 -> Mood.LOVING
@@ -192,14 +250,41 @@ class PromptFragment : Fragment() {
         submit.backgroundTintList = ColorStateList.valueOf(color)
         moodPicker.setCardBackgroundColor(color)
         prompt.setCardBackgroundColor(color)
+
+        if (position != 0 && binding.promptAnswer.text.toString() != "") readyToSubmit()
     }
 
     private fun updateDailyEntry(){
         dailyEntryManager.updateDailyEntry(promptViewModel.dailyEntry.value!!)
+        submitted()
     }
 
     private fun onCalendarClick() {
         val action = PromptFragmentDirections.actionNavigationPromptToFragmentCalendar()
         NavHostFragment.findNavController(this).navigate(action)
+    }
+
+    private fun chooseImageGallery() {
+        val intent = Intent(Intent.ACTION_PICK)
+        intent.type = "image/*"
+        startActivityForResult(intent, IMAGE_CHOOSE)
+    }
+
+    private fun readyToSubmit(){
+        val params: FrameLayout.LayoutParams = FrameLayout.LayoutParams(1140, 145)
+        binding.spinnerContainer.layoutParams = params
+        binding.submit.visibility = View.VISIBLE
+    }
+
+    private fun submitted(){
+        binding.submit.visibility = View.GONE
+
+        binding.promptAnswer.inputType = InputType.TYPE_NULL
+        binding.attachImage.visibility = View.INVISIBLE
+        binding.spinner.isEnabled = false
+        binding.attachNote.isEnabled = false
+
+        val params: FrameLayout.LayoutParams = FrameLayout.LayoutParams(1355, 145)
+        binding.spinnerContainer.layoutParams = params
     }
 }

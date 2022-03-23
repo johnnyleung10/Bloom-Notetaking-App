@@ -34,7 +34,7 @@ private const val SQL_CREATE_FOLDER_ENTRIES =
             "${NoteTakingDatabaseHelper.DatabaseContract.FolderEntry.COLUMN_NAME_IS_DIRTY} BOOLEAN DEFAULT FALSE," +
             "${NoteTakingDatabaseHelper.DatabaseContract.NoteEntry.COLUMN_NAME_IS_PERMANENTLY_DELETED} BOOLEAN DEFAULT FALSE)"
 
-            private const val SQL_DELETE_NOTE_ENTRIES = "DROP TABLE IF EXISTS ${NoteTakingDatabaseHelper.DatabaseContract.NoteEntry.TABLE_NAME}"
+private const val SQL_DELETE_NOTE_ENTRIES = "DROP TABLE IF EXISTS ${NoteTakingDatabaseHelper.DatabaseContract.NoteEntry.TABLE_NAME}"
 private const val SQL_DELETE_FOLDER_ENTRIES = "DROP TABLE IF EXISTS ${NoteTakingDatabaseHelper.DatabaseContract.FolderEntry.TABLE_NAME}"
 
 
