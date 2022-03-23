@@ -14,6 +14,7 @@ import android.provider.MediaStore
 import android.text.Editable
 import android.text.InputType
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -81,20 +82,22 @@ class PromptFragment : Fragment() {
             dailyEntryManager.getDailyEntryToday().dailyImage = MediaStore.Images.Media.getBitmap(context?.contentResolver, data?.data)
             dailyEntryManager.updateDailyEntry(dailyEntryManager.getDailyEntryToday())
 
-            val imgByte = dailyEntryManager.getDailyEntryToday().imageToByteArray()
+            var imgByte = dailyEntryManager.getDailyEntryToday().imageToByteArray()
+            var resized = dailyEntryManager.getDailyEntryToday().dailyImage
             // COMPRESS
             while (imgByte.size > 500000) {
+                Log.d("resize", "we are still resizing")
                 val bitmap = BitmapFactory.decodeByteArray(imgByte, 0, imgByte.size)
-                val resized = Bitmap.createScaledBitmap(
+                resized = Bitmap.createScaledBitmap(
                     bitmap,
                     (bitmap.width * 0.8).toInt(), (bitmap.height * 0.8).toInt(), true
                 )
                 val stream = ByteArrayOutputStream()
                 resized.compress(Bitmap.CompressFormat.PNG, 100, stream)
-
-                dailyEntryManager.getDailyEntryToday().dailyImage = resized
-                dailyEntryManager.updateDailyEntry(dailyEntryManager.getDailyEntryToday())
+                imgByte = stream.toByteArray();
             }
+            dailyEntryManager.getDailyEntryToday().dailyImage = resized
+            dailyEntryManager.updateDailyEntry(dailyEntryManager.getDailyEntryToday())
         }
     }
 
