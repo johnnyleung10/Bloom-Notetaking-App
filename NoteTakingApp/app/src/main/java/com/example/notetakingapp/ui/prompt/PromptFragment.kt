@@ -4,7 +4,6 @@ import android.Manifest
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.content.res.ColorStateList
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Paint
@@ -33,7 +32,6 @@ import com.example.notetakingapp.utilities.Mood
 import java.io.ByteArrayOutputStream
 import java.time.format.DateTimeFormatter
 
-
 private const val REQUEST_CODE = 1000
 
 class PromptFragment : Fragment() {
@@ -46,6 +44,7 @@ class PromptFragment : Fragment() {
     private val binding get() = _binding!!
     private lateinit var dailyEntryManager: DailyEntryManager
     private var lastCursorPosition: Int = 0
+    private var submitted: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -182,7 +181,7 @@ class PromptFragment : Fragment() {
         val calendarButton: Button = binding.calendar
         val attachNote: TextView = binding.attachNote
         val attachImage: ImageButton = binding.attachImage
-        val submit: Button = binding.submit
+        val submit: ImageButton = binding.submit
 
         calendarButton.setOnClickListener{
             onCalendarClick()
@@ -242,7 +241,7 @@ class PromptFragment : Fragment() {
     private fun updateDailyEntryColor(position: Int){
         val prompt: CardView = binding.prompt
         val moodPicker: CardView = binding.moodPicker
-        val submit: Button = binding.submit
+        val submit: ImageButton = binding.submit
 
         val mood = when(position) {
             0 -> Mood.NO_SELECTION
@@ -262,7 +261,7 @@ class PromptFragment : Fragment() {
 
         val color = ContextCompat.getColor(requireContext(), colorId)
 
-        submit.backgroundTintList = ColorStateList.valueOf(color)
+        submit.setColorFilter(color)
         moodPicker.setCardBackgroundColor(color)
         prompt.setCardBackgroundColor(color)
 
@@ -286,12 +285,14 @@ class PromptFragment : Fragment() {
     }
 
     private fun readyToSubmit(){
+        if (submitted) return
         val params: FrameLayout.LayoutParams = FrameLayout.LayoutParams(1140, 145)
         binding.spinnerContainer.layoutParams = params
         binding.submit.visibility = View.VISIBLE
     }
 
     private fun submitted(){
+        submitted = true
         binding.submit.visibility = View.GONE
 
         binding.promptAnswer.inputType = InputType.TYPE_NULL
