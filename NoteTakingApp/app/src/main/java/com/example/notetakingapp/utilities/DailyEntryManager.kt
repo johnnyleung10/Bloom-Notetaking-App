@@ -109,18 +109,32 @@ class DailyEntryManager {
     }
 
     /**
-     * Creates a new daily entry with a random prompt
+     * Returns list of daily entries in a given month, day and year
+     *
+     * @param month month value
+     * @param day day value
+     * @param year year value
+     */
+    fun getDailyEntryByDate(month : Int, day : Int, year: Int) : DailyEntryModel? {
+        for (entry in dailyEntryMap.values) {
+            if (entry.getMonth() == month && entry.getYear() == year && entry.getDay() == day) {
+                return entry
+            }
+        }
+        return null
+    }
+
+    /**
+     * Creates a new daily entry with a random prompt. If one already exists for today, it will be returned
      */
     fun createDailyEntry(): DailyEntryModel {
-        // TODO: Check that no daily entry exists for today?
-        val dailyEntry = DailyEntryModel(dailyPrompt = getDailyPrompt())
+        // Check if a daily entry already exists
+        val today = LocalDateTime.now()
+        var dailyEntry = getDailyEntryByDate(today.monthValue, today.dayOfMonth, today.year)
+        if (dailyEntry != null) return dailyEntry
 
-        // Create new note
-//        val fileManager = FileManager.instance
-//        fileManager?.initManager(context)
-//        val newNote = fileManager?.createNewNote("Daily Entry " +dailyEntry.getMonth() +"-"
-//                +dailyEntry.getDay() +"-" +dailyEntry.getYear())
-//        dailyEntry.linkedNoteId = newNote?.id
+        // If not create a new one
+        dailyEntry = DailyEntryModel(dailyPrompt = getDailyPrompt())
         dailyEntry.linkedNoteId = null
 
         dailyEntryDataSynchronizer.insertDailyEntry(dailyEntry)
@@ -157,18 +171,16 @@ class DailyEntryManager {
         dailyEntry.updateModifiedDate()
 
         // Update in database
-        //dailyEntryDataSynchronizer.updateDailyEntry(dailyEntry)
-        doWorkAsync(dailyEntry)
+        compressAndSyncData(dailyEntry)
     }
 
-    // should be avoided usually because you cannot manage the coroutine state. For example cancel it etc
-    private fun doWorkAsync(dailyEntry: DailyEntryModel): Deferred<Int> = GlobalScope.async {
+    // Compresses dailyImage so that it can be pushed to database
+    private fun compressAndSyncData(dailyEntry: DailyEntryModel): Deferred<Int> = GlobalScope.async {
 
         var imgByte = getDailyEntryToday().imageToByteArray()
         var resized = getDailyEntryToday().dailyImage
         // COMPRESS
         while (imgByte.size > 500000) {
-            Log.d("resize", "we are still resizing")
             val bitmap = BitmapFactory.decodeByteArray(imgByte, 0, imgByte.size)
             resized = Bitmap.createScaledBitmap(
                 bitmap,
@@ -180,6 +192,7 @@ class DailyEntryManager {
         }
         getDailyEntryToday().dailyImage = resized
 
+        dailyEntryDatabaseHelper.updateDailyEntry(dailyEntry)
         dailyEntryDataSynchronizer.updateDailyEntry(dailyEntry)
 
         return@async 42
@@ -198,6 +211,8 @@ class DailyEntryManager {
 
             // Delete entry
             dailyEntryMap.remove(entryId)
+            dailyEntryDatabaseHelper.deleteDailyEntry(entryId)
+            // TODO: dailyEntryDataSynchronizer
             return true
         }
         return false
