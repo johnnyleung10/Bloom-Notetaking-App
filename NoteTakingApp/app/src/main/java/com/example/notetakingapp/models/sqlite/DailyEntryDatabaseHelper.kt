@@ -148,16 +148,16 @@ class DailyEntryDatabaseHelper(private val context: Context) :
     // DELETE
     fun deleteDailyEntry(id: Long) : Boolean {
         val queryString = "DELETE FROM " + DailyEntry.TABLE_NAME + " WHERE " + BaseColumns._ID + " = " + id
-        val dbRead = this.readableDatabase
+        val dbWrite = this.writableDatabase
 
-        val cursor = dbRead.rawQuery(queryString, null)
+        val cursor = dbWrite.rawQuery(queryString, null)
 
         if (cursor.moveToFirst()) {
-            dbRead.close()
+            dbWrite.close()
             cursor.close()
             return true
         }
-        dbRead.close()
+        dbWrite.close()
         cursor.close()
         return false
     }

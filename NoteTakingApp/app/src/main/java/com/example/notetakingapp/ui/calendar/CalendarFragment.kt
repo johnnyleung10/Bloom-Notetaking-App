@@ -171,9 +171,20 @@ class CalendarFragment : Fragment() {
             promptAnswer.text = dailyEntry.promptResponse
             prompt.setBackgroundColor(ContextCompat.getColor(requireContext(), dailyEntry.mood.colour))
             // TODO: set the image here
-            // TODO: delete button
+            delete.setOnClickListener{
+                deleteDailyEntry(day)
+            }
         }
 
+    }
+    private fun deleteDailyEntry(day: Int){
+        // Delete the daily entry
+        val entryId = calendarViewModel.dailyEntries.value!![day]!!.id
+        val result = dailyEntryManager.deleteDailyEntry(entryId)
+
+        // Update the view model
+        val cal = Calendar.getInstance()
+        getDailyEntriesForMonth(cal.get(Calendar.MONTH), cal.get(Calendar.YEAR))
     }
 
     private fun onPromptClick() {
