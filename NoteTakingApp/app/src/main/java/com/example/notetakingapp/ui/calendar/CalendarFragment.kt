@@ -181,11 +181,12 @@ class CalendarFragment : Fragment() {
     private fun deleteDailyEntry(day: Int){
         // Delete the daily entry
         val entryId = calendarViewModel.dailyEntries.value!![day]!!.id
-        val result = dailyEntryManager.deleteDailyEntry(entryId)
+        dailyEntryManager.deleteDailyEntry(entryId)
 
         // Update the view model
         val cal = Calendar.getInstance()
         getDailyEntriesForMonth(cal.get(Calendar.MONTH), cal.get(Calendar.YEAR))
+        showDailyEntry(cal.get(Calendar.DATE))
     }
 
     private fun onPromptClick() {
