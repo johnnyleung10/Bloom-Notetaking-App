@@ -2,21 +2,18 @@ package com.example.notetakingapp.ui.prompt
 
 import android.Manifest
 import android.app.Activity
-import android.app.AlertDialog
-import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.ColorStateList
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Paint
-import android.media.Image
 import android.os.Build
 import android.os.Bundle
-import android.os.Environment
 import android.provider.MediaStore
 import android.text.Editable
 import android.text.InputType
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -28,13 +25,13 @@ import androidx.core.content.PermissionChecker.checkSelfPermission
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.NavHostFragment
-import com.example.notetakingapp.MainActivity
 import com.example.notetakingapp.R
 import com.example.notetakingapp.databinding.FragmentPromptBinding
 import com.example.notetakingapp.utilities.DailyEntryManager
 import com.example.notetakingapp.utilities.Mood
-import java.io.File
+import java.io.ByteArrayOutputStream
 import java.time.format.DateTimeFormatter
+
 
 private const val REQUEST_CODE = 1000
 
@@ -83,6 +80,21 @@ class PromptFragment : Fragment() {
             // TODO: Assign to todays Daily Entry
             dailyEntryManager.getDailyEntryToday().dailyImage = MediaStore.Images.Media.getBitmap(context?.contentResolver, data?.data)
             dailyEntryManager.updateDailyEntry(dailyEntryManager.getDailyEntryToday())
+
+            val imgByte = dailyEntryManager.getDailyEntryToday().imageToByteArray()
+            // COMPRESS
+            while (imgByte.size > 500000) {
+                val bitmap = BitmapFactory.decodeByteArray(imgByte, 0, imgByte.size)
+                val resized = Bitmap.createScaledBitmap(
+                    bitmap,
+                    (bitmap.width * 0.8).toInt(), (bitmap.height * 0.8).toInt(), true
+                )
+                val stream = ByteArrayOutputStream()
+                resized.compress(Bitmap.CompressFormat.PNG, 100, stream)
+
+                dailyEntryManager.getDailyEntryToday().dailyImage = resized
+                dailyEntryManager.updateDailyEntry(dailyEntryManager.getDailyEntryToday())
+            }
         }
     }
 
