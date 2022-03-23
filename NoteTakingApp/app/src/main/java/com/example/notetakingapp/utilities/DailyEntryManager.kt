@@ -143,7 +143,7 @@ class DailyEntryManager {
     }
 
     /**
-     *
+     * Creates a note and links it to the given dailyEntry
      */
     fun createLinkedNote(dailyEntry: DailyEntryModel): Long? {
         val fileManager = FileManager.instance
