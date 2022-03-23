@@ -1,11 +1,10 @@
 package com.example.notetakingapp.ui.prompt
 
 import android.content.res.ColorStateList
-import android.graphics.Color
+import android.graphics.Paint
 import android.os.Bundle
 import android.text.Editable
-import android.text.Selection
-import android.text.Spannable
+import android.text.InputType
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
@@ -19,11 +18,8 @@ import androidx.navigation.fragment.NavHostFragment
 import com.example.notetakingapp.R
 import com.example.notetakingapp.databinding.FragmentPromptBinding
 import android.widget.TextView
-import com.example.notetakingapp.models.DailyEntryModel
 import com.example.notetakingapp.utilities.DailyEntryManager
-import com.example.notetakingapp.utilities.FileManager
 import com.example.notetakingapp.utilities.Mood
-import com.example.notetakingapp.viewmodels.FoldersViewModel
 import java.time.format.DateTimeFormatter
 
 
@@ -90,11 +86,8 @@ class PromptFragment : Fragment() {
             promptQuestion.text = it.dailyPrompt.prompt
             promptAnswer.setText(it.promptResponse)
             updateDailyEntryColor(it.mood.id.toInt())
-            if(it.getDateCreated() == it.getLastModifiedDate()){
-                binding.submit.visibility = View.VISIBLE
-            } else {
-                binding.submit.visibility = View.GONE
-            }
+            if(it.getDateCreated() != it.getLastModifiedDate()) submitted()
+
             // TODO: Update the image!
 
         }
@@ -107,6 +100,7 @@ class PromptFragment : Fragment() {
 
             override fun afterTextChanged(s: Editable?) {
                 lastCursorPosition = promptResponse.selectionStart
+                if (promptResponse.text.toString() != "" && binding.spinner.selectedItemPosition != 0) readyToSubmit()
             }
 
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -121,8 +115,7 @@ class PromptFragment : Fragment() {
     }
 
     private fun setupMoodDropdown(){
-
-        val spinner: Spinner = binding.moods
+        val spinner: Spinner = binding.spinner
 
         ArrayAdapter.createFromResource(
             requireContext(), R.array.moods, R.layout.moods_dropdown
@@ -135,8 +128,6 @@ class PromptFragment : Fragment() {
             override fun onNothingSelected(parent: AdapterView<*>?) {}
 
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                parent?.getChildAt(1)?.setBackgroundColor(Color.BLUE)
-
                 updateDailyEntryColor(position)
             }
         }
@@ -159,6 +150,13 @@ class PromptFragment : Fragment() {
             updateDailyEntry()
         }
 
+        attachNote.setOnClickListener {
+            binding.attachNote.text = "Daily Journal for " + binding.date.text.toString()
+            binding.attachNote.paintFlags = Paint.UNDERLINE_TEXT_FLAG
+
+            //TODO: link new note function
+        }
+
         setupPromptResponseListener()
         setupMoodDropdown()
 
@@ -171,7 +169,7 @@ class PromptFragment : Fragment() {
         val moodPicker: CardView = binding.moodPicker
         val submit: Button = binding.submit
 
-        var mood = when(position) {
+        val mood = when(position) {
             0 -> Mood.NO_SELECTION
             1 -> Mood.HAPPY
             2 -> Mood.LOVING
@@ -192,14 +190,35 @@ class PromptFragment : Fragment() {
         submit.backgroundTintList = ColorStateList.valueOf(color)
         moodPicker.setCardBackgroundColor(color)
         prompt.setCardBackgroundColor(color)
+
+        if (position != 0 && binding.promptAnswer.text.toString() != "") readyToSubmit()
     }
 
     private fun updateDailyEntry(){
         dailyEntryManager.updateDailyEntry(promptViewModel.dailyEntry.value!!)
+        submitted()
     }
 
     private fun onCalendarClick() {
         val action = PromptFragmentDirections.actionNavigationPromptToFragmentCalendar()
         NavHostFragment.findNavController(this).navigate(action)
+    }
+
+    private fun readyToSubmit(){
+        val params: FrameLayout.LayoutParams = FrameLayout.LayoutParams(1140, 145)
+        binding.spinnerContainer.layoutParams = params
+        binding.submit.visibility = View.VISIBLE
+    }
+
+    private fun submitted(){
+        binding.submit.visibility = View.GONE
+
+        binding.promptAnswer.inputType = InputType.TYPE_NULL
+        binding.attachImage.visibility = View.INVISIBLE
+        binding.spinner.isEnabled = false
+        binding.attachNote.isEnabled = false
+
+        val params: FrameLayout.LayoutParams = FrameLayout.LayoutParams(1355, 145)
+        binding.spinnerContainer.layoutParams = params
     }
 }
