@@ -175,6 +175,7 @@ class CalendarFragment : Fragment() {
             delete.setOnClickListener{
                 deleteDailyEntry(day)
             }
+            image.setImageBitmap(dailyEntry.dailyImage)
         }
 
     }
