@@ -10,15 +10,14 @@ import java.time.format.DateTimeFormatter
 
 class NoteModel(
     title : String,
-    context: Context
-) : FileModel(title, context) {
+) : FileModel(title) {
 
     var contents : SpannableStringBuilder = SpannableStringBuilder("")
     var currFolder : String = ""
     var folderID : Long = 1
 
-    constructor(title: String, context: Context, id: Long, folderID : Long, contents : String, dateCreated : String,
-                dateModified : String, dateDeleted : String) : this(title, context) {
+    constructor(title: String, id: Long, folderID : Long, contents : String, dateCreated : String,
+                dateModified : String, dateDeleted : String) : this(title) {
         this.id = id
         this.folderID = folderID
 
@@ -46,16 +45,6 @@ class NoteModel(
      */
     fun spannableStringToText(): String {
         return contents.toHtml()
-    }
-
-
-    /**
-     * Restore note from recently deleted
-     */
-    fun restoreNote() {
-        TODO("Implement later")
-//        currFolder = "Recently Deleted"  // Bring back to original folder
-//        deleteFile()
     }
 
     fun toNoteCreationRequestModel(): NoteCreationRequestModel{

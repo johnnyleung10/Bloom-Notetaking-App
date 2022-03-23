@@ -26,6 +26,9 @@
         <action
             android:id="@+id/action_navigation_prompt_to_fragment_calendar"
             app:destination="@id/navigation_calendar" />
+        <action
+            android:id="@+id/action_navigation_prompt_to_fragment_edit_note"
+            app:destination="@id/fragment_edit_note" />
     </fragment>
 
     <fragment

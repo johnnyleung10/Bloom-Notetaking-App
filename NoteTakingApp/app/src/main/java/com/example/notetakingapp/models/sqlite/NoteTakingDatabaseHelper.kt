@@ -5,43 +5,40 @@ import android.database.sqlite.SQLiteOpenHelper
 import android.database.sqlite.SQLiteDatabase
 import android.content.Context
 import android.provider.BaseColumns
-import android.text.Html
-import android.util.Log
 import com.example.notetakingapp.models.FolderModel
 import com.example.notetakingapp.models.NoteModel
-import java.util.*
 import kotlin.collections.ArrayList
 
 private const val SQL_CREATE_NOTE_ENTRIES =
-    "CREATE TABLE ${DatabaseHelper.DatabaseContract.NoteEntry.TABLE_NAME} (" +
-            "${BaseColumns._ID} INTEGER PRIMARY KEY," +
-            "${DatabaseHelper.DatabaseContract.NoteEntry.COLUMN_NAME_TITLE} TEXT," +
-            "${DatabaseHelper.DatabaseContract.NoteEntry.COLUMN_NAME_CONTENTS_RICH} TEXT," +
-            "${DatabaseHelper.DatabaseContract.NoteEntry.COLUMN_NAME_CONTENTS_PLAIN} TEXT," +
-            "${DatabaseHelper.DatabaseContract.NoteEntry.COLUMN_NAME_DATE_CREATED} TEXT," +
-            "${DatabaseHelper.DatabaseContract.NoteEntry.COLUMN_NAME_DATE_MODIFIED} TEXT," +
-            "${DatabaseHelper.DatabaseContract.NoteEntry.COLUMN_NAME_DATE_DELETED} TEXT," +
-            "${DatabaseHelper.DatabaseContract.NoteEntry.COLUMN_NAME_FOLDER_ID} INTEGER," +
-            "${DatabaseHelper.DatabaseContract.NoteEntry.COLUMN_NAME_IS_DIRTY} BOOLEAN DEFAULT FALSE," +
-            "${DatabaseHelper.DatabaseContract.NoteEntry.COLUMN_NAME_IS_PERMANENTLY_DELETED} BOOLEAN DEFAULT FALSE," +
-            "FOREIGN KEY ("+DatabaseHelper.DatabaseContract.NoteEntry.COLUMN_NAME_FOLDER_ID+") REFERENCES "+DatabaseHelper.DatabaseContract.FolderEntry.TABLE_NAME+"("+BaseColumns._ID+"))"
+    "CREATE TABLE ${NoteTakingDatabaseHelper.DatabaseContract.NoteEntry.TABLE_NAME} (" +
+            "${NoteTakingDatabaseHelper.DatabaseContract.NoteEntry.COLUMN_NAME_ID} INTEGER PRIMARY KEY," +
+            "${NoteTakingDatabaseHelper.DatabaseContract.NoteEntry.COLUMN_NAME_TITLE} TEXT," +
+            "${NoteTakingDatabaseHelper.DatabaseContract.NoteEntry.COLUMN_NAME_CONTENTS_RICH} TEXT," +
+            "${NoteTakingDatabaseHelper.DatabaseContract.NoteEntry.COLUMN_NAME_CONTENTS_PLAIN} TEXT," +
+            "${NoteTakingDatabaseHelper.DatabaseContract.NoteEntry.COLUMN_NAME_DATE_CREATED} TEXT," +
+            "${NoteTakingDatabaseHelper.DatabaseContract.NoteEntry.COLUMN_NAME_DATE_MODIFIED} TEXT," +
+            "${NoteTakingDatabaseHelper.DatabaseContract.NoteEntry.COLUMN_NAME_DATE_DELETED} TEXT," +
+            "${NoteTakingDatabaseHelper.DatabaseContract.NoteEntry.COLUMN_NAME_FOLDER_ID} INTEGER," +
+            "${NoteTakingDatabaseHelper.DatabaseContract.NoteEntry.COLUMN_NAME_IS_DIRTY} BOOLEAN DEFAULT FALSE," +
+            "${NoteTakingDatabaseHelper.DatabaseContract.NoteEntry.COLUMN_NAME_IS_PERMANENTLY_DELETED} BOOLEAN DEFAULT FALSE," +
+            "FOREIGN KEY ("+NoteTakingDatabaseHelper.DatabaseContract.NoteEntry.COLUMN_NAME_FOLDER_ID+") REFERENCES "+NoteTakingDatabaseHelper.DatabaseContract.FolderEntry.TABLE_NAME+"("+BaseColumns._ID+"))"
 
 
 private const val SQL_CREATE_FOLDER_ENTRIES =
-    "CREATE TABLE ${DatabaseHelper.DatabaseContract.FolderEntry.TABLE_NAME} (" +
+    "CREATE TABLE ${NoteTakingDatabaseHelper.DatabaseContract.FolderEntry.TABLE_NAME} (" +
             "${BaseColumns._ID} INTEGER PRIMARY KEY," +
-            "${DatabaseHelper.DatabaseContract.FolderEntry.COLUMN_NAME_TITLE} TEXT," +
-            "${DatabaseHelper.DatabaseContract.FolderEntry.COLUMN_NAME_DATE_CREATED} TEXT," +
-            "${DatabaseHelper.DatabaseContract.FolderEntry.COLUMN_NAME_DATE_MODIFIED} TEXT," +
-            "${DatabaseHelper.DatabaseContract.FolderEntry.COLUMN_NAME_DATE_DELETED} TEXT," +
-            "${DatabaseHelper.DatabaseContract.FolderEntry.COLUMN_NAME_IS_DIRTY} BOOLEAN DEFAULT FALSE," +
-            "${DatabaseHelper.DatabaseContract.NoteEntry.COLUMN_NAME_IS_PERMANENTLY_DELETED} BOOLEAN DEFAULT FALSE)"
+            "${NoteTakingDatabaseHelper.DatabaseContract.FolderEntry.COLUMN_NAME_TITLE} TEXT," +
+            "${NoteTakingDatabaseHelper.DatabaseContract.FolderEntry.COLUMN_NAME_DATE_CREATED} TEXT," +
+            "${NoteTakingDatabaseHelper.DatabaseContract.FolderEntry.COLUMN_NAME_DATE_MODIFIED} TEXT," +
+            "${NoteTakingDatabaseHelper.DatabaseContract.FolderEntry.COLUMN_NAME_DATE_DELETED} TEXT," +
+            "${NoteTakingDatabaseHelper.DatabaseContract.FolderEntry.COLUMN_NAME_IS_DIRTY} BOOLEAN DEFAULT FALSE," +
+            "${NoteTakingDatabaseHelper.DatabaseContract.NoteEntry.COLUMN_NAME_IS_PERMANENTLY_DELETED} BOOLEAN DEFAULT FALSE)"
 
-            private const val SQL_DELETE_NOTE_ENTRIES = "DROP TABLE IF EXISTS ${DatabaseHelper.DatabaseContract.NoteEntry.TABLE_NAME}"
-private const val SQL_DELETE_FOLDER_ENTRIES = "DROP TABLE IF EXISTS ${DatabaseHelper.DatabaseContract.FolderEntry.TABLE_NAME}"
+private const val SQL_DELETE_NOTE_ENTRIES = "DROP TABLE IF EXISTS ${NoteTakingDatabaseHelper.DatabaseContract.NoteEntry.TABLE_NAME}"
+private const val SQL_DELETE_FOLDER_ENTRIES = "DROP TABLE IF EXISTS ${NoteTakingDatabaseHelper.DatabaseContract.FolderEntry.TABLE_NAME}"
 
 
-class DatabaseHelper(private val context: Context) :
+class NoteTakingDatabaseHelper(private val context: Context) :
     SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 
     /**
@@ -122,7 +119,7 @@ class DatabaseHelper(private val context: Context) :
                 val dateModified = cursor.getString(3)
                 val dateDeleted = cursor.getString(4)
 
-                val folder = FolderModel(title, context, id.toLong(), dateCreated, dateModified, dateDeleted)
+                val folder = FolderModel(title, id.toLong(), dateCreated, dateModified, dateDeleted)
                 retList.add(folder)
             } while (cursor.moveToNext())
        }
@@ -157,7 +154,7 @@ class DatabaseHelper(private val context: Context) :
                 val dateDeleted = cursor.getString(6)
                 val folderID = cursor.getLong(7)
 
-                val note = NoteModel(title, context, id.toLong(), folderID, content, dateCreated,
+                val note = NoteModel(title, id.toLong(), folderID, content, dateCreated,
                     dateModified, dateDeleted)
                 retList.add(note)
             } while (cursor.moveToNext())

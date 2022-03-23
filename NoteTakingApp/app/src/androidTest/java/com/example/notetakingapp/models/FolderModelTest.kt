@@ -8,8 +8,7 @@ import org.junit.Test
 class FolderModelTest : TestCase() {
     @Test
     fun testGetNoteList() {
-        val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        val folder = FolderModel("New Folder 1", appContext)
+        val folder = FolderModel("New Folder 1")
         Assert.assertEquals(ArrayList<NoteModel>(), folder.noteList)
     }
 }

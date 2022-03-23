@@ -31,11 +31,9 @@
     <string-array name="moods">
         <item>Choose a Mood</item>
         <item>Happy</item>
-        <item>Love</item>
-        <item>Motivated</item>
-
+        <item>Loving</item>
+        <item>Excited</item>
         <item>Neutral</item>
-
         <item>Sad</item>
         <item>Angry</item>
         <item>Doubtful</item>
