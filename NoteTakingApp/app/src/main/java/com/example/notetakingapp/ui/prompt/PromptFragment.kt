@@ -4,8 +4,6 @@ import android.Manifest
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.graphics.Paint
 import android.os.Build
 import android.os.Bundle
@@ -13,7 +11,6 @@ import android.provider.MediaStore
 import android.text.Editable
 import android.text.InputType
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -29,7 +26,6 @@ import com.example.notetakingapp.R
 import com.example.notetakingapp.databinding.FragmentPromptBinding
 import com.example.notetakingapp.utilities.DailyEntryManager
 import com.example.notetakingapp.utilities.Mood
-import java.io.ByteArrayOutputStream
 import java.time.format.DateTimeFormatter
 
 private const val REQUEST_CODE = 1000
@@ -65,6 +61,7 @@ class PromptFragment : Fragment() {
 
         setupDailyEntry()
         setupObservers()
+        setupLinkedNoteButton()
 
         // Setup all listeners for fragment
         addListeners()
@@ -80,21 +77,6 @@ class PromptFragment : Fragment() {
             // TODO: Assign to todays Daily Entry
             dailyEntryManager.getDailyEntryToday().dailyImage = MediaStore.Images.Media.getBitmap(context?.contentResolver, data?.data)
 
-//            var imgByte = dailyEntryManager.getDailyEntryToday().imageToByteArray()
-//            var resized = dailyEntryManager.getDailyEntryToday().dailyImage
-//            // COMPRESS
-//            while (imgByte.size > 500000) {
-//                Log.d("resize", "we are still resizing")
-//                val bitmap = BitmapFactory.decodeByteArray(imgByte, 0, imgByte.size)
-//                resized = Bitmap.createScaledBitmap(
-//                    bitmap,
-//                    (bitmap.width * 0.8).toInt(), (bitmap.height * 0.8).toInt(), true
-//                )
-//                val stream = ByteArrayOutputStream()
-//                resized.compress(Bitmap.CompressFormat.PNG, 100, stream)
-//                imgByte = stream.toByteArray()
-//            }
-//            dailyEntryManager.getDailyEntryToday().dailyImage = resized
             dailyEntryManager.updateDailyEntry(dailyEntryManager.getDailyEntryToday())
         }
     }
@@ -115,6 +97,13 @@ class PromptFragment : Fragment() {
         promptQuestion.text = promptViewModel.dailyEntry.value?.dailyPrompt?.prompt
     }
 
+    private fun setupLinkedNoteButton() {
+        if (dailyEntryManager.getDailyEntryToday().linkedNoteId != null) {
+            binding.attachNote.text = "View daily Journal for today"
+            binding.attachNote.paintFlags = Paint.UNDERLINE_TEXT_FLAG
+        }
+    }
+
     private fun setupObservers(){
         val date: TextView = binding.date
         val promptQuestion: TextView = binding.promptQuestion
@@ -126,7 +115,8 @@ class PromptFragment : Fragment() {
             promptQuestion.text = it.dailyPrompt.prompt
             promptAnswer.setText(it.promptResponse)
             updateDailyEntryColor(it.mood.id.toInt())
-            if(it.getDateCreated() != it.getLastModifiedDate()) submitted()
+            // TODO @LUCAS fix how we set submitted
+            //if(it.getDateCreated() != it.getLastModifiedDate()) submitted()
 
             // TODO: Update the image!
             image.setImageBitmap(it.dailyImage)
@@ -191,10 +181,17 @@ class PromptFragment : Fragment() {
         }
 
         attachNote.setOnClickListener {
-            binding.attachNote.text = "Daily Journal for " + binding.date.text.toString()
-            binding.attachNote.paintFlags = Paint.UNDERLINE_TEXT_FLAG
+            val dailyEntry = dailyEntryManager.getDailyEntryToday()
+            val noteId: Long
+            if (dailyEntry.linkedNoteId != null) {
+                noteId = dailyEntry.linkedNoteId!!
+            }
+            else {
+                noteId = dailyEntryManager.createLinkedNote(dailyEntry)!!
+            }
 
-            //TODO: link new note function
+            val action = PromptFragmentDirections.actionNavigationPromptToFragmentEditNote(noteId)
+            NavHostFragment.findNavController(this).navigate(action)
         }
 
         setupPromptResponseListener()

@@ -116,15 +116,30 @@ class DailyEntryManager {
         val dailyEntry = DailyEntryModel(dailyPrompt = getDailyPrompt())
 
         // Create new note
+//        val fileManager = FileManager.instance
+//        fileManager?.initManager(context)
+//        val newNote = fileManager?.createNewNote("Daily Entry " +dailyEntry.getMonth() +"-"
+//                +dailyEntry.getDay() +"-" +dailyEntry.getYear())
+//        dailyEntry.linkedNoteId = newNote?.id
+        dailyEntry.linkedNoteId = null
+
+        dailyEntryDataSynchronizer.insertDailyEntry(dailyEntry)
+        dailyEntryMap[dailyEntry.id] = dailyEntry
+        return dailyEntry
+    }
+
+    /**
+     *
+     */
+    fun createLinkedNote(dailyEntry: DailyEntryModel): Long? {
         val fileManager = FileManager.instance
         fileManager?.initManager(context)
         val newNote = fileManager?.createNewNote("Daily Entry " +dailyEntry.getMonth() +"-"
                 +dailyEntry.getDay() +"-" +dailyEntry.getYear())
         dailyEntry.linkedNoteId = newNote?.id
+        updateDailyEntry(dailyEntry)
 
-        dailyEntryDataSynchronizer.insertDailyEntry(dailyEntry)
-        dailyEntryMap[dailyEntry.id] = dailyEntry
-        return dailyEntry
+        return dailyEntry.linkedNoteId
     }
 
     /**
@@ -164,7 +179,6 @@ class DailyEntryManager {
             imgByte = stream.toByteArray()
         }
         getDailyEntryToday().dailyImage = resized
-        updateDailyEntry(getDailyEntryToday())
 
         dailyEntryDataSynchronizer.updateDailyEntry(dailyEntry)
 
