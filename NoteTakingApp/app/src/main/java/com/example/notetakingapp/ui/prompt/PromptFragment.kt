@@ -2,21 +2,15 @@ package com.example.notetakingapp.ui.prompt
 
 import android.Manifest
 import android.app.Activity
-import android.app.AlertDialog
-import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.content.res.ColorStateList
 import android.graphics.Paint
-import android.media.Image
 import android.os.Build
 import android.os.Bundle
-import android.os.Environment
 import android.provider.MediaStore
 import android.text.Editable
 import android.text.InputType
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -28,12 +22,10 @@ import androidx.core.content.PermissionChecker.checkSelfPermission
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.NavHostFragment
-import com.example.notetakingapp.MainActivity
 import com.example.notetakingapp.R
 import com.example.notetakingapp.databinding.FragmentPromptBinding
 import com.example.notetakingapp.utilities.DailyEntryManager
 import com.example.notetakingapp.utilities.Mood
-import java.io.File
 import java.time.format.DateTimeFormatter
 
 private const val REQUEST_CODE = 1000
@@ -48,6 +40,7 @@ class PromptFragment : Fragment() {
     private val binding get() = _binding!!
     private lateinit var dailyEntryManager: DailyEntryManager
     private var lastCursorPosition: Int = 0
+    private var submitted: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -167,7 +160,7 @@ class PromptFragment : Fragment() {
         val calendarButton: Button = binding.calendar
         val attachNote: TextView = binding.attachNote
         val attachImage: ImageButton = binding.attachImage
-        val submit: Button = binding.submit
+        val submit: ImageButton = binding.submit
 
         calendarButton.setOnClickListener{
             onCalendarClick()
@@ -227,7 +220,7 @@ class PromptFragment : Fragment() {
     private fun updateDailyEntryColor(position: Int){
         val prompt: CardView = binding.prompt
         val moodPicker: CardView = binding.moodPicker
-        val submit: Button = binding.submit
+        val submit: ImageButton = binding.submit
 
         val mood = when(position) {
             0 -> Mood.NO_SELECTION
@@ -247,7 +240,7 @@ class PromptFragment : Fragment() {
 
         val color = ContextCompat.getColor(requireContext(), colorId)
 
-        submit.backgroundTintList = ColorStateList.valueOf(color)
+        submit.setColorFilter(color)
         moodPicker.setCardBackgroundColor(color)
         prompt.setCardBackgroundColor(color)
 
@@ -271,12 +264,14 @@ class PromptFragment : Fragment() {
     }
 
     private fun readyToSubmit(){
+        if (submitted) return
         val params: FrameLayout.LayoutParams = FrameLayout.LayoutParams(1140, 145)
         binding.spinnerContainer.layoutParams = params
         binding.submit.visibility = View.VISIBLE
     }
 
     private fun submitted(){
+        submitted = true
         binding.submit.visibility = View.GONE
 
         binding.promptAnswer.inputType = InputType.TYPE_NULL
