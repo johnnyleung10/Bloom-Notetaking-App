@@ -3,11 +3,17 @@ package com.example.notetakingapp.utilities
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Color
+import android.util.Log
 import androidx.core.content.ContextCompat
 import com.example.notetakingapp.R
 import com.example.notetakingapp.models.*
 import com.example.notetakingapp.models.sqlite.DailyEntryDatabaseHelper
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
+import java.io.ByteArrayOutputStream
 import java.time.LocalDateTime
 import java.util.*
 import kotlin.collections.ArrayList
@@ -133,10 +139,36 @@ class DailyEntryManager {
      */
     fun updateDailyEntry(dailyEntry: DailyEntryModel) {
 
-        dailyEntry?.updateModifiedDate()
+        dailyEntry.updateModifiedDate()
 
         // Update in database
+        //dailyEntryDataSynchronizer.updateDailyEntry(dailyEntry)
+        doWorkAsync(dailyEntry)
+    }
+
+    // should be avoided usually because you cannot manage the coroutine state. For example cancel it etc
+    private fun doWorkAsync(dailyEntry: DailyEntryModel): Deferred<Int> = GlobalScope.async {
+
+        var imgByte = getDailyEntryToday().imageToByteArray()
+        var resized = getDailyEntryToday().dailyImage
+        // COMPRESS
+        while (imgByte.size > 500000) {
+            Log.d("resize", "we are still resizing")
+            val bitmap = BitmapFactory.decodeByteArray(imgByte, 0, imgByte.size)
+            resized = Bitmap.createScaledBitmap(
+                bitmap,
+                (bitmap.width * 0.8).toInt(), (bitmap.height * 0.8).toInt(), true
+            )
+            val stream = ByteArrayOutputStream()
+            resized.compress(Bitmap.CompressFormat.PNG, 100, stream)
+            imgByte = stream.toByteArray()
+        }
+        getDailyEntryToday().dailyImage = resized
+        updateDailyEntry(getDailyEntryToday())
+
         dailyEntryDataSynchronizer.updateDailyEntry(dailyEntry)
+
+        return@async 42
     }
 
     /**
