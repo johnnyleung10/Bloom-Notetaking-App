@@ -73,11 +73,7 @@ class PromptFragment : Fragment() {
         // Sets the image to the uploaded image
         if(requestCode == REQUEST_CODE && resultCode == Activity.RESULT_OK){
             binding.image.setImageURI(data?.data)
-
-            // TODO: Assign to todays Daily Entry
-            dailyEntryManager.getDailyEntryToday().dailyImage = MediaStore.Images.Media.getBitmap(context?.contentResolver, data?.data)
-
-            dailyEntryManager.updateDailyEntry(dailyEntryManager.getDailyEntryToday())
+            promptViewModel.dailyEntry.value?.dailyImage = MediaStore.Images.Media.getBitmap(context?.contentResolver, data?.data)
         }
     }
 
@@ -115,10 +111,7 @@ class PromptFragment : Fragment() {
             promptQuestion.text = it.dailyPrompt.prompt
             promptAnswer.setText(it.promptResponse)
             updateDailyEntryColor(it.mood.id.toInt())
-            // TODO @LUCAS fix how we set submitted
             if(it.getDateCreated() != it.getLastModifiedDate()) submitted()
-
-            // TODO: Update the image!
             image.setImageBitmap(it.dailyImage)
         }
     }
@@ -197,7 +190,6 @@ class PromptFragment : Fragment() {
         setupPromptResponseListener()
         setupMoodDropdown()
 
-        // TODO @lucas setup listeners for note and image
         attachImage.setOnClickListener{
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
                 if (checkSelfPermission(requireContext(), Manifest.permission.READ_EXTERNAL_STORAGE) == PermissionChecker.PERMISSION_DENIED){
@@ -266,6 +258,7 @@ class PromptFragment : Fragment() {
 
     private fun updateDailyEntry(){
         dailyEntryManager.updateDailyEntry(promptViewModel.dailyEntry.value!!)
+        dailyEntryManager.updateModifiedDate(promptViewModel.dailyEntry.value!!)
         submitted()
     }
 

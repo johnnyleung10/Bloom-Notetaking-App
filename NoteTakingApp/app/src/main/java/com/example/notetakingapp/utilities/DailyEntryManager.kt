@@ -167,11 +167,12 @@ class DailyEntryManager {
      * Updates daily entry data
      */
     fun updateDailyEntry(dailyEntry: DailyEntryModel) {
-
-        dailyEntry.updateModifiedDate()
-
         // Update in database
         compressAndSyncData(dailyEntry)
+    }
+
+    fun updateModifiedDate(dailyEntry: DailyEntryModel){
+        dailyEntry.updateModifiedDate()
     }
 
     // Compresses dailyImage so that it can be pushed to database
