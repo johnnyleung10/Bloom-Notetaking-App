@@ -193,7 +193,6 @@ class DailyEntryManager {
         }
         getDailyEntryToday().dailyImage = resized
 
-        dailyEntryDatabaseHelper.updateDailyEntry(dailyEntry)
         dailyEntryDataSynchronizer.updateDailyEntry(dailyEntry)
 
         return@async 42
