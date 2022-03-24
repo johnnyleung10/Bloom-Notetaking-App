@@ -38,7 +38,7 @@ class MainActivity : AppCompatActivity() {
         dem?.initManager(this)
         // Handle the dirty data first!
 //        dem?.dataSynchronizer?.handleDirtyData()
-        dem?.initEntries()
+        val elapsedInitDailyEntries = measureTimeMillis { dem?.initEntries() }
 
         // Hide Action Bar
         window.requestFeature(Window.FEATURE_ACTION_BAR)
@@ -65,11 +65,10 @@ class MainActivity : AppCompatActivity() {
         val profile = Profiler.instance
         profile?.init(this)
 
-        profile?.open()
         profile?.profile("setup files and folders", elapsedInitFiles)
         profile?.profile("handle dirty data", elapsedDirtyData)
         profile?.profile("setup the app", endOnCreate - startOnCreate)
-        profile?.close()
+        profile?.profile("setup daily entries", elapsedInitDailyEntries)
     }
 
     override fun onSupportNavigateUp(): Boolean {

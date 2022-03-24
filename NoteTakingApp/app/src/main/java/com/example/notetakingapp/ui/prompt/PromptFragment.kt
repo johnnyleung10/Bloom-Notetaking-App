@@ -26,7 +26,9 @@ import com.example.notetakingapp.R
 import com.example.notetakingapp.databinding.FragmentPromptBinding
 import com.example.notetakingapp.utilities.DailyEntryManager
 import com.example.notetakingapp.utilities.Mood
+import com.example.notetakingapp.utilities.Profiler
 import java.time.format.DateTimeFormatter
+import kotlin.system.measureTimeMillis
 
 private const val REQUEST_CODE = 1000
 
@@ -39,6 +41,7 @@ class PromptFragment : Fragment() {
     // onDestroyView.
     private val binding get() = _binding!!
     private lateinit var dailyEntryManager: DailyEntryManager
+    private lateinit var profiler: Profiler
     private var lastCursorPosition: Int = 0
     private var submitted: Boolean = false
 
@@ -58,6 +61,8 @@ class PromptFragment : Fragment() {
         val root: View = binding.root
         val promptResponse = binding.promptAnswer
         lastCursorPosition = promptResponse.selectionStart
+
+        profiler = Profiler.instance!!
 
         setupDailyEntry()
         setupObservers()
@@ -170,7 +175,8 @@ class PromptFragment : Fragment() {
         }
 
         submit.setOnClickListener{
-            updateDailyEntry()
+            val elapsedUpdateDailyEntry = measureTimeMillis { updateDailyEntry() }
+            profiler.profile("update daily entry", elapsedUpdateDailyEntry)
         }
 
         attachNote.setOnClickListener {
@@ -180,7 +186,10 @@ class PromptFragment : Fragment() {
                 noteId = dailyEntry.linkedNoteId!!
             }
             else {
-                noteId = dailyEntryManager.createLinkedNote(dailyEntry)!!
+                val elapsedCreateLinkedNote = measureTimeMillis {
+                    noteId = dailyEntryManager.createLinkedNote(dailyEntry)!!
+                }
+                profiler.profile("create linked note", elapsedCreateLinkedNote)
             }
 
             val action = PromptFragmentDirections.actionNavigationPromptToFragmentEditNote(noteId)

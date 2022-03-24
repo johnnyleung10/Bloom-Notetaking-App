@@ -88,9 +88,7 @@ class FoldersFragment : Fragment(), NewFolderDialogFragment.NewFolderDialogListe
         newNoteButton.setOnClickListener {
             val elapsedNewNote= measureTimeMillis { newNote() }
 
-            profiler.open()
             profiler.profile("create a new uncategorized note", elapsedNewNote)
-            profiler.close()
         }
 
         createFolderButton.setOnClickListener {
@@ -102,7 +100,8 @@ class FoldersFragment : Fragment(), NewFolderDialogFragment.NewFolderDialogListe
         }
 
         deleteFolderButton.setOnClickListener{
-            deleteFolders()
+            val elapsedDeleteFolder = measureTimeMillis{ deleteFolders() }
+            profiler.profile("delete folder", elapsedDeleteFolder)
         }
 
         selectAll.setOnClickListener{
@@ -135,12 +134,16 @@ class FoldersFragment : Fragment(), NewFolderDialogFragment.NewFolderDialogListe
 
         search.text.clear()
         search.addTextChangedListener {
-            val folderIds = fm.searchFolders(search.text.toString())
-            val newList = HashMap<Long, FolderModel>()
-            for (i in fm.folderList.keys)
-                if (i in folderIds) newList[i] = fm.folderList[i]!!
+            val elapsedSearchFolder = measureTimeMillis {
+                val folderIds = fm.searchFolders(search.text.toString())
+                val newList = HashMap<Long, FolderModel>()
+                for (i in fm.folderList.keys)
+                    if (i in folderIds) newList[i] = fm.folderList[i]!!
 
-            foldersViewModel.setFolders(newList)
+                foldersViewModel.setFolders(newList)
+            }
+
+            profiler.profile("search folders", elapsedSearchFolder)
         }
 
         ArrayAdapter.createFromResource(
@@ -230,12 +233,18 @@ class FoldersFragment : Fragment(), NewFolderDialogFragment.NewFolderDialogListe
 
     /* NewFolderDialogListener */
     override fun onCreateNewFolder(dialog: DialogFragment, newFolderName: String) {
-        fm.createNewFolder(newFolderName)
-        foldersViewModel.setFolders(fm.folderList)
+        val elapsedCreateFolder = measureTimeMillis {
+            fm.createNewFolder(newFolderName)
+            foldersViewModel.setFolders(fm.folderList)
+        }
+        profiler.profile("create new folder", elapsedCreateFolder)
     }
 
     private fun renameFolder(position: Int, title: String){
         if (position == -1) return
-        fm.editFolder(adapter.folderCellList[position].folderId, title)
+        val elapsedEditFolder = measureTimeMillis {
+            fm.editFolder(adapter.folderCellList[position].folderId, title)
+        }
+        profiler.profile("edit folder", elapsedEditFolder)
     }
 }

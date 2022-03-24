@@ -31,7 +31,11 @@ class Profiler {
 
     fun log(description: String, value: Long) = save(Entry(TYPE.LOG, description, value))
 
-    fun profile(description: String, value: Long) = save(Entry(TYPE.PROFILING, description, value))
+    fun profile(description: String, value: Long) {
+        open()
+        save(Entry(TYPE.PROFILING, description, value))
+        close()
+    }
 
     private fun save(entry: Entry) = writer?.write(entry.toString() + "\n")
 
