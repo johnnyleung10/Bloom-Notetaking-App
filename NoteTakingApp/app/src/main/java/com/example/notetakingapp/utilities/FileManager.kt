@@ -177,11 +177,12 @@ class FileManager {
             if (!folderList[RECENTLY_DELETED_FOLDER]?.noteList?.contains(note)!!) return false
             note.restoreFileDate()
             // Check if original folder exists
-            if (folderList.containsKey(note.folderID)) {
-                moveNote(noteID, note.folderID) // Restore to original folder
-            } else {
-                moveNote(noteID, UNCATEGORIZED_FOLDER) // Restore to uncategorized
-            }
+//            if (folderList.containsKey(note.folderID)) {
+//                moveNote(noteID, note.folderID) // Restore to original folder
+//            } else {
+//                moveNote(noteID, UNCATEGORIZED_FOLDER) // Restore to uncategorized
+//            }
+            moveNote(noteID, UNCATEGORIZED_FOLDER) // Restore to uncategorized
 
         }
         return true
@@ -219,11 +220,9 @@ class FileManager {
 
         // Add note to new folder
         folderList[folderID]?.noteList?.add(note!!)
-        if (note?.getDeletionDate() == "") { // Only change folderID and folderName if not deleted
-            note?.currFolder = folderList[folderID]?.title ?: UNIDENTIFIED_FOLDER
-            note?.folderID = folderID
-            note?.updateModifiedDate()
-        }
+        note?.currFolder = folderList[folderID]?.title ?: UNIDENTIFIED_FOLDER
+        note?.folderID = folderID
+        note?.updateModifiedDate()
 
         // Update in database
         if (note != null) {

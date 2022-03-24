@@ -270,7 +270,7 @@ internal class FileManagerTest {
         if (note != null) {
             // Delete and restore
             manager.deleteNote(note.id)
-            manager.restoreNote(note.id)
+            Assert.assertEquals(true, manager.restoreNote(note.id))
             Assert.assertEquals("", note.getDeletionDate())
         }
         if (manager != null) {
@@ -283,7 +283,7 @@ internal class FileManagerTest {
         if (note1 != null) {
             // Delete and restore
             manager.deleteNote(note1.id)
-            manager.restoreNote(note1.id)
+            Assert.assertEquals(true, manager.restoreNote(note1.id))
             Assert.assertEquals("", note1.getDeletionDate())
         }
         if (manager != null) {
