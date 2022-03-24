@@ -64,8 +64,8 @@
 
         <TextView
             android:id="@+id/prompt_question"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginStart="15dp"
             android:layout_marginTop="20dp"
             android:gravity="start|top"
@@ -93,19 +93,18 @@
             android:id="@+id/image"
             android:layout_width="320dp"
             android:layout_height="240dp"
+            android:src="@drawable/placeholder"
             android:layout_gravity="center"
             android:layout_marginTop="25dp"
-            android:background="#00000000"
             app:layout_constraintTop_toBottomOf="@+id/prompt_answer" />
 
         <TextView
             android:id="@+id/attach_note"
-            android:layout_width="250dp"
-            android:layout_height="match_parent"
-            android:layout_gravity="start"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginStart="15dp"
             android:layout_marginBottom="27dp"
-            android:gravity="start|bottom"
+            android:layout_gravity="start|bottom"
             android:text="@string/attach_note"
             android:textColor="#0022FF"
             android:textSize="16sp"

@@ -170,6 +170,7 @@ class CalendarFragment : Fragment() {
         val promptQuestion: TextView = binding.promptQuestion
         val promptAnswer: TextView = binding.promptAnswer
         val image: ImageView = binding.image
+        val note: TextView = binding.linkedNote
         val delete: ImageButton = binding.delete
 
         val dailyEntry = calendarViewModel.dailyEntries.value!![day]
@@ -185,7 +186,8 @@ class CalendarFragment : Fragment() {
                 val elapsedDeleteDailyEntry = measureTimeMillis { deleteDailyEntry(day) }
                 profiler.profile("delete daily entry", elapsedDeleteDailyEntry)
             }
-            image.setImageBitmap(dailyEntry.dailyImage)
+            if (dailyEntry.dailyImage != null) image.setImageBitmap(dailyEntry.dailyImage)
+            if (dailyEntry.linkedNoteId == null) note.isVisible = false
         }
 
     }

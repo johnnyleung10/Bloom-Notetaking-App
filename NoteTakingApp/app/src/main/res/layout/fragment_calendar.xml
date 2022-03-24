@@ -40,10 +40,11 @@
 
     <View
         android:id="@+id/background"
-        android:layout_width="386dp"
-        android:layout_height="326dp"
-        android:layout_marginStart="12dp"
-        android:layout_marginTop="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="336dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginTop="5dp"
         android:elevation="4dp"
         android:background="@color/background"
         app:layout_constraintTop_toBottomOf="@+id/prompt"
@@ -57,7 +58,7 @@
         android:horizontalSpacing="13dp"
         android:verticalSpacing="1dp"
         android:layout_marginStart="26dp"
-        android:layout_marginTop="98dp"
+        android:layout_marginTop="103dp"
         android:elevation="4dp"
         app:layout_constraintTop_toBottomOf="@+id/prompt"
         app:layout_constraintStart_toStartOf="parent"/>
@@ -67,7 +68,7 @@
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_marginStart="42dp"
-        android:layout_marginTop="14dp"
+        android:layout_marginTop="19dp"
         android:background="#00000000"
         android:drawableStart="@drawable/left"
         android:elevation="4.5dp"
@@ -80,7 +81,7 @@
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_marginEnd="34dp"
-        android:layout_marginTop="14dp"
+        android:layout_marginTop="19dp"
         android:background="#00000000"
         android:elevation="4.5dp"
         android:drawableEnd="@drawable/right"
@@ -93,6 +94,7 @@
         android:id="@+id/calendar"
         android:layout_width="match_parent"
         android:layout_height="350dp"
+        android:layout_marginTop="5dp"
         android:elevation="4dp"
         android:theme="@style/CalendarViewCustom"
         app:layout_constraintTop_toBottomOf="@+id/prompt" />
@@ -105,31 +107,22 @@
         card_view:cardCornerRadius="7dp"
         card_view:cardElevation="4dp"
         card_view:cardMaxElevation="5dp"
-        android:layout_marginStart="12dp"
-        android:layout_marginEnd="12dp"
+        android:layout_marginTop="-5dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
         card_view:cardBackgroundColor="@color/background"
         app:layout_constraintTop_toBottomOf="@+id/calendar">
 
         <TextView
             android:id="@+id/prompt_question"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:text="Where is your favourite restaurant?"
             android:textSize="20sp"
             android:textStyle="bold"
             android:gravity="start|top"
-            android:layout_marginStart="15dp"
-            android:layout_marginTop="15dp"
-            />
-
-        <ImageView
-            android:id="@+id/image"
-            android:layout_width="200dp"
-            android:layout_height="150dp"
-            android:background="#00000000"
-            android:layout_gravity="center"
-            android:layout_marginTop="5dp"
-            app:layout_constraintTop_toBottomOf="@+id/prompt_question"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
             />
 
         <ImageButton
@@ -138,16 +131,39 @@
             android:layout_height="20dp"
             android:src="@drawable/delete_small"
             android:background="#00000000"
-            android:layout_marginStart="10dp"
-            android:layout_marginBottom="10dp"
-            android:layout_gravity="start|bottom"
+            android:layout_marginEnd="10dp"
+            android:layout_marginTop="12dp"
+            android:layout_gravity="end|top"
             app:layout_constraintTop_toBottomOf="@+id/image"
             app:layout_constraintStart_toStartOf="parent"
             />
 
+        <ImageView
+            android:id="@+id/image"
+            android:layout_width="200dp"
+            android:layout_height="150dp"
+            android:src="@drawable/placeholder_small"
+            android:background="#00000000"
+            android:layout_gravity="center"
+            app:layout_constraintTop_toBottomOf="@+id/prompt_question"
+            />
+
+        <TextView
+            android:id="@+id/linked_note"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginBottom="10dp"
+            android:layout_gravity="start|bottom"
+            android:text="~ Journal"
+            android:textColor="#0022FF"
+            android:textSize="16sp"
+            app:layout_constraintTop_toBottomOf="@+id/image" />
+
         <TextView
             android:id="@+id/prompt_answer"
             android:layout_width="wrap_content"
+            android:maxWidth="285dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="10dp"
             android:layout_marginBottom="10dp"

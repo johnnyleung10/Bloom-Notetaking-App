@@ -116,8 +116,8 @@ class PromptFragment : Fragment() {
             promptQuestion.text = it.dailyPrompt.prompt
             promptAnswer.setText(it.promptResponse)
             updateDailyEntryColor(it.mood.id.toInt())
-            if(it.getDateCreated() != it.getLastModifiedDate()) submitted()
-            image.setImageBitmap(it.dailyImage)
+            if (it.getDateCreated() != it.getLastModifiedDate()) submitted()
+            if (it.dailyImage != null) image.setImageBitmap(it.dailyImage)
         }
     }
 
