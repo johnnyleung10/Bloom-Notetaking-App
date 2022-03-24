@@ -16,6 +16,8 @@ import com.example.notetakingapp.databinding.FragmentFoldersBinding
 import com.example.notetakingapp.models.FolderModel
 import com.example.notetakingapp.viewmodels.FoldersViewModel
 import com.example.notetakingapp.utilities.FileManager
+import com.example.notetakingapp.utilities.Profiler
+import kotlin.system.measureTimeMillis
 
 class FoldersFragment : Fragment(), NewFolderDialogFragment.NewFolderDialogListener {
 
@@ -23,6 +25,7 @@ class FoldersFragment : Fragment(), NewFolderDialogFragment.NewFolderDialogListe
     private var _binding: FragmentFoldersBinding? = null
     private lateinit var fm: FileManager
     private lateinit var adapter: FoldersRecyclerViewAdapter
+    private lateinit var profiler: Profiler
 
     // This property is only valid between onCreateView and onDestroyView.
     private val binding get() = _binding!!
@@ -41,6 +44,8 @@ class FoldersFragment : Fragment(), NewFolderDialogFragment.NewFolderDialogListe
 
         _binding = FragmentFoldersBinding.inflate(inflater, container, false)
         val root: View = binding.root
+
+        profiler = Profiler.instance!!
 
         // Setup recycler view
         setupRecyclerView()
@@ -81,7 +86,11 @@ class FoldersFragment : Fragment(), NewFolderDialogFragment.NewFolderDialogListe
         val sortOrder: ImageButton = binding.sortOrder
 
         newNoteButton.setOnClickListener {
-            newNote()
+            val elapsedNewNote= measureTimeMillis { newNote() }
+
+            profiler.open()
+            profiler.profile("create a new uncategorized note", elapsedNewNote)
+            profiler.close()
         }
 
         createFolderButton.setOnClickListener {

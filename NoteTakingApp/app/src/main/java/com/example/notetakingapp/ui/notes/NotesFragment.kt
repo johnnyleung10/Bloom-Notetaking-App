@@ -18,6 +18,8 @@ import com.example.notetakingapp.models.FolderModel
 import com.example.notetakingapp.models.NoteModel
 import com.example.notetakingapp.viewmodels.NotesViewModel
 import com.example.notetakingapp.utilities.FileManager
+import com.example.notetakingapp.utilities.Profiler
+import kotlin.system.measureTimeMillis
 
 class NotesFragment : Fragment(), MoveNoteDialogFragment.MoveNoteDialogListener {
 
@@ -28,6 +30,7 @@ class NotesFragment : Fragment(), MoveNoteDialogFragment.MoveNoteDialogListener 
     private lateinit var folder: FolderModel
     private lateinit var folders: HashMap<Long, FolderModel>
     private lateinit var adapter: NotesRecyclerViewAdapter
+    private lateinit var profiler: Profiler
 
     // This property is only valid between onCreateView and onDestroyView.
     private val binding get() = _binding!!
@@ -43,6 +46,8 @@ class NotesFragment : Fragment(), MoveNoteDialogFragment.MoveNoteDialogListener 
         notesViewModel = ViewModelProvider(this).get(NotesViewModel::class.java)
         folders = fm.folderList
         folder = folders[folderId]!!
+
+        profiler = Profiler.instance!!
 
         notesViewModel.setFolderTitle(folders[folderId]!!.title)
         notesViewModel.folderID = folderId // Store folderID as well
@@ -114,7 +119,11 @@ class NotesFragment : Fragment(), MoveNoteDialogFragment.MoveNoteDialogListener 
             moveNote.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.restore, 0, 0)
         }
         newNoteButton.setOnClickListener{
-            newNote()
+            val elapsedNewNote= measureTimeMillis { newNote() }
+
+            profiler.open()
+            profiler.profile("create a new note", elapsedNewNote)
+            profiler.close()
         }
 
         editButton.setOnClickListener{
