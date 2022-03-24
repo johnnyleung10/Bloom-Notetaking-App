@@ -287,7 +287,7 @@ internal class FileManagerTest {
             Assert.assertEquals("", note1.getDeletionDate())
         }
         if (manager != null) {
-            Assert.assertEquals(1, manager.folderList[4]?.noteList?.size)
+            Assert.assertEquals(2, manager.folderList[1]?.noteList?.size)
         }
     }
 
