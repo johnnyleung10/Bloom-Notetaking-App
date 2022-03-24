@@ -10,6 +10,7 @@ import com.example.notetakingapp.models.sqlite.NoteTakingDatabaseHelper
 
 private const val UNCATEGORIZED_FOLDER : Long = 1
 private const val RECENTLY_DELETED_FOLDER : Long = 2
+private const val DAILY_ENTRY_FOLDER : Long = 3
 private const val UNIDENTIFIED_FOLDER : String = "Unidentified Folder"
 
 class FileManager {
@@ -42,6 +43,7 @@ class FileManager {
             // Create default folders
             createNewFolder("Uncategorized")
             createNewFolder("Recently Deleted")
+            createNewFolder("Daily Entries")
         } else {
             for (folder in noteTakingDatabaseHelper.getAllFolders()) {
                 folderList[folder.id] = folder
@@ -76,7 +78,7 @@ class FileManager {
      * Edits folder and updates the database
      */
     fun editFolder(folderID: Long, title: String? = null) {
-        if (folderID == UNCATEGORIZED_FOLDER || folderID == RECENTLY_DELETED_FOLDER) {
+        if (folderID == UNCATEGORIZED_FOLDER || folderID == RECENTLY_DELETED_FOLDER || folderID == DAILY_ENTRY_FOLDER) {
             Log.d("FileManager", "You can't edit default folders")
             return
         }
@@ -98,7 +100,7 @@ class FileManager {
         val folder = folderList[folderID]
 
         if (folder == null) return false
-        if (folderID == UNCATEGORIZED_FOLDER || folderID == RECENTLY_DELETED_FOLDER) return false
+        if (folderID == UNCATEGORIZED_FOLDER || folderID == RECENTLY_DELETED_FOLDER || folderID == DAILY_ENTRY_FOLDER) return false
 
         // Move notes to uncategorized
         val currNotes : ArrayList<Long> = ArrayList()
@@ -110,9 +112,7 @@ class FileManager {
         }
 
         // Remove from database
-        if(folder != null){
-            noteDataSynchronizer.deleteOneFolder(folder)
-        }
+        noteDataSynchronizer.deleteOneFolder(folder)
 
         folderList.remove(folderID)
 
@@ -256,9 +256,10 @@ class FileManager {
         val ret = ArrayList<Long>()
         ret.add(UNCATEGORIZED_FOLDER)
         ret.add(RECENTLY_DELETED_FOLDER)
+        ret.add(DAILY_ENTRY_FOLDER)
         val newOrder = noteTakingDatabaseHelper.getSortedFolders(columnName, descending)
         for (folderID : Long in newOrder) {
-            if (folderID != UNCATEGORIZED_FOLDER && folderID != RECENTLY_DELETED_FOLDER) {
+            if (folderID != UNCATEGORIZED_FOLDER && folderID != RECENTLY_DELETED_FOLDER && folderID != DAILY_ENTRY_FOLDER) {
                 ret.add(folderID)
             }
 

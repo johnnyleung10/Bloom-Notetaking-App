@@ -37,10 +37,11 @@ internal class FileManagerTest {
         val manager : FileManager? = FileManager.instance
         manager?.initManager(appContext)
         manager?.initFiles()
-        Assert.assertEquals(2, manager?.folderList?.size)
+        Assert.assertEquals(3, manager?.folderList?.size)
         if (manager != null) {
             Assert.assertEquals("Uncategorized", manager.folderList[1]?.title!!)
             Assert.assertEquals("Recently Deleted", manager.folderList[2]?.title!!)
+            Assert.assertEquals("Daily Entries", manager.folderList[3]?.title!!)
         }
     }
 
@@ -75,9 +76,9 @@ internal class FileManagerTest {
         manager?.initManager(appContext)
         manager?.initFiles()
         manager?.createNewFolder("New Folder 1")
-        Assert.assertEquals(3, manager?.folderList?.size)
+        Assert.assertEquals(4, manager?.folderList?.size)
         if (manager != null) {
-            Assert.assertEquals("New Folder 1", manager.folderList[3]?.title!!)
+            Assert.assertEquals("New Folder 1", manager.folderList[4]?.title!!)
         }
     }
 
@@ -88,9 +89,9 @@ internal class FileManagerTest {
         manager?.initManager(appContext)
         manager?.initFiles()
         manager?.createNewFolder("New Folder 1")
-        manager?.editFolder(3, title = "New Folder 3")
+        manager?.editFolder(4, title = "New Folder 3")
         if (manager != null) {
-            Assert.assertEquals("New Folder 3", manager.folderList[3]?.title!!)
+            Assert.assertEquals("New Folder 3", manager.folderList[4]?.title!!)
         }
     }
 
@@ -103,9 +104,9 @@ internal class FileManagerTest {
         manager?.initManager(appContext)
         manager?.initFiles()
         manager?.createNewFolder("New Folder 1")
-        manager?.deleteFolder(3)
+        manager?.deleteFolder(4)
         if (manager != null) {
-            Assert.assertEquals(2, manager.folderList.size)
+            Assert.assertEquals(3, manager.folderList.size)
         }
     }
 
@@ -121,15 +122,15 @@ internal class FileManagerTest {
             Assert.assertEquals(HashMap<Long, FolderModel>(), manager.folderList)
         }
         manager?.initFiles()
-        Assert.assertEquals(2, manager?.folderList?.size)
+        Assert.assertEquals(3, manager?.folderList?.size)
         if (manager != null) {
             Assert.assertEquals("Uncategorized", manager.folderList[1]?.title!!)
             Assert.assertEquals("Recently Deleted", manager.folderList[2]?.title!!)
         }
         manager?.createNewFolder("New Folder 1")
         if (manager != null) {
-            Assert.assertEquals(3, manager.folderList.size)
-            Assert.assertEquals("New Folder 1", manager.folderList[3]?.title!!)
+            Assert.assertEquals(4, manager.folderList.size)
+            Assert.assertEquals("New Folder 1", manager.folderList[4]?.title!!)
         }
     }
 
@@ -252,7 +253,6 @@ internal class FileManagerTest {
         if (manager != null) {
             val testNote = manager.getNote(id!!)
             Assert.assertEquals("Note 2", testNote?.title)
-            //Assert.assertEquals(SpannableStringBuilder("Stuff"), testNote?.contents)
         }
     }
 
@@ -279,7 +279,7 @@ internal class FileManagerTest {
 
         // Try in a new folder
         manager?.createNewFolder("New Folder 1")
-        val note1 = manager?.createNewNote("New note 1", 3)
+        val note1 = manager?.createNewNote("New note 1", 4)
         if (note1 != null) {
             // Delete and restore
             manager.deleteNote(note1.id)
@@ -287,7 +287,7 @@ internal class FileManagerTest {
             Assert.assertEquals("", note1.getDeletionDate())
         }
         if (manager != null) {
-            Assert.assertEquals(1, manager.folderList[3]?.noteList?.size)
+            Assert.assertEquals(1, manager.folderList[4]?.noteList?.size)
         }
     }
 
@@ -406,23 +406,23 @@ internal class FileManagerTest {
         // Test sort by title
         var ordered = manager?.sortFolders(NoteTakingDatabaseHelper.DatabaseContract.NoteEntry.COLUMN_NAME_TITLE) // ASC
         if (manager != null) {
-            Assert.assertEquals(folder2?.id, ordered?.get(2))
-            Assert.assertEquals(folder1?.id, ordered?.get(3))
-            Assert.assertEquals(folder3?.id, ordered?.get(4))
+            Assert.assertEquals(folder2?.id, ordered?.get(3))
+            Assert.assertEquals(folder1?.id, ordered?.get(4))
+            Assert.assertEquals(folder3?.id, ordered?.get(5))
         }
         ordered = manager?.sortFolders(NoteTakingDatabaseHelper.DatabaseContract.NoteEntry.COLUMN_NAME_TITLE, true) // DESC
         if (manager != null) {
-            Assert.assertEquals(folder3?.id, ordered?.get(2))
-            Assert.assertEquals(folder1?.id, ordered?.get(3))
-            Assert.assertEquals(folder2?.id, ordered?.get(4))
+            Assert.assertEquals(folder3?.id, ordered?.get(3))
+            Assert.assertEquals(folder1?.id, ordered?.get(4))
+            Assert.assertEquals(folder2?.id, ordered?.get(5))
         }
 
         // Sort by creationDate
         ordered = manager?.sortFolders(NoteTakingDatabaseHelper.DatabaseContract.NoteEntry.COLUMN_NAME_DATE_CREATED) // ASC
         if (manager != null) {
-            Assert.assertEquals(folder1?.id, ordered?.get(2))
-            Assert.assertEquals(folder2?.id, ordered?.get(3))
-            Assert.assertEquals(folder3?.id, ordered?.get(4))
+            Assert.assertEquals(folder1?.id, ordered?.get(3))
+            Assert.assertEquals(folder2?.id, ordered?.get(4))
+            Assert.assertEquals(folder3?.id, ordered?.get(5))
         }
     }
 
@@ -443,7 +443,7 @@ internal class FileManagerTest {
         // Search
         var resultList = manager?.searchFolders("A")
         if (manager != null) {
-            Assert.assertEquals(2, resultList?.size)
+            Assert.assertEquals(3, resultList?.size)
         }
         resultList = manager?.searchFolders("B")
         if (manager != null) {
