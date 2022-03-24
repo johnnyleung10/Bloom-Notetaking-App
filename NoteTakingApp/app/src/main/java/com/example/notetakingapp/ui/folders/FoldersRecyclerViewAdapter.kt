@@ -14,7 +14,12 @@ import android.widget.CheckBox
 import android.widget.EditText
 import androidx.lifecycle.MutableLiveData
 import com.example.notetakingapp.R
+import com.example.notetakingapp.utilities.FileManager
 import kotlin.math.roundToInt
+
+private const val UNCATEGORIZED_FOLDER : Long = 1
+private const val RECENTLY_DELETED_FOLDER : Long = 2
+private const val DAILY_ENTRY_FOLDER : Long = 3
 
 class FoldersRecyclerViewAdapter(var folderCellList: ArrayList<FolderCellViewModel>, private val onFolderClicked: (position: Int) -> Unit, private val onFolderRenamed: (position: Int, newTitle: String) -> Unit) : RecyclerView.Adapter<FoldersRecyclerViewAdapter.ViewHolder>() {
 
@@ -42,7 +47,8 @@ class FoldersRecyclerViewAdapter(var folderCellList: ArrayList<FolderCellViewMod
         holder.notesInFolderCount.text = "(${folderCellViewModel.noteCount})"
         holder.notesInFolderCount.isVisible = !editMode
 
-        if (!editMode || folderCellViewModel.folderId == 1.toLong() || folderCellViewModel.folderId == 2.toLong()) {
+        if (!editMode || folderCellViewModel.folderId == UNCATEGORIZED_FOLDER || folderCellViewModel.folderId == RECENTLY_DELETED_FOLDER
+            || folderCellViewModel.folderId == DAILY_ENTRY_FOLDER) {
             holder.folderTitle.inputType = InputType.TYPE_NULL
             holder.folderTitle.width = (holder.folderTitle.paint.measureText(holder.folderTitle.text.toString())).roundToInt() + 40
             holder.folderTitle.backgroundTintList = ColorStateList.valueOf(Color.TRANSPARENT)
@@ -70,8 +76,9 @@ class FoldersRecyclerViewAdapter(var folderCellList: ArrayList<FolderCellViewMod
             for (i in folderCellList)
                 if (checked.value?.contains(i.folderId) == false) checked.value?.add(i.folderId)
         } else for (i in folderCellList) checked.value?.remove(i.folderId)
-        checked.value?.remove(1.toLong())
-        checked.value?.remove(2.toLong())
+        checked.value?.remove(UNCATEGORIZED_FOLDER)
+        checked.value?.remove(RECENTLY_DELETED_FOLDER)
+        checked.value?.remove(DAILY_ENTRY_FOLDER)
 
         checked.value = checked.value
         this.notifyDataSetChanged()

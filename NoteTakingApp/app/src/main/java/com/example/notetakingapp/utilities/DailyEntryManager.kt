@@ -19,6 +19,8 @@ import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
+private const val DAILY_ENTRY_FOLDER : Long = 3
+
 enum class Mood(val id: Long, val description : String, val colour : Int) {
     NO_SELECTION(0, "No Mood", R.color.no_selection),
     HAPPY(1, "Feeling happy", R.color.happy),
@@ -143,13 +145,13 @@ class DailyEntryManager {
     }
 
     /**
-     *
+     * Creates a note and links it to the given dailyEntry
      */
     fun createLinkedNote(dailyEntry: DailyEntryModel): Long? {
         val fileManager = FileManager.instance
         fileManager?.initManager(context)
         val newNote = fileManager?.createNewNote("Daily Entry " +dailyEntry.getMonth() +"-"
-                +dailyEntry.getDay() +"-" +dailyEntry.getYear())
+                +dailyEntry.getDay() +"-" +dailyEntry.getYear(), DAILY_ENTRY_FOLDER)
         dailyEntry.linkedNoteId = newNote?.id
         updateDailyEntry(dailyEntry)
 
