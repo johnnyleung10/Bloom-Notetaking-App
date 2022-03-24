@@ -16,6 +16,7 @@ import com.example.notetakingapp.databinding.FragmentEditNoteBinding
 import com.example.notetakingapp.utilities.FileManager
 import com.example.notetakingapp.MainActivity
 
+private const val DAILY_ENTRY_FOLDER : Long = 3
 
 class EditNoteFragment : Fragment() {
 
@@ -61,14 +62,14 @@ class EditNoteFragment : Fragment() {
 
         var lastCursorPosition = editNoteContents.selectionStart
 
-        if (note != null && note.folderID == 3.toLong()) { // DAILY ENTRY
-            editNoteTitle.isEnabled = false
-        }
         if (note != null && note.title != "New Note") {
             editNoteTitle.setText(note.title)
         }
         if (note != null && note.contents.toString() != "") {
             editNoteContents.setText(note.contents)
+        }
+        if (note != null && note.folderID == DAILY_ENTRY_FOLDER) { // DAILY ENTRY
+            editNoteTitle.isEnabled = false
         }
 
         // BUTTONS
