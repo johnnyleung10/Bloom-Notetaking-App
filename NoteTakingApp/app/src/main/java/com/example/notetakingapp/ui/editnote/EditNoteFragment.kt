@@ -61,6 +61,9 @@ class EditNoteFragment : Fragment() {
 
         var lastCursorPosition = editNoteContents.selectionStart
 
+        if (note != null && note.folderID == 3.toLong()) { // DAILY ENTRY
+            editNoteTitle.isEnabled = false
+        }
         if (note != null && note.title != "New Note") {
             editNoteTitle.setText(note.title)
         }

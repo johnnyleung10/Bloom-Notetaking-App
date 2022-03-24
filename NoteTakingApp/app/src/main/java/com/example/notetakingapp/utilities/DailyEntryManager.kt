@@ -149,7 +149,7 @@ class DailyEntryManager {
         val fileManager = FileManager.instance
         fileManager?.initManager(context)
         val newNote = fileManager?.createNewNote("Daily Entry " +dailyEntry.getMonth() +"-"
-                +dailyEntry.getDay() +"-" +dailyEntry.getYear())
+                +dailyEntry.getDay() +"-" +dailyEntry.getYear(), 3)
         dailyEntry.linkedNoteId = newNote?.id
         updateDailyEntry(dailyEntry)
 
