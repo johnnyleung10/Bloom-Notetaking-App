@@ -99,7 +99,7 @@ class PromptFragment : Fragment() {
 
     private fun setupLinkedNoteButton() {
         if (dailyEntryManager.getDailyEntryToday().linkedNoteId != null) {
-            binding.attachNote.text = "View daily Journal for today"
+            binding.attachNote.text = "Today's Daily Journal"
             binding.attachNote.paintFlags = Paint.UNDERLINE_TEXT_FLAG
         }
     }
@@ -116,7 +116,7 @@ class PromptFragment : Fragment() {
             promptAnswer.setText(it.promptResponse)
             updateDailyEntryColor(it.mood.id.toInt())
             // TODO @LUCAS fix how we set submitted
-            //if(it.getDateCreated() != it.getLastModifiedDate()) submitted()
+            if(it.getDateCreated() != it.getLastModifiedDate()) submitted()
 
             // TODO: Update the image!
             image.setImageBitmap(it.dailyImage)
@@ -294,7 +294,6 @@ class PromptFragment : Fragment() {
         binding.promptAnswer.inputType = InputType.TYPE_NULL
         binding.attachImage.visibility = View.INVISIBLE
         binding.spinner.isEnabled = false
-        binding.attachNote.isEnabled = false
 
         val params: FrameLayout.LayoutParams = FrameLayout.LayoutParams(1355, 145)
         binding.spinnerContainer.layoutParams = params
