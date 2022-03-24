@@ -167,7 +167,14 @@ class NotesFragment : Fragment(), MoveNoteDialogFragment.MoveNoteDialogListener 
 
         search.text.clear()
         search.addTextChangedListener {
-            val noteIds = fm.searchNotes(search.text.toString(), folderId)
+            var noteIds: List<Long>
+            val elapsedSearchNote = measureTimeMillis {
+                noteIds = fm.searchNotes(search.text.toString(), folderId)
+            }
+            profiler.open()
+            profiler.profile("search notes", elapsedSearchNote)
+            profiler.close()
+
             val results : ArrayList<NoteModel> = ArrayList()
 
             for (i in folder.noteList)
@@ -259,7 +266,13 @@ class NotesFragment : Fragment(), MoveNoteDialogFragment.MoveNoteDialogListener 
     }
 
     private fun permanentlyDeleteNotes(){
-        for (i in adapter.checked.value!!) fm.permanentlyDeleteNote(i)
+        for (i in adapter.checked.value!!) {
+            val elapsedPermanentlyDeleteNotes = measureTimeMillis { fm.permanentlyDeleteNote(i) }
+
+            profiler.open()
+            profiler.profile("permanently delete note", elapsedPermanentlyDeleteNotes)
+            profiler.close()
+        }
         updateView()
     }
 
@@ -270,7 +283,12 @@ class NotesFragment : Fragment(), MoveNoteDialogFragment.MoveNoteDialogListener 
 
     /* MoveNoteDialogListener */
     override fun onMoveNote(dialog: DialogFragment, newFolderId: Long) {
-        for (i in adapter.checked.value!!) fm.moveNote(i, newFolderId)
+        for (i in adapter.checked.value!!) {
+            val elapsedMoveNote = measureTimeMillis { fm.moveNote(i, newFolderId) }
+            profiler.open()
+            profiler.profile("move note", elapsedMoveNote)
+            profiler.close()
+        }
         updateView()
     }
 
