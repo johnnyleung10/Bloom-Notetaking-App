@@ -95,7 +95,7 @@
             android:layout_height="240dp"
             android:layout_gravity="center"
             android:layout_marginTop="25dp"
-            android:background="#ffffff"
+            android:background="#00000000"
             app:layout_constraintTop_toBottomOf="@+id/prompt_answer" />
 
         <TextView
