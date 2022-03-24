@@ -214,7 +214,6 @@ class DailyEntryManager {
             // Delete entry
             dailyEntryMap.remove(entryId)
             dailyEntryDatabaseHelper.deleteDailyEntry(entryId)
-            // TODO: dailyEntryDataSynchronizer
             return true
         }
         return false

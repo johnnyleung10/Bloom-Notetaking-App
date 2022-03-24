@@ -181,7 +181,6 @@ class CalendarFragment : Fragment() {
             promptQuestion.text = dailyEntry.dailyPrompt.prompt
             promptAnswer.text = dailyEntry.promptResponse
             prompt.setBackgroundColor(ContextCompat.getColor(requireContext(), dailyEntry.mood.colour))
-            // TODO: set the image here
             delete.setOnClickListener{
                 val elapsedDeleteDailyEntry = measureTimeMillis { deleteDailyEntry(day) }
                 profiler.profile("delete daily entry", elapsedDeleteDailyEntry)
