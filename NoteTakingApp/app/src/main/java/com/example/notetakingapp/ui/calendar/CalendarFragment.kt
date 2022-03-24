@@ -15,15 +15,18 @@ import com.example.notetakingapp.R
 import com.example.notetakingapp.databinding.FragmentCalendarBinding
 import com.example.notetakingapp.models.DailyEntryModel
 import com.example.notetakingapp.utilities.DailyEntryManager
+import com.example.notetakingapp.utilities.Profiler
 import io.ktor.util.date.*
 import java.time.LocalDateTime
 import java.util.*
+import kotlin.system.measureTimeMillis
 
 class CalendarFragment : Fragment() {
 
     private lateinit var calendarViewModel: CalendarViewModel
     private var _binding: FragmentCalendarBinding? = null
     private lateinit var adapter: CalendarAdapter
+    private lateinit var profiler: Profiler
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -50,6 +53,8 @@ class CalendarFragment : Fragment() {
         val grid = binding.colorBlocks
 
         val c: Calendar = Calendar.getInstance()
+
+        profiler = Profiler.instance!!
 
         setCalendarToToday()
 
@@ -152,8 +157,12 @@ class CalendarFragment : Fragment() {
     }
 
     private fun getDailyEntriesForMonth(monthIndex: Int, year: Int){
-        val dailyEntries = dailyEntryManager.getDailyEntriesByDate(monthIndex + 1, year)
-        calendarViewModel.setDailyEntries(dailyEntries)
+        val elapsedGetDailyEntryForMonth = measureTimeMillis {
+            val dailyEntries = dailyEntryManager.getDailyEntriesByDate(monthIndex + 1, year)
+            calendarViewModel.setDailyEntries(dailyEntries)
+        }
+
+        profiler.profile("get daily entry for month", elapsedGetDailyEntryForMonth)
     }
 
     private fun showDailyEntry(day: Int){
@@ -173,7 +182,8 @@ class CalendarFragment : Fragment() {
             prompt.setBackgroundColor(ContextCompat.getColor(requireContext(), dailyEntry.mood.colour))
             // TODO: set the image here
             delete.setOnClickListener{
-                deleteDailyEntry(day)
+                val elapsedDeleteDailyEntry = measureTimeMillis { deleteDailyEntry(day) }
+                profiler.profile("delete daily entry", elapsedDeleteDailyEntry)
             }
             image.setImageBitmap(dailyEntry.dailyImage)
         }
