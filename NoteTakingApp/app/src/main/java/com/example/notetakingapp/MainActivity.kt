@@ -11,6 +11,9 @@ import androidx.navigation.ui.setupWithNavController
 import com.example.notetakingapp.databinding.ActivityMainBinding
 import com.example.notetakingapp.utilities.DailyEntryManager
 import com.example.notetakingapp.utilities.FileManager
+import com.example.notetakingapp.utilities.Profiler
+import io.ktor.util.date.*
+import kotlin.system.measureTimeMillis
 
 class MainActivity : AppCompatActivity() {
 
@@ -20,21 +23,22 @@ class MainActivity : AppCompatActivity() {
     lateinit var navView: BottomNavigationView
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        val startOnCreate = getTimeMillis()
         super.onCreate(savedInstanceState)
 
         // Instantiate file manager
         val fm = FileManager.instance
         fm?.initManager(this)
         // Handle the dirty data first!
-        fm?.noteDataSynchronizer?.handleDirtyData()
-        fm?.initFiles()
+        val elapsedDirtyData = measureTimeMillis { fm?.noteDataSynchronizer?.handleDirtyData()}
+        val elapsedInitFiles = measureTimeMillis { fm?.initFiles() }
 
         // Instantiate daily entry manager
         val dem = DailyEntryManager.instance
         dem?.initManager(this)
         // Handle the dirty data first!
 //        dem?.dataSynchronizer?.handleDirtyData()
-        dem?.initEntries()
+        val elapsedInitDailyEntries = measureTimeMillis { dem?.initEntries() }
 
         // Hide Action Bar
         window.requestFeature(Window.FEATURE_ACTION_BAR)
@@ -55,6 +59,16 @@ class MainActivity : AppCompatActivity() {
         )
 
         navView.setupWithNavController(navController)
+        val endOnCreate = getTimeMillis()
+
+        // Instantiate Profiler
+        val profile = Profiler.instance
+        profile?.init(this)
+
+        profile?.profile("setup files and folders", elapsedInitFiles)
+        profile?.profile("handle dirty data", elapsedDirtyData)
+        profile?.profile("setup the app", endOnCreate - startOnCreate)
+        profile?.profile("setup daily entries", elapsedInitDailyEntries)
     }
 
     override fun onSupportNavigateUp(): Boolean {

@@ -15,6 +15,8 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.notetakingapp.databinding.FragmentEditNoteBinding
 import com.example.notetakingapp.utilities.FileManager
 import com.example.notetakingapp.MainActivity
+import com.example.notetakingapp.utilities.Profiler
+import kotlin.system.measureTimeMillis
 
 private const val DAILY_ENTRY_FOLDER : Long = 3
 
@@ -25,6 +27,7 @@ class EditNoteFragment : Fragment() {
     }
 
     private lateinit var viewModel: EditNoteViewModel
+    private lateinit var profiler: Profiler
     private var _binding: FragmentEditNoteBinding? = null
     private var noteID: Long = 0
 
@@ -49,6 +52,8 @@ class EditNoteFragment : Fragment() {
 
         val manager = FileManager.instance
         val note = manager?.getNote(noteID)
+
+        profiler = Profiler.instance!!
 
         val editNoteTitle = binding.editNoteTitle
         val editNoteContents = binding.editNoteContents
@@ -152,7 +157,10 @@ class EditNoteFragment : Fragment() {
         note!!.title = binding.editNoteTitle.text.toString()
         if (note.title == "") note.title = "New Note"
         note!!.contents = SpannableStringBuilder(binding.editNoteContents.text)
-        manager.editNote(noteID, title = note.title, contents = note.contents)
+        val elapsedEditNote = measureTimeMillis {
+            manager.editNote(noteID, title = note.title, contents = note.contents)
+        }
+        profiler.profile("edit note", elapsedEditNote)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
