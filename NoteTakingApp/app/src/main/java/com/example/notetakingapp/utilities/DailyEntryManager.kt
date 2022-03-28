@@ -43,7 +43,16 @@ enum class Mood(val id: Long, val description : String, val colour : Int) {
  */
 val DailyPrompts : HashMap<Long, DailyPromptModel> = hashMapOf(
     0.toLong() to DailyPromptModel(0, "How are you feeling today?"),
-    1.toLong() to DailyPromptModel(1, "What reminds you of home?"))
+    1.toLong() to DailyPromptModel(1, "What reminds you of home?"),
+    2.toLong() to DailyPromptModel(2, "What are your goals for this year?"),
+    3.toLong() to DailyPromptModel(3, "Who is your celebrity crush?"),
+    4.toLong() to DailyPromptModel(4, "What is your new favourite song?"),
+    5.toLong() to DailyPromptModel(5, "How would you rate your rapping skills?"),
+    6.toLong() to DailyPromptModel(6, "Where is your dream vacation?"),
+    7.toLong() to DailyPromptModel(7, "Is water wet?"),
+    8.toLong() to DailyPromptModel(8, "When is the best time to work out?"),
+    9.toLong() to DailyPromptModel(9, "Why is the earth round?")
+)
 
 class DailyEntryManager {
     private lateinit var context : Context

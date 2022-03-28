@@ -187,6 +187,12 @@ class CalendarFragment : Fragment() {
             }
             if (dailyEntry.dailyImage != null) image.setImageBitmap(dailyEntry.dailyImage)
             if (dailyEntry.linkedNoteId == null) note.isVisible = false
+            else {
+                note.setOnClickListener {
+                    val action = CalendarFragmentDirections.actionNavigationCalendarToFragmentEditNote(dailyEntry.linkedNoteId!!)
+                    NavHostFragment.findNavController(this).navigate(action)
+                }
+            }
         }
 
     }
