@@ -14,6 +14,8 @@ The wiki contains a [landing page for the project](https://git.uwaterloo.ca/a388
 1. [Releases](https://git.uwaterloo.ca/a388shar/cs398-project/-/wikis/Releases)
 1. [Profiler](https://git.uwaterloo.ca/a388shar/cs398-project/-/wikis/Profiler)
 
+## Issues and Milestones
+We used [Issues](https://git.uwaterloo.ca/a388shar/cs398-project/-/issues) to track the work to be done (includes features and bug fixes, tagged accordingly). Milestones for Sprint 1 through 3 can be found [here](https://git.uwaterloo.ca/a388shar/cs398-project/-/milestones)
 
 ## Releases
 Here are the [apks](https://git.uwaterloo.ca/a388shar/cs398-project/-/wikis/Releases) from each sprint and the most recent update of the app.
