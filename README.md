@@ -41,7 +41,7 @@ What did not go well:
 * Information was lost between meetings
     * While we would have productive and informative meetings a lot of the information was lost. This is because while in a meeting we would all be focused on the person talking and not taking any notes. This resulted in many follow-up conversations due to lost information.
 
-what we would do differently next time:
+What we would do differently next time:
 * Get everyone to work on multiple layers of the app
     * As mentioned before we struggled with working on a feature synchronously. One solution to this would be to assign a single feature to a team member for them to complete. This would reduce one person's work being blocked by someone else. Also, this allows us all to have more experience with the different layers in the app.
 * Take better notes during meetings
