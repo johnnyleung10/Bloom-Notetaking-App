@@ -2,7 +2,7 @@
 Bloom is an Android notetaking application that features note creation for everyday users as well as daily journalling in the form of Daily Entries. This application was created as a course project for CS 398 during the course's inaugural term in Winter 2022.
 
 ## Wiki
-The wiki contains a [landing page for the project]([johnnyleung10/Bloom-Notetaking-App/wiki) plus detailed pages for different course deliverables:
+The wiki contains a [landing page for the project]([/johnnyleung10/Bloom-Notetaking-App/wiki) plus detailed pages for different course deliverables:
 
 1. [Introduction](/johnnyleung10/Bloom-Notetaking-App/wiki/Introduction)
 1. [Requirements](/johnnyleung10/Bloom-Notetaking-App/wiki/Requirements)
