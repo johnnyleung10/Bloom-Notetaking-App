@@ -4,21 +4,21 @@ Bloom is an Android notetaking application that features note creation for every
 ## Wiki
 The wiki contains a [landing page for the project](https://github.com/johnnyleung10/Bloom-Notetaking-App/wiki) plus detailed pages for different course deliverables:
 
-1. [Introduction](/johnnyleung10/Bloom-Notetaking-App/wiki/Introduction)
-1. [Requirements](/johnnyleung10/Bloom-Notetaking-App/wiki/Requirements)
-1. [Project Plan](/johnnyleung10/Bloom-Notetaking-App/wiki/Project-Plan)
-1. [User Persona](//johnnyleung10/Bloom-Notetaking-App/wiki/User-Persona)
-1. [Analysis & Design](/johnnyleung10/Bloom-Notetaking-App/wiki/Analysis-&-Design)
-1. [Implementation](/johnnyleung10/Bloom-Notetaking-App/wiki/Implementation)
-1. [Testing](/johnnyleung10/Bloom-Notetaking-App/wiki/Testing)
-1. [Releases](/johnnyleung10/Bloom-Notetaking-App/wiki/Releases)
-1. [Profiler](/johnnyleung10/Bloom-Notetaking-App/wiki/Profiler)
+1. [Introduction](https://github.com/johnnyleung10/Bloom-Notetaking-App/wiki/Introduction)
+1. [Requirements](https://github.com/johnnyleung10/Bloom-Notetaking-App/wiki/Requirements)
+1. [Project Plan](https://github.com/johnnyleung10/Bloom-Notetaking-App/wiki/Project-Plan)
+1. [User Persona](https://github.com/johnnyleung10/Bloom-Notetaking-App/wiki/User-Persona)
+1. [Analysis & Design](https://github.com/johnnyleung10/Bloom-Notetaking-App/wiki/Analysis-&-Design)
+1. [Implementation](https://github.com/johnnyleung10/Bloom-Notetaking-App/wiki/Implementation)
+1. [Testing](https://github.com/johnnyleung10/Bloom-Notetaking-App/wiki/Testing)
+1. [Releases](https://github.com/johnnyleung10/Bloom-Notetaking-App/wiki/Releases)
+1. [Profiler](https://github.com/johnnyleung10/Bloom-Notetaking-App/wiki/Profiler)
 
 ## Issues and Milestones
 We used [Issues](https://git.uwaterloo.ca/a388shar/cs398-project/-/issues) to track the work to be done (includes features and bug fixes, tagged accordingly). Milestones for Sprint 1 through 3 can be found [here](https://git.uwaterloo.ca/a388shar/cs398-project/-/milestones)
 
 ## Releases
-Here are the [apks](/johnnyleung10/Bloom-Notetaking-App/wiki/Releases) from each sprint and the most recent update of the app.
+Here are the [apks](https://github.com/johnnyleung10/Bloom-Notetaking-App/wiki/Releases) from each sprint and the most recent update of the app.
 
 ## Reflection
 While working on Bloom the team learned a lot during the 3 sprints. Below are our takeaways after working on the app.
